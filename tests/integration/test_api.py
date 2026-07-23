@@ -45,9 +45,6 @@ def test_disabled_runtime_modes_remain_present_but_require_opt_in():
     set_graph_pipeline(QMSGEGraphPipeline(
         corpus, text_encoder=LocalEncoder(), profile=GraphProfile.REIFIED_FACT
     ))
-    set_graph_pipeline(QMSGEGraphPipeline(
-        corpus, text_encoder=LocalEncoder(), profile=GraphProfile.ENTITY_RELATION
-    ))
     graph_response = client.post("/v1/query", json={
         "question": "How does PEAI improve Voc?",
         "mode": "graph",
@@ -70,5 +67,4 @@ def test_disabled_runtime_modes_remain_present_but_require_opt_in():
         "graph_profile": "entity_relation",
         "top_k": 3,
     })
-    assert entity_relation_response.status_code == 409
-    assert "disabled" in entity_relation_response.json()["detail"]
+    assert entity_relation_response.status_code == 422

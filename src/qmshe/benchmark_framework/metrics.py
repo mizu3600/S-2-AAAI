@@ -7,7 +7,7 @@ from collections import Counter
 from qmshe.benchmark_framework.schemas import CanonicalExample, StandardTrace
 
 
-KS = (1, 2, 5, 10, 20, 30, 40)
+KS = (1, 3, 5)
 
 
 def _normalize_answer(text: str) -> str:

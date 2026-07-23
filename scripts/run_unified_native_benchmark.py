@@ -10,6 +10,7 @@ from pathlib import Path
 from qmshe.benchmark_framework.adapters import (
     SiliconFlowDenseAdapter,
     bm25_trace,
+    load_external_baseline_traces,
     load_internal_text_unit_traces,
     load_official_traces,
     load_qmsxe_parity_traces,
@@ -50,6 +51,26 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("reports/unified_native_benchmark/hypergraphrag_internal.jsonl"),
     )
+    parser.add_argument(
+        "--hipporag2-traces",
+        type=Path,
+        default=Path("reports/unified_native_benchmark/hipporag2_native.jsonl"),
+    )
+    parser.add_argument(
+        "--cograg-traces",
+        type=Path,
+        default=Path("reports/unified_native_benchmark/cograg_native.jsonl"),
+    )
+    parser.add_argument(
+        "--hgrag-traces",
+        type=Path,
+        default=Path("reports/unified_native_benchmark/hgrag_native.jsonl"),
+    )
+    parser.add_argument(
+        "--hyperrag-traces",
+        type=Path,
+        default=Path("reports/unified_native_benchmark/hyperrag_native.jsonl"),
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("reports/unified_native_benchmark"))
     parser.add_argument("--limit", type=int, default=288)
     parser.add_argument("--seed", type=int, default=42)
@@ -81,6 +102,18 @@ async def main() -> None:
         traces.extend(fresh_internal)
     parity = load_qmsxe_parity_traces(args.qmsxe_parity_records, examples, args.seed)
     traces.extend(parity or load_qmsxe_passage_traces(args.qmsxe_records, examples, args.seed))
+    # Load new external baseline traces (HippoRAG2, Cog-RAG, HGRAG, Hyper-RAG)
+    for trace_path in (
+        args.hipporag2_traces,
+        args.cograg_traces,
+        args.hgrag_traces,
+        args.hyperrag_traces,
+    ):
+        external = load_external_baseline_traces(trace_path, examples)
+        if external:
+            ext_keys = {(t.system, t.example_id) for t in external}
+            traces = [t for t in traces if (t.system, t.example_id) not in ext_keys]
+            traces.extend(external)
     if not args.skip_dense:
         dense = SiliconFlowDenseAdapter()
         try:
@@ -167,15 +200,30 @@ async def main() -> None:
     records = [evaluate_trace(examples[trace.example_id], trace) for trace in traces]
     summary = aggregate(records)
     manifest = {
-        "protocol": "unified_native_benchmark_v1",
+        "protocol": "unified_native_benchmark_v2_6metrics",
         "examples": len(selected),
         "candidate_documents_per_example": dict(
             sorted(Counter(len(example.documents) for example in selected).items())
         ),
         "dataset_sha256": hashlib.sha256(args.input.read_bytes()).hexdigest(),
         "systems": sorted(summary),
-        "ks": [1, 2, 5, 10, 20, 30, 40],
-        "shared_answer_generator": None if args.skip_generation else "deepseek-chat temperature=0",
+        "ks": [1, 3, 5],
+        "metrics_suite": [
+            "R@1",
+            "R@3",
+            "R@5",
+            "Answer Token F1",
+            "Head-to-Head Win Rates (Comprehensiveness, Diversity, Empowerment, Directness)",
+            "Latency (Retrieval & Total)",
+        ],
+        "unified_components": {
+            "ie_model": "gpt-4o-mini",
+            "embedding_model": "BAAI/bge-m3",
+            "reranker_model": "BAAI/bge-reranker-v2-m3",
+            "qa_model": "gpt-4o-mini",
+            "llm_judge_model": "gpt-4o-mini / deepseek-chat",
+        },
+        "shared_answer_generator": None if args.skip_generation else "gpt-4o-mini temperature=0",
         "api_cost_scope": "DeepSeek calls only; SiliconFlow embedding price and unavailable historical index-build calls are excluded.",
         "citation_level": "document",
         "fact_fallback": "document-induced for systems without canonical text-unit IDs",

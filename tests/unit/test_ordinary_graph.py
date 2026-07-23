@@ -10,16 +10,11 @@ from qmshe.synthetic import make_synthetic_corpus
 
 def test_graph_profiles_are_independent_and_preserve_evidence():
     corpus = make_synthetic_corpus()
-    entity_graph = build_ordinary_graph(corpus, GraphProfile.ENTITY_RELATION)
     reified_graph = build_ordinary_graph(corpus, GraphProfile.REIFIED_FACT)
 
-    assert all(not node.startswith("fact_") for node in entity_graph.node_ids)
     assert any(node.startswith("fact_") for node in reified_graph.node_ids)
-    assert all("fact_ids" in data for _, _, data in entity_graph.graph.edges(data=True))
     assert all("fact_id" in data and "role" in data for _, _, data in reified_graph.graph.edges(data=True))
-    assert entity_graph.adjacency.shape[0] == len(corpus.entities)
     assert reified_graph.adjacency.shape[0] == len(corpus.entities) + len(corpus.evidence_hyperedges)
-    assert all(edge.evidence_fact_ids for edge in entity_graph.edges)
     assert any(node.node_type == "fact" for node in reified_graph.nodes)
 
 

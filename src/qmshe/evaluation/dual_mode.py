@@ -76,21 +76,13 @@ class DualModeExperimentRunner:
         records: list[DualModeRecord] = []
         for example in suite.examples:
             built = build_example_corpus(example)
-            hypergraph_pipeline = QMSHEPipeline(
-                built.corpus, text_encoder=self.encoder, reranker=self.reranker,
-                seed=self.seed, enable_remote_reranker=False,
+            reified_pipeline = QMSGEGraphPipeline(
+                built.corpus, text_encoder=self.encoder, profile=GraphProfile.REIFIED_FACT,
+                reranker=self.reranker, seed=self.seed, enable_remote_reranker=False,
             )
             pipelines = [
-                ("vanilla_rag", "dense_bge_compatible", hypergraph_pipeline),
-                ("hypergraph", "evidence_hypergraph", hypergraph_pipeline),
-                ("graph", GraphProfile.ENTITY_RELATION.value, QMSGEGraphPipeline(
-                    built.corpus, text_encoder=self.encoder, profile=GraphProfile.ENTITY_RELATION,
-                    reranker=self.reranker, seed=self.seed, enable_remote_reranker=False,
-                )),
-                ("graph", GraphProfile.REIFIED_FACT.value, QMSGEGraphPipeline(
-                    built.corpus, text_encoder=self.encoder, profile=GraphProfile.REIFIED_FACT,
-                    reranker=self.reranker, seed=self.seed, enable_remote_reranker=False,
-                )),
+                ("vanilla_rag", "dense_bge_compatible", reified_pipeline),
+                ("graph", GraphProfile.REIFIED_FACT.value, reified_pipeline),
             ]
             for mode, profile, pipeline in pipelines:
                 pipeline.generator.client = None

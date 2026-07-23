@@ -50,7 +50,7 @@ def test_complete_metrics_include_all_k_accuracy_answer_citation_and_joint():
     )
     record = evaluate_trace(_example(), trace)
     assert record["passage_accuracy_at_1"] == 1
-    assert record["fact_complete_at_40"] == 1
+    assert record["fact_complete_at_5"] == 1
     assert record["answer_em"] == 1
     assert record["citation_em"] == 1
     assert record["joint_f1"] == 1

@@ -14,5 +14,21 @@
   "HyperGraphRAG": {
     "repository": "https://github.com/LHRLAB/HyperGraphRAG.git",
     "commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2"
+  },
+  "HippoRAG2": {
+    "repository": "https://github.com/OSU-NLP-Group/HippoRAG.git",
+    "commit": "latest"
+  },
+  "Cog-RAG": {
+    "repository": "https://github.com/haoohu/Cog-RAG.git",
+    "commit": "latest"
+  },
+  "HGRAG": {
+    "repository": "https://github.com/MF-AIR/HGRAG.git",
+    "commit": "latest"
+  },
+  "Hyper-RAG": {
+    "repository": "https://github.com/iMoonLab/Hyper-RAG.git",
+    "commit": "latest"
   }
 }

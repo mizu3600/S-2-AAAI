@@ -28,6 +28,12 @@ def laplacian_eigenmaps(laplacian: sp.spmatrix, dimensions: int = 8) -> np.ndarr
 
 BASELINE_REGISTRY = {
     "bm25": "BM25Retriever",
+    "qmshe": "QMSHEPipeline",
+}
+
+# Legacy baselines kept for ablation studies; not used in default benchmarks.
+# Enable via ``BASELINE_REGISTRY.update(LEGACY_BASELINES)`` when needed.
+LEGACY_BASELINES = {
     "dense": dense_baseline,
     "bm25+dense": "reciprocal_rank_fusion",
     "node2vec": "optional-networkx-adapter",
@@ -37,6 +43,5 @@ BASELINE_REGISTRY = {
     "graphsage": "torch-geometric-adapter",
     "gcn": "torch-geometric-adapter",
     "hypergraph_conv": "torch-geometric-adapter",
-    "qmshe": "QMSHEPipeline",
 }
 

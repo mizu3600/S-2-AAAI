@@ -261,10 +261,6 @@ def _prepare(examples, encoder, mode, profile, seed, variant="full"):
             template = pipeline
         node_index = {node_id: index for index, node_id in enumerate(node_ids)}
         positives = set(built.gold_fact_ids)
-        if mode == "graph" and GraphProfile(profile) is GraphProfile.ENTITY_RELATION:
-            for entity_id, fact_ids in facts_by_entity.items():
-                if fact_ids & built.gold_fact_ids:
-                    positives.add(entity_id)
         positive_indices = [node_index[item] for item in positives if item in node_index]
         if not positive_indices:
             continue

@@ -35,7 +35,26 @@ def aggregate(records: list[dict]) -> dict[str, dict]:
 
 
 def render_report(summary: dict[str, dict], manifest: dict) -> str:
-    lines = ["# Unified Native RAG Benchmark", ""]
+    lines = [
+        "# Unified Native RAG Benchmark (6 Core Metrics Suite)",
+        "",
+        "## Core Evaluation Suite Summary (6 Key Metrics)",
+        "",
+        "| Method | R@1 | R@3 | R@5 | Answer Token F1 | Win Rate (3D Official) | Win Rate (4D Grounded) | Retrieval Latency (s) | Total Latency (s) |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for system, row in summary.items():
+        r1 = _fmt(row.get("passage_recall_at_1_mean"))
+        r3 = _fmt(row.get("passage_recall_at_3_mean"))
+        r5 = _fmt(row.get("passage_recall_at_5_mean"))
+        ans_f1 = _fmt(row.get("answer_f1_mean"))
+        win_3d = _fmt(row.get("h2h_3d_official_win_rate_mean")) if "h2h_3d_official_win_rate_mean" in row else "N/A"
+        win_4d = _fmt(row.get("h2h_4d_grounded_win_rate_mean")) if "h2h_4d_grounded_win_rate_mean" in row else _fmt(row.get("h2h_overall_win_rate_mean")) if "h2h_overall_win_rate_mean" in row else "N/A"
+        ret_latency = _fmt(row.get("retrieval_seconds_mean"))
+        tot_latency = _fmt(row.get("total_seconds_mean"))
+        lines.append(f"| {system} | {r1} | {r3} | {r5} | {ans_f1} | {win_3d} | {win_4d} | {ret_latency} | {tot_latency} |")
+    lines.append("")
+
     for level in ("passage", "fact"):
         columns = ["Method", "MRR"]
         for k in KS:

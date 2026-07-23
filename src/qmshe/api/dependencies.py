@@ -54,12 +54,8 @@ def ensure_runtime_mode_enabled(
     if mode != "graph":
         raise RuntimeError("mode must be hypergraph or graph")
     selected = GraphProfile(profile)
-    if selected is GraphProfile.ENTITY_RELATION:
-        enabled = settings.qmshe_enable_entity_relation
-        variable = "QMSHE_ENABLE_ENTITY_RELATION"
-    else:
-        enabled = settings.qmshe_enable_reified_fact
-        variable = "QMSHE_ENABLE_REIFIED_FACT"
+    enabled = settings.qmshe_enable_reified_fact
+    variable = "QMSHE_ENABLE_REIFIED_FACT"
     if not enabled:
         raise RuntimeError(
             f"ordinary graph profile ({selected.value}) is disabled; set {variable}=true to opt in"

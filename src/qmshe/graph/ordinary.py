@@ -13,7 +13,6 @@ from qmshe.graph.ordinary_schemas import OrdinaryGraphEdge, OrdinaryGraphNode
 
 
 class GraphProfile(str, Enum):
-    ENTITY_RELATION = "entity_relation"
     REIFIED_FACT = "reified_fact"
 
 
@@ -76,53 +75,28 @@ def build_ordinary_graph(
     for entity in corpus.entities:
         graph.add_node(entity.entity_id, kind="entity", text=descriptions[entity.entity_id])
 
-    if profile is GraphProfile.REIFIED_FACT:
-        for fact in corpus.evidence_hyperedges:
-            fact_id = fact.hyperedge_id
-            fact_by_node[fact_id] = fact_id
-            graph.add_node(
+    for fact in corpus.evidence_hyperedges:
+        fact_id = fact.hyperedge_id
+        fact_by_node[fact_id] = fact_id
+        graph.add_node(
+            fact_id,
+            kind="fact",
+            predicate=fact.predicate,
+            text=_fact_text(fact, names),
+            evidence_chunk_ids=list(fact.evidence_chunk_ids),
+        )
+        for argument in fact.arguments:
+            if argument.entity_id not in graph:
+                continue
+            facts_by_entity.setdefault(argument.entity_id, set()).add(fact_id)
+            graph.add_edge(
+                argument.entity_id,
                 fact_id,
-                kind="fact",
-                predicate=fact.predicate,
-                text=_fact_text(fact, names),
-                evidence_chunk_ids=list(fact.evidence_chunk_ids),
+                role=argument.role,
+                relation=f"{argument.role.upper()}_OF",
+                fact_id=fact_id,
+                weight=float(fact.confidence),
             )
-            for argument in fact.arguments:
-                if argument.entity_id not in graph:
-                    continue
-                facts_by_entity.setdefault(argument.entity_id, set()).add(fact_id)
-                graph.add_edge(
-                    argument.entity_id,
-                    fact_id,
-                    role=argument.role,
-                    relation=f"{argument.role.upper()}_OF",
-                    fact_id=fact_id,
-                    weight=float(fact.confidence),
-                )
-    else:
-        for fact in corpus.evidence_hyperedges:
-            valid_arguments = [argument for argument in fact.arguments if argument.entity_id in graph]
-            for argument in valid_arguments:
-                facts_by_entity.setdefault(argument.entity_id, set()).add(fact.hyperedge_id)
-            # A fact is represented by evidence-bearing binary relations, not anonymous clique
-            # expansion: predicate, endpoint roles, source fact and confidence are retained.
-            for left, right in combinations(valid_arguments, 2):
-                weight = float(fact.confidence) / max(len(valid_arguments) - 1, 1)
-                if graph.has_edge(left.entity_id, right.entity_id):
-                    edge = graph[left.entity_id][right.entity_id]
-                    edge["weight"] += weight
-                    edge["fact_ids"].append(fact.hyperedge_id)
-                    edge["relations"].append(fact.predicate)
-                    edge["role_pairs"].append((left.role, right.role))
-                else:
-                    graph.add_edge(
-                        left.entity_id,
-                        right.entity_id,
-                        weight=weight,
-                        fact_ids=[fact.hyperedge_id],
-                        relations=[fact.predicate],
-                        role_pairs=[(left.role, right.role)],
-                    )
 
     node_ids = list(graph.nodes)
     node_texts = [str(graph.nodes[node_id].get("text", node_id)) for node_id in node_ids]

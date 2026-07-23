@@ -13,7 +13,7 @@ class LocalEncoder:
 
 
 def test_both_ordinary_graph_profiles_return_traceable_facts():
-    for profile in (GraphProfile.ENTITY_RELATION, GraphProfile.REIFIED_FACT):
+    for profile in (GraphProfile.REIFIED_FACT,):
         pipeline = QMSGEGraphPipeline(
             make_synthetic_corpus(), text_encoder=LocalEncoder(), profile=profile
         )

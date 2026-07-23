@@ -1,0 +1,295 @@
+{
+  "protocol": "specrag_multi_seed_benchmark_config_v1",
+  "description": "8 Datasets x 3 Fixed Random Seeds (13, 42, 73) = 24 Benchmark Test Suites, 1,000 QA pairs per suite",
+  "seeds": [
+    13,
+    42,
+    73
+  ],
+  "dataset_count": 9,
+  "total_suites": 27,
+  "qa_pairs_per_suite": 1000,
+  "datasets": {
+    "hotpotqa": {
+      "name": "HotpotQA",
+      "description": "Multi-hop QA (bridge & comparison types), sentence-level supporting facts",
+      "sample_size": 1000,
+      "explicit_multihop_filter": true,
+      "filter_rule": "type in ('bridge', 'comparison') and supporting_facts span >= 2 documents"
+    },
+    "2wikimultihopqa": {
+      "name": "2WikiMultiHopQA",
+      "description": "Structured multi-hop reasoning with explicit evidence paths, avoiding shortcut learning",
+      "sample_size": 1000,
+      "explicit_multihop_filter": true,
+      "filter_rule": "evidence chain >= 2 steps, explicit multi-hop reasoning required"
+    },
+    "musique": {
+      "name": "MuSiQue",
+      "description": "Rigorous 2-4 hop DAG-constrained multi-hop QA, hardest multi-hop benchmark",
+      "sample_size": 1000,
+      "explicit_multihop_filter": true,
+      "filter_rule": "question decomposition hops between 2 and 4, strict DAG constraint"
+    },
+    "ultradomain_sub1": {
+      "name": "UltraDomain-Biomedicine",
+      "description": "UltraDomain long-context subset 1: Biomedicine & Life Sciences",
+      "sample_size": 1000,
+      "explicit_multihop_filter": false,
+      "domain": "biomedicine"
+    },
+    "ultradomain_sub2": {
+      "name": "UltraDomain-FinanceLegal",
+      "description": "UltraDomain long-context subset 2: Finance, Legal & Business",
+      "sample_size": 1000,
+      "explicit_multihop_filter": false,
+      "domain": "finance_legal"
+    },
+    "ultradomain_sub3": {
+      "name": "UltraDomain-ComputerScience",
+      "description": "UltraDomain long-context subset 3: Computer Science & Technology",
+      "sample_size": 1000,
+      "explicit_multihop_filter": false,
+      "domain": "computer_science"
+    },
+    "ultradomain_sub4": {
+      "name": "UltraDomain-Mix",
+      "description": "UltraDomain long-context subset 4: UltraDomain Mix domain dataset",
+      "sample_size": 1000,
+      "explicit_multihop_filter": false,
+      "domain": "ultradomain_mix"
+    },
+    "mix_single_multi": {
+      "name": "Mix-1 (Single + MultiHop)",
+      "description": "Mixed dataset 1: 50% Single-Hop + 50% Multi-Hop QA pairs",
+      "sample_size": 1000,
+      "explicit_multihop_filter": false,
+      "mix_ratio": "500 Single-Hop / 500 Multi-Hop"
+    },
+    "mix_domain_general": {
+      "name": "Mix-2 (Domain + General)",
+      "description": "Mixed dataset 2: 50% UltraDomain Vertical + 50% General Knowledge QA",
+      "sample_size": 1000,
+      "explicit_multihop_filter": false,
+      "mix_ratio": "500 UltraDomain / 500 General QA"
+    }
+  },
+  "suites": {
+    "hotpotqa_seed_13": {
+      "dataset": "hotpotqa",
+      "dataset_name": "HotpotQA",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/hotpotqa_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "hotpotqa_seed_42": {
+      "dataset": "hotpotqa",
+      "dataset_name": "HotpotQA",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/hotpotqa_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "hotpotqa_seed_73": {
+      "dataset": "hotpotqa",
+      "dataset_name": "HotpotQA",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/hotpotqa_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "2wikimultihopqa_seed_13": {
+      "dataset": "2wikimultihopqa",
+      "dataset_name": "2WikiMultiHopQA",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/2wikimultihopqa_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "2wikimultihopqa_seed_42": {
+      "dataset": "2wikimultihopqa",
+      "dataset_name": "2WikiMultiHopQA",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/2wikimultihopqa_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "2wikimultihopqa_seed_73": {
+      "dataset": "2wikimultihopqa",
+      "dataset_name": "2WikiMultiHopQA",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/2wikimultihopqa_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "musique_seed_13": {
+      "dataset": "musique",
+      "dataset_name": "MuSiQue",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/musique_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "musique_seed_42": {
+      "dataset": "musique",
+      "dataset_name": "MuSiQue",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/musique_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "musique_seed_73": {
+      "dataset": "musique",
+      "dataset_name": "MuSiQue",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/musique_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub1_seed_13": {
+      "dataset": "ultradomain_sub1",
+      "dataset_name": "UltraDomain-Biomedicine",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub1_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub1_seed_42": {
+      "dataset": "ultradomain_sub1",
+      "dataset_name": "UltraDomain-Biomedicine",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub1_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub1_seed_73": {
+      "dataset": "ultradomain_sub1",
+      "dataset_name": "UltraDomain-Biomedicine",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub1_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub2_seed_13": {
+      "dataset": "ultradomain_sub2",
+      "dataset_name": "UltraDomain-FinanceLegal",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub2_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub2_seed_42": {
+      "dataset": "ultradomain_sub2",
+      "dataset_name": "UltraDomain-FinanceLegal",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub2_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub2_seed_73": {
+      "dataset": "ultradomain_sub2",
+      "dataset_name": "UltraDomain-FinanceLegal",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub2_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub3_seed_13": {
+      "dataset": "ultradomain_sub3",
+      "dataset_name": "UltraDomain-ComputerScience",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub3_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub3_seed_42": {
+      "dataset": "ultradomain_sub3",
+      "dataset_name": "UltraDomain-ComputerScience",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub3_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub3_seed_73": {
+      "dataset": "ultradomain_sub3",
+      "dataset_name": "UltraDomain-ComputerScience",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub3_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub4_seed_13": {
+      "dataset": "ultradomain_sub4",
+      "dataset_name": "UltraDomain-Mix",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub4_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub4_seed_42": {
+      "dataset": "ultradomain_sub4",
+      "dataset_name": "UltraDomain-Mix",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub4_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "ultradomain_sub4_seed_73": {
+      "dataset": "ultradomain_sub4",
+      "dataset_name": "UltraDomain-Mix",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/ultradomain_sub4_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "mix_single_multi_seed_13": {
+      "dataset": "mix_single_multi",
+      "dataset_name": "Mix-1 (Single + MultiHop)",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/mix_single_multi_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "mix_single_multi_seed_42": {
+      "dataset": "mix_single_multi",
+      "dataset_name": "Mix-1 (Single + MultiHop)",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/mix_single_multi_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "mix_single_multi_seed_73": {
+      "dataset": "mix_single_multi",
+      "dataset_name": "Mix-1 (Single + MultiHop)",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/mix_single_multi_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "mix_domain_general_seed_13": {
+      "dataset": "mix_domain_general",
+      "dataset_name": "Mix-2 (Domain + General)",
+      "seed": 13,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/mix_domain_general_seed_13.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "mix_domain_general_seed_42": {
+      "dataset": "mix_domain_general",
+      "dataset_name": "Mix-2 (Domain + General)",
+      "seed": 42,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/mix_domain_general_seed_42.json",
+      "status": "configured_pending_gpu_run"
+    },
+    "mix_domain_general_seed_73": {
+      "dataset": "mix_domain_general",
+      "dataset_name": "Mix-2 (Domain + General)",
+      "seed": 73,
+      "target_sample_size": 1000,
+      "file_path": "data/benchmarks/configured_suites/mix_domain_general_seed_73.json",
+      "status": "configured_pending_gpu_run"
+    }
+  }
+}

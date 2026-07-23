@@ -86,6 +86,58 @@ def load_internal_text_unit_traces(
     return output
 
 
+def load_external_baseline_traces(
+    path: str | Path,
+    examples: dict[str, CanonicalExample],
+) -> list[StandardTrace]:
+    """Load traces produced by scripts/run_external_baselines.py.
+
+    Supports HippoRAG2, Cog-RAG, HGRAG, and Hyper-RAG native captures.
+    The adapter translates each framework's native document ranking into
+    the benchmark's canonical IDs and induces fact rankings from document
+    rankings when the upstream system does not expose fact-level IDs.
+    """
+    source = Path(path)
+    if not source.exists():
+        return []
+    output = []
+    for line in source.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        if row.get("example_id") not in examples:
+            continue
+        example = examples[row["example_id"]]
+        documents = list(dict.fromkeys(row.get("document_ranking", [])))
+        facts = induce_fact_ranking(example, documents)
+        output.append(
+            StandardTrace(
+                system=row.get("system", "external:unknown"),
+                example_id=example.example_id,
+                status=row.get("status", "success"),
+                document_ranking=documents,
+                fact_ranking=facts,
+                induced_path=documents[:2],
+                ranking_origin=row.get("ranking_origin", "external_native_ranking"),
+                path_origin="induced_from_document_ranking",
+                usage=UsageTrace(
+                    token_count_mode="external_system_unmeasured",
+                ),
+                timing=TimingTrace(
+                    retrieval_seconds=row.get("retrieval_seconds"),
+                    total_seconds=row.get("retrieval_seconds"),
+                    timing_scope="query_only_existing_index",
+                ),
+                error=row.get("error"),
+                metadata={
+                    "fact_ranking_origin": "document_induced",
+                    "framework": row.get("system", "").replace("external:", ""),
+                },
+            )
+        )
+    return output
+
+
 def load_official_traces(
     path: str | Path, examples: dict[str, CanonicalExample]
 ) -> list[StandardTrace]:

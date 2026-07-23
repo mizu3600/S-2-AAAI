@@ -197,40 +197,53 @@ class MetaQAAdapter(BenchmarkAdapter):
         )
 
 
-def _sentence_split(text: str) -> list[str]:
-    return [piece.strip() for piece in re.split(r"(?<=[.!?])\s+", text) if piece.strip()]
+class UltraDomainAdapter(BenchmarkAdapter):
+    name = "ultradomain"
 
-
-def _qasper_answer(answers) -> str | list[str]:
-    if isinstance(answers, str):
-        return answers
-    if isinstance(answers, dict):
-        answers = answers.get("answer", answers.get("answers", []))
-    output = []
-    for answer in answers or []:
-        answer = answer.get("answer", answer) if isinstance(answer, dict) else answer
-        if isinstance(answer, dict):
-            value = answer.get("free_form_answer") or answer.get("extractive_spans") or answer.get("yes_no") or answer.get("unanswerable")
+    def convert(self, row: dict, split: str) -> BenchmarkExample:
+        example_id = str(row.get("id", row.get("example_id", "unknown")))
+        domain = row.get("domain", row.get("category", "general"))
+        context = row.get("context", row.get("paragraphs", []))
+        passages = []
+        if isinstance(context, list):
+            for index, item in enumerate(context):
+                if isinstance(item, dict):
+                    title = item.get("title", f"Domain_{domain}_{index}")
+                    sentences = item.get("sentences") or _sentence_split(item.get("text", ""))
+                else:
+                    title, sentences = f"Passage_{index}", _sentence_split(str(item))
+                passages.append(Passage(passage_id=f"{_safe_id(example_id)}_p{index}", title=title, sentences=sentences))
         else:
-            value = answer
-        if value not in (None, "", []):
-            output.extend(value if isinstance(value, list) else [str(value)])
-    return output
+            passages.append(Passage(passage_id=f"{_safe_id(example_id)}_p0", title=f"Domain_{domain}", sentences=_sentence_split(str(context))))
+        
+        support = []
+        for p in passages:
+            for s_idx, _ in enumerate(p.sentences):
+                support.append(SupportingFact(passage_id=p.passage_id, sentence_index=s_idx))
+        return BenchmarkExample(
+            example_id=example_id, question=row["question"], answer=row.get("answer", ""),
+            passages=passages, supporting_facts=support, hop_count=max(1, len(passages)),
+            query_type=f"domain_{domain}", dataset=self.name, split=split,
+            metadata={"domain": domain, "context_length": sum(len(" ".join(p.sentences)) for p in passages)},
+        )
 
 
-def _qasper_evidence(answers) -> list[str]:
-    records = answers.get("answer", answers.get("answers", [])) if isinstance(answers, dict) else answers
-    evidence = []
-    for record in records or []:
-        answer = record.get("answer", record) if isinstance(record, dict) else {}
-        if isinstance(answer, dict):
-            evidence.extend(answer.get("evidence", []))
-    return evidence
+class MixAdapter(BenchmarkAdapter):
+    name = "mix"
+
+    def convert(self, row: dict, split: str) -> BenchmarkExample:
+        sub_dataset = row.get("dataset", "mix")
+        adapter = ADAPTERS.get(sub_dataset.casefold(), HotpotAdapter())
+        example = adapter.convert(row, split)
+        example.dataset = self.name
+        example.metadata["original_dataset"] = sub_dataset
+        return example
 
 
 ADAPTERS = {
     "hotpotqa": HotpotAdapter(), "2wiki": TwoWikiAdapter(), "2wikimultihopqa": TwoWikiAdapter(),
     "musique": MusiqueAdapter(), "qasper": QasperAdapter(), "metaqa": MetaQAAdapter(),
+    "ultradomain": UltraDomainAdapter(), "mix": MixAdapter(),
 }
 
 

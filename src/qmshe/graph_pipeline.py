@@ -123,10 +123,6 @@ class QMSGEGraphPipeline:
         prepared: list[tuple[torch.Tensor, list[int]]] = []
         for question, positive_ids in training_pairs:
             expanded = set(positive_ids)
-            if self.profile is GraphProfile.ENTITY_RELATION:
-                for entity_id, fact_ids in self.artifacts.facts_by_entity.items():
-                    if fact_ids & positive_ids:
-                        expanded.add(entity_id)
             positive_indices = [node_index[item] for item in expanded if item in node_index]
             if positive_indices:
                 query = torch.tensor(
