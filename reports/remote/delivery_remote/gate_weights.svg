@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="405" viewBox="0 0 920 405">
+<rect width="100%" height="100%" fill="white"/>
+<text x="10" y="40" font-family="sans-serif" font-size="11">hypergraph: How does PEAI improve Voc?</text>
+<rect x="300.00" y="25" width="135.08" height="18" fill="#666666"><title>raw: 0.2412</title></rect>
+<rect x="435.08" y="25" width="147.09" height="18" fill="#2f6fed"><title>low: 0.2627</title></rect>
+<rect x="582.17" y="25" width="135.81" height="18" fill="#ef8a17"><title>mid: 0.2425</title></rect>
+<rect x="717.98" y="25" width="142.02" height="18" fill="#c33c54"><title>high: 0.2536</title></rect>
+<text x="10" y="70" font-family="sans-serif" font-size="11">graph_entity_relation: How does PEAI improve Voc?</text>
+<rect x="300.00" y="55" width="155.34" height="18" fill="#666666"><title>raw: 0.2774</title></rect>
+<rect x="455.34" y="55" width="133.98" height="18" fill="#2f6fed"><title>low: 0.2392</title></rect>
+<rect x="589.32" y="55" width="141.46" height="18" fill="#ef8a17"><title>mid: 0.2526</title></rect>
+<rect x="730.79" y="55" width="129.21" height="18" fill="#c33c54"><title>high: 0.2307</title></rect>
+<text x="10" y="100" font-family="sans-serif" font-size="11">graph_reified_fact: How does PEAI improve Voc?</text>
+<rect x="300.00" y="85" width="155.34" height="18" fill="#666666"><title>raw: 0.2774</title></rect>
+<rect x="455.34" y="85" width="133.98" height="18" fill="#2f6fed"><title>low: 0.2392</title></rect>
+<rect x="589.32" y="85" width="141.46" height="18" fill="#ef8a17"><title>mid: 0.2526</title></rect>
+<rect x="730.79" y="85" width="129.21" height="18" fill="#c33c54"><title>high: 0.2307</title></rect>
+<text x="10" y="130" font-family="sans-serif" font-size="11">hypergraph: What reduces non-radiative </text>
+<rect x="300.00" y="115" width="135.19" height="18" fill="#666666"><title>raw: 0.2414</title></rect>
+<rect x="435.19" y="115" width="146.97" height="18" fill="#2f6fed"><title>low: 0.2624</title></rect>
+<rect x="582.15" y="115" width="134.66" height="18" fill="#ef8a17"><title>mid: 0.2405</title></rect>
+<rect x="716.81" y="115" width="143.19" height="18" fill="#c33c54"><title>high: 0.2557</title></rect>
+<text x="10" y="160" font-family="sans-serif" font-size="11">graph_entity_relation: What reduces non-radiative </text>
+<rect x="300.00" y="145" width="154.27" height="18" fill="#666666"><title>raw: 0.2755</title></rect>
+<rect x="454.27" y="145" width="134.18" height="18" fill="#2f6fed"><title>low: 0.2396</title></rect>
+<rect x="588.45" y="145" width="143.93" height="18" fill="#ef8a17"><title>mid: 0.2570</title></rect>
+<rect x="732.38" y="145" width="127.62" height="18" fill="#c33c54"><title>high: 0.2279</title></rect>
+<text x="10" y="190" font-family="sans-serif" font-size="11">graph_reified_fact: What reduces non-radiative </text>
+<rect x="300.00" y="175" width="154.27" height="18" fill="#666666"><title>raw: 0.2755</title></rect>
+<rect x="454.27" y="175" width="134.18" height="18" fill="#2f6fed"><title>low: 0.2396</title></rect>
+<rect x="588.45" y="175" width="143.93" height="18" fill="#ef8a17"><title>mid: 0.2570</title></rect>
+<rect x="732.38" y="175" width="127.62" height="18" fill="#c33c54"><title>high: 0.2279</title></rect>
+<text x="10" y="220" font-family="sans-serif" font-size="11">hypergraph: What affects long-term stab</text>
+<rect x="300.00" y="205" width="135.30" height="18" fill="#666666"><title>raw: 0.2416</title></rect>
+<rect x="435.30" y="205" width="143.97" height="18" fill="#2f6fed"><title>low: 0.2571</title></rect>
+<rect x="579.26" y="205" width="133.99" height="18" fill="#ef8a17"><title>mid: 0.2393</title></rect>
+<rect x="713.25" y="205" width="146.75" height="18" fill="#c33c54"><title>high: 0.2621</title></rect>
+<text x="10" y="250" font-family="sans-serif" font-size="11">graph_entity_relation: What affects long-term stab</text>
+<rect x="300.00" y="235" width="155.19" height="18" fill="#666666"><title>raw: 0.2771</title></rect>
+<rect x="455.19" y="235" width="133.32" height="18" fill="#2f6fed"><title>low: 0.2381</title></rect>
+<rect x="588.50" y="235" width="143.60" height="18" fill="#ef8a17"><title>mid: 0.2564</title></rect>
+<rect x="732.11" y="235" width="127.89" height="18" fill="#c33c54"><title>high: 0.2284</title></rect>
+<text x="10" y="280" font-family="sans-serif" font-size="11">graph_reified_fact: What affects long-term stab</text>
+<rect x="300.00" y="265" width="155.19" height="18" fill="#666666"><title>raw: 0.2771</title></rect>
+<rect x="455.19" y="265" width="133.32" height="18" fill="#2f6fed"><title>low: 0.2381</title></rect>
+<rect x="588.50" y="265" width="143.60" height="18" fill="#ef8a17"><title>mid: 0.2564</title></rect>
+<rect x="732.11" y="265" width="127.89" height="18" fill="#c33c54"><title>high: 0.2284</title></rect>
+<text x="10" y="310" font-family="sans-serif" font-size="11">hypergraph: Summarize the device mechan</text>
+<rect x="300.00" y="295" width="135.94" height="18" fill="#666666"><title>raw: 0.2428</title></rect>
+<rect x="435.94" y="295" width="145.40" height="18" fill="#2f6fed"><title>low: 0.2596</title></rect>
+<rect x="581.34" y="295" width="137.61" height="18" fill="#ef8a17"><title>mid: 0.2457</title></rect>
+<rect x="718.95" y="295" width="141.05" height="18" fill="#c33c54"><title>high: 0.2519</title></rect>
+<text x="10" y="340" font-family="sans-serif" font-size="11">graph_entity_relation: Summarize the device mechan</text>
+<rect x="300.00" y="325" width="152.31" height="18" fill="#666666"><title>raw: 0.2720</title></rect>
+<rect x="452.31" y="325" width="136.58" height="18" fill="#2f6fed"><title>low: 0.2439</title></rect>
+<rect x="588.89" y="325" width="139.17" height="18" fill="#ef8a17"><title>mid: 0.2485</title></rect>
+<rect x="728.06" y="325" width="131.94" height="18" fill="#c33c54"><title>high: 0.2356</title></rect>
+<text x="10" y="370" font-family="sans-serif" font-size="11">graph_reified_fact: Summarize the device mechan</text>
+<rect x="300.00" y="355" width="152.31" height="18" fill="#666666"><title>raw: 0.2720</title></rect>
+<rect x="452.31" y="355" width="136.58" height="18" fill="#2f6fed"><title>low: 0.2439</title></rect>
+<rect x="588.89" y="355" width="139.17" height="18" fill="#ef8a17"><title>mid: 0.2485</title></rect>
+<rect x="728.06" y="355" width="131.94" height="18" fill="#c33c54"><title>high: 0.2356</title></rect>
+<text x="300" y="15" fill="#666666" font-family="sans-serif" font-size="12">raw</text>
+<text x="380" y="15" fill="#2f6fed" font-family="sans-serif" font-size="12">low</text>
+<text x="460" y="15" fill="#ef8a17" font-family="sans-serif" font-size="12">mid</text>
+<text x="540" y="15" fill="#c33c54" font-family="sans-serif" font-size="12">high</text>
+</svg>

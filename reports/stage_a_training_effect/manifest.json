@@ -1,0 +1,22 @@
+{
+  "track": "stage_a_training_effect_2x2",
+  "held_out_examples": 63,
+  "seeds": [
+    13,
+    42,
+    73
+  ],
+  "ks": [
+    1,
+    2,
+    5,
+    10,
+    20,
+    30,
+    40
+  ],
+  "architecture_matched_initialization": true,
+  "same_initialization_within_seed": true,
+  "dense_bge_identity_is_reference_not_a_2x2_cell": true,
+  "no_bm25_graph_rerank_or_neural_reranker": true
+}

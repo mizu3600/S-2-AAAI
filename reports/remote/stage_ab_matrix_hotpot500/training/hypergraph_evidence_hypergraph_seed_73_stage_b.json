@@ -1,0 +1,40 @@
+{
+  "mode": "hypergraph",
+  "profile": "evidence_hypergraph",
+  "seed": 73,
+  "train_examples": 362,
+  "validation_examples": 75,
+  "trainable_parameters": 1179648,
+  "total_parameters": 568934400,
+  "loss_history": [
+    2.41676926612854,
+    2.3274346267320833,
+    2.3187494014508157
+  ],
+  "validation_history": [
+    {
+      "epoch": 1.0,
+      "recall_at_20": 0.6724444444444444,
+      "mrr": 0.38852591171012224
+    },
+    {
+      "epoch": 2.0,
+      "recall_at_20": 0.6724444444444444,
+      "mrr": 0.3883941175783281
+    },
+    {
+      "epoch": 3.0,
+      "recall_at_20": 0.6724444444444444,
+      "mrr": 0.3883941175783281
+    }
+  ],
+  "selected_epoch": 1,
+  "recall_at_20_before": 0.6724444444444444,
+  "recall_at_20_after": 0.6724444444444444,
+  "mrr_before": 0.3884624196466302,
+  "mrr_after": 0.38852591171012224,
+  "elapsed_seconds": 109.56097233202308,
+  "peak_gpu_memory_mb": 4445.74462890625,
+  "dataset_sha256": "2ba78d7a630a1b3ab1a74f65597ad6358bb985f61f14655e80c4abe72068ebdf",
+  "device": "cuda"
+}

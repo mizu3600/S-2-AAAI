@@ -1,0 +1,21 @@
+{
+  "track": "stage_a_intrinsic_pre_fusion",
+  "held_out_examples": 63,
+  "seeds": [
+    13,
+    42,
+    73
+  ],
+  "ks": [
+    1,
+    2,
+    5,
+    10,
+    20,
+    30,
+    40
+  ],
+  "fixed_encoder": "/models/bge-m3",
+  "no_bm25_or_reranker_in_this_track": true,
+  "note": "Training variants are independently trained; runtime fusion ablations are reported separately."
+}

@@ -1,0 +1,7 @@
+{
+  "zhou_sparse_dense_max_abs_error": 0.0,
+  "chebyshev_eigendecomposition_max_abs_error": 0.0,
+  "threshold": 1e-05,
+  "zhou_pass": true,
+  "chebyshev_pass": true
+}

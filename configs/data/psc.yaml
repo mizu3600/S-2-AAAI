@@ -1,0 +1,33 @@
+domain: PSC
+entity_types:
+  - material
+  - composition
+  - additive
+  - passivation_material
+  - fabrication_process
+  - device_architecture
+  - layer
+  - experimental_condition
+  - measurement_method
+  - performance_metric
+  - degradation_mechanism
+  - stability_condition
+  - organization
+  - author
+  - paper
+  - mechanism
+quality:
+  confidence_threshold: 0.65
+  manual_sample_size: 30
+  provenance_coverage_min: 0.95
+  duplicate_chunk_rate_max: 0.02
+benchmark_query_types:
+  - local_fact
+  - cross_section
+  - cross_paper_bridge
+  - mechanism_chain_2_4_hop
+  - n_ary_conditional_fact
+  - global_summary
+  - rare_or_conflicting_fact
+  - temporal_incremental
+

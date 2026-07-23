@@ -1,0 +1,62 @@
+{
+  "graphrag": {
+    "example_count": 288,
+    "successful_count": 288,
+    "error_count": 0,
+    "recall_at_1_mean": 0.296875,
+    "recall_at_2_mean": 0.4739583333333333,
+    "recall_at_5_mean": 0.5798611111111112,
+    "recall_at_10_mean": 0.6701388888888888,
+    "hit_at_1_mean": 0.59375,
+    "complete_at_2_mean": 0.28125,
+    "complete_at_5_mean": 0.4305555555555556,
+    "mrr_mean": 0.6554122574955908,
+    "ranking_length_mean": 5.517361111111111,
+    "elapsed_seconds_mean": 30.121953505486182
+  },
+  "hypergraphrag": {
+    "example_count": 288,
+    "successful_count": 288,
+    "error_count": 0,
+    "recall_at_1_mean": 0.390625,
+    "recall_at_2_mean": 0.6527777777777778,
+    "recall_at_5_mean": 0.8767361111111112,
+    "recall_at_10_mean": 1.0,
+    "hit_at_1_mean": 0.78125,
+    "complete_at_2_mean": 0.3958333333333333,
+    "complete_at_5_mean": 0.7569444444444444,
+    "mrr_mean": 0.86953125,
+    "ranking_length_mean": 9.92361111111111,
+    "elapsed_seconds_mean": 12.257295954576373
+  },
+  "lightrag": {
+    "example_count": 288,
+    "successful_count": 288,
+    "error_count": 0,
+    "recall_at_1_mean": 0.3732638888888889,
+    "recall_at_2_mean": 0.5920138888888888,
+    "recall_at_5_mean": 0.8263888888888888,
+    "recall_at_10_mean": 0.9444444444444444,
+    "hit_at_1_mean": 0.7465277777777778,
+    "complete_at_2_mean": 0.3090277777777778,
+    "complete_at_5_mean": 0.6805555555555556,
+    "mrr_mean": 0.842104828042328,
+    "ranking_length_mean": 8.26388888888889,
+    "elapsed_seconds_mean": 18.057913019375018
+  },
+  "pathrag": {
+    "example_count": 288,
+    "successful_count": 288,
+    "error_count": 0,
+    "recall_at_1_mean": 0.11631944444444445,
+    "recall_at_2_mean": 0.2465277777777778,
+    "recall_at_5_mean": 0.5902777777777778,
+    "recall_at_10_mean": 1.0,
+    "hit_at_1_mean": 0.2326388888888889,
+    "complete_at_2_mean": 0.03819444444444445,
+    "complete_at_5_mean": 0.3402777777777778,
+    "mrr_mean": 0.47385361552028216,
+    "ranking_length_mean": 9.899305555555555,
+    "elapsed_seconds_mean": 33.53262598133336
+  }
+}

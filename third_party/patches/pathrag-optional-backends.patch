@@ -1,0 +1,60 @@
+diff --git a/PathRAG/llm.py b/PathRAG/llm.py
+index 959e92f..0a3b18d 100644
+--- a/PathRAG/llm.py
++++ b/PathRAG/llm.py
+@@ -6,14 +6,29 @@ import re
+ import struct
+ from functools import lru_cache
+ from typing import List, Dict, Callable, Any, Union, Optional
+-import aioboto3
++try:
++    import aioboto3
++except ImportError:  # optional backend, unused by the benchmark adapter
++    aioboto3 = None
+ import aiohttp
+ import numpy as np
+-import ollama
+-import torch
++try:
++    import ollama
++except ImportError:  # optional backend, unused by the benchmark adapter
++    ollama = None
++try:
++    import torch
++except ImportError:  # optional backend, unused by the benchmark adapter
++    torch = None
+ import time
+-import modelscope as ms
+-from vllm import LLM
++try:
++    import modelscope as ms
++except ImportError:  # optional backend, unused by the benchmark adapter
++    ms = None
++try:
++    from vllm import LLM
++except ImportError:  # optional backend, unused by the benchmark adapter
++    LLM = None
+ from openai import (
+     AsyncOpenAI,
+     APIConnectionError,
+@@ -28,7 +43,10 @@ from tenacity import (
+     wait_exponential,
+     retry_if_exception_type,
+ )
+-from transformers import AutoTokenizer, AutoModelForCausalLM
++try:
++    from transformers import AutoTokenizer, AutoModelForCausalLM
++except ImportError:  # optional backend, unused by the benchmark adapter
++    AutoTokenizer = AutoModelForCausalLM = None
+ 
+ from .utils import (
+     wrap_embedding_func_with_attrs,
+@@ -38,7 +56,7 @@ from .utils import (
+ )
+ 
+ import sys
+-device = "cuda" if torch.cuda.is_available() else "cpu"
++device = "cuda" if torch is not None and torch.cuda.is_available() else "cpu"
+ 
+ if sys.version_info < (3, 9):
+     from typing import AsyncIterator

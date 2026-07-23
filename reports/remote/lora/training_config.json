@@ -1,0 +1,17 @@
+{
+  "base_model": "/models/bge-m3",
+  "output_dir": "data/models/bge_m3_query_lora_hotpot500_lr2e5",
+  "max_length": 256,
+  "document_batch_size": 12,
+  "learning_rate": 2e-05,
+  "epochs": 3,
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "lora_dropout": 0.05,
+  "semantic_negatives": 8,
+  "random_negatives": 8,
+  "temperature": 0.05,
+  "seed": 42,
+  "max_memory_fraction": 0.35,
+  "cpu_threads": 4
+}

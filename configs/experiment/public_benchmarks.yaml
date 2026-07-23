@@ -1,0 +1,28 @@
+datasets:
+  - name: hotpotqa
+    split: validation
+    path: data/benchmarks/hotpotqa_sample.json
+  - name: 2wikimultihopqa
+    split: validation
+    path: data/benchmarks/2wiki_sample.json
+  - name: musique
+    split: validation
+    path: data/benchmarks/musique_sample.jsonl
+  - name: qasper
+    split: validation
+    path: data/benchmarks/qasper_sample.json
+methods:
+  - bm25
+  - dense
+  - bm25+dense
+  - node2vec
+  - laplacian_eigenmaps
+  - semantic+lap_pe
+  - semantic+ppr
+  - gcn
+  - graphsage
+  - hypergraph_conv
+  - qmshe
+top_k: [10, 20]
+group_by: [hop_count, query_type]
+seed: 42

@@ -1,0 +1,42 @@
+{
+  "protocol": "unified_native_benchmark_v1",
+  "examples": 288,
+  "candidate_documents_per_example": {
+    "2": 1,
+    "4": 1,
+    "6": 1,
+    "8": 1,
+    "10": 284
+  },
+  "dataset_sha256": "81dfe1546ec9051c51f1c33ad40c3d5db32936ec8483b3a6037f3fa49a5a3f1a",
+  "systems": [
+    "baseline:bm25",
+    "baseline:dense_bge_m3",
+    "official:graphrag",
+    "official:hypergraphrag",
+    "official:lightrag",
+    "official:pathrag",
+    "qmsxe:graph:entity_relation",
+    "qmsxe:graph:reified_fact",
+    "qmsxe:hypergraph:evidence_hypergraph"
+  ],
+  "ks": [
+    1,
+    2,
+    5,
+    10,
+    20,
+    30,
+    40
+  ],
+  "shared_answer_generator": "deepseek-chat temperature=0",
+  "api_cost_scope": "DeepSeek calls only; SiliconFlow embedding price and unavailable historical index-build calls are excluded.",
+  "citation_level": "document",
+  "fact_fallback": "document-induced for systems without canonical text-unit IDs",
+  "path_fallback": "top-2 induced document path",
+  "limitations": [
+    "Official index-build token usage is unavailable; fresh PathRAG/HyperGraphRAG query tokens and shared generation tokens are measured.",
+    "API cost is partial where SiliconFlow embeddings or historical official index-build calls are involved; provider-reported tokens remain visible.",
+    "This run is the HotpotQA distractor track (normally 10 candidate passages); passage cutoffs above the candidate count are reported for schema completeness but saturate."
+  ]
+}

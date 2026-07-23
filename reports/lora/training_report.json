@@ -1,0 +1,40 @@
+{
+  "base_model": "/models/bge-m3",
+  "trainable_parameters": 1179648,
+  "total_parameters": 568934400,
+  "train_examples": 400,
+  "evaluation_examples": 100,
+  "candidate_facts": 20795,
+  "epochs": 3,
+  "loss_history": [
+    1.362957136631012,
+    1.24770751953125,
+    1.1561626422405242
+  ],
+  "validation_history": [
+    {
+      "epoch": 1.0,
+      "recall_at_20": 0.7883333333333336,
+      "mrr": 0.7593952833292212
+    },
+    {
+      "epoch": 2.0,
+      "recall_at_20": 0.7950000000000003,
+      "mrr": 0.7747378631024133
+    },
+    {
+      "epoch": 3.0,
+      "recall_at_20": 0.7816666666666668,
+      "mrr": 0.7894220314735335
+    }
+  ],
+  "selected_epoch": 2,
+  "recall_at_20_before": 0.7841666666666669,
+  "recall_at_20_after": 0.7950000000000003,
+  "mrr_before": 0.7176460805276597,
+  "mrr_after": 0.7747378631024133,
+  "elapsed_seconds": 127.9715860739816,
+  "peak_gpu_memory_mb": 2337.2939453125,
+  "dataset_sha256": "b5b1b2b5f35e8eef990596a73986948c79739d3b8e1e00a2f51266a08ee1dd60",
+  "device": "cuda"
+}

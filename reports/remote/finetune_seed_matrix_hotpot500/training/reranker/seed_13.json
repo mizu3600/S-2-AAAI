@@ -1,0 +1,40 @@
+{
+  "base_model": "/models/bge-reranker-v2-m3",
+  "trainable_parameters": 2230273,
+  "total_parameters": 569986050,
+  "train_queries": 362,
+  "evaluation_queries": 75,
+  "training_pairs": 5196,
+  "epochs": 3,
+  "loss_history": [
+    0.40126545441618694,
+    0.356345796356805,
+    0.3373657374817009
+  ],
+  "validation_history": [
+    {
+      "epoch": 1.0,
+      "recall_at_20": 0.9155555555555556,
+      "mrr": 0.805904761904762
+    },
+    {
+      "epoch": 2.0,
+      "recall_at_20": 0.9211111111111111,
+      "mrr": 0.8102279942279943
+    },
+    {
+      "epoch": 3.0,
+      "recall_at_20": 0.9288888888888888,
+      "mrr": 0.8397835497835499
+    }
+  ],
+  "selected_epoch": 3,
+  "recall_at_20_before": 0.9,
+  "recall_at_20_after": 0.9288888888888888,
+  "mrr_before": 0.781925925925926,
+  "mrr_after": 0.8397835497835499,
+  "elapsed_seconds": 237.07181458501145,
+  "peak_gpu_memory_mb": 4092.0234375,
+  "dataset_sha256": "e7c307039730d859a18ebeb4808b8226667cff080ba83919bfe95eb2238539d4",
+  "device": "cuda"
+}

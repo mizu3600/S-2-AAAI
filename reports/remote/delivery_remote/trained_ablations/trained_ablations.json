@@ -1,0 +1,102 @@
+{
+  "dataset": "hotpotqa",
+  "train_examples": 4,
+  "evaluation_examples": 1,
+  "epochs": 2,
+  "results": {
+    "ours-low": {
+      "status": "completed",
+      "execution": "runtime",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.602051734924316,
+        4.598241925239563
+      ]
+    },
+    "ours-fixed": {
+      "status": "completed",
+      "execution": "runtime",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.602051734924316,
+        4.598241925239563
+      ]
+    },
+    "ours-no-high": {
+      "status": "completed",
+      "execution": "runtime",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.602051734924316,
+        4.598241925239563
+      ]
+    },
+    "ours-no-raw": {
+      "status": "completed",
+      "execution": "runtime",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.602051734924316,
+        4.598241925239563
+      ]
+    },
+    "ours-full": {
+      "status": "completed",
+      "execution": "runtime",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.602051734924316,
+        4.598241925239563
+      ]
+    },
+    "ours-no-role": {
+      "status": "completed",
+      "execution": "retrained",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.6021817326545715,
+        4.598313093185425
+      ]
+    },
+    "ours-no-bridge-loss": {
+      "status": "completed",
+      "execution": "retrained",
+      "recall@20": 0.0,
+      "loss_history": [
+        1.9620828032493591,
+        1.9584490060806274
+      ]
+    },
+    "ours-no-hard-negative": {
+      "status": "completed",
+      "execution": "retrained",
+      "recall@20": 0.0,
+      "loss_history": [
+        4.600415885448456,
+        4.596275985240936
+      ]
+    },
+    "ours-graph": {
+      "status": "completed",
+      "execution": "retrained",
+      "recall@20": 1.0,
+      "loss_history": [
+        6.025098562240601,
+        6.015376806259155
+      ]
+    },
+    "ours-concat": {
+      "status": "completed",
+      "execution": "rebuilt",
+      "recall@20": 1.0,
+      "loss_history": []
+    },
+    "ours-eigen": {
+      "status": "completed",
+      "execution": "rebuilt",
+      "recall@20": 0.5,
+      "loss_history": []
+    }
+  },
+  "warning": "Small-sample engineering validation; not a publication result."
+}

@@ -1,0 +1,47 @@
+{
+  "raw_training_effect": {
+    "treatment": "trained_raw",
+    "control": "untrained_raw",
+    "recall_at_20_delta": 0.27901234567901234,
+    "ci95_low": 0.2144620811287478,
+    "ci95_high": 0.3443562610229277,
+    "p_two_sided": 9.999000099990002e-05,
+    "paired_rows": 189
+  },
+  "full_training_effect": {
+    "treatment": "trained_full",
+    "control": "untrained_full",
+    "recall_at_20_delta": 0.2917989417989418,
+    "ci95_low": 0.22469135802469137,
+    "ci95_high": 0.3585537918871252,
+    "p_two_sided": 9.999000099990002e-05,
+    "paired_rows": 189
+  },
+  "untrained_band_effect": {
+    "treatment": "untrained_full",
+    "control": "untrained_raw",
+    "recall_at_20_delta": -0.0035273368606701934,
+    "ci95_low": -0.031746031746031744,
+    "ci95_high": 0.023809523809523808,
+    "p_two_sided": 0.823917608239176,
+    "paired_rows": 189
+  },
+  "trained_band_effect": {
+    "treatment": "trained_full",
+    "control": "trained_raw",
+    "recall_at_20_delta": 0.009259259259259259,
+    "ci95_low": -0.006613756613756613,
+    "ci95_high": 0.02513227513227513,
+    "p_two_sided": 0.34296570342965704,
+    "paired_rows": 189
+  },
+  "trained_full_vs_dense_bge": {
+    "treatment": "trained_full",
+    "control": "dense_bge_identity",
+    "recall_at_20_delta": -0.09708994708994709,
+    "ci95_low": -0.14206349206349206,
+    "ci95_high": -0.05026455026455026,
+    "p_two_sided": 9.999000099990002e-05,
+    "paired_rows": 189
+  }
+}

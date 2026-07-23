@@ -1,0 +1,9 @@
+{
+  "protocol": "benchmark_v2_trained_parity",
+  "examples": 288,
+  "seed": 42,
+  "fact_budget": 60,
+  "reranker_inputs": 60,
+  "structured_track": false,
+  "note": "Uses existing trained checkpoints and legacy extraction; structured-role track requires retraining."
+}

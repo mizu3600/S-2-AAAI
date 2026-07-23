@@ -1,0 +1,28 @@
+{
+  "track": "exact_factorial_retrieval_attribution",
+  "held_out_examples": 63,
+  "seeds": [
+    13,
+    42,
+    73
+  ],
+  "graph_factors": [
+    "entity_expansion",
+    "bm25",
+    "spectral",
+    "graph_rerank",
+    "base_reranker"
+  ],
+  "hypergraph_factors": [
+    "bm25",
+    "spectral",
+    "graph_rerank",
+    "base_reranker"
+  ],
+  "raw_dense_source_always_present": true,
+  "fusion": "reciprocal_rank_fusion",
+  "lora_effect": "conditional Base BGE reranker to LoRA reranker increment",
+  "candidate_budget": 60,
+  "top_k": 40,
+  "generator_disabled": true
+}

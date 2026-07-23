@@ -1,0 +1,98 @@
+{
+  "graph:entity_relation:reranker_lora": {
+    "system": "graph:entity_relation",
+    "factor": "reranker_lora",
+    "recall_at_20": {
+      "mean": 0.010361552028218694,
+      "ci95_low": 0.00744047619047619,
+      "ci95_high": 0.013392857142857142,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    },
+    "mrr": {
+      "mean": 0.02579512941324333,
+      "ci95_low": 0.01948349260331345,
+      "ci95_high": 0.03212585540615711,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    },
+    "passage_recall_at_5": {
+      "mean": 0.020833333333333332,
+      "ci95_low": 0.016865079365079364,
+      "ci95_high": 0.0248015873015873,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    },
+    "path_f1": {
+      "mean": 0.046296296296296294,
+      "ci95_low": 0.0398478835978836,
+      "ci95_high": 0.05291005291005291,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    }
+  },
+  "graph:reified_fact:reranker_lora": {
+    "system": "graph:reified_fact",
+    "factor": "reranker_lora",
+    "recall_at_20": {
+      "mean": 0.015321869488536154,
+      "ci95_low": 0.011849647266313934,
+      "ci95_high": 0.018849206349206348,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    },
+    "mrr": {
+      "mean": 0.049579476960429344,
+      "ci95_low": 0.041689816466602185,
+      "ci95_high": 0.057360141511927226,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    },
+    "passage_recall_at_5": {
+      "mean": 0.02414021164021164,
+      "ci95_low": 0.01984126984126984,
+      "ci95_high": 0.028439153439153438,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    },
+    "path_f1": {
+      "mean": 0.07473544973544974,
+      "ci95_low": 0.06712962962962964,
+      "ci95_high": 0.08234126984126984,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 3024
+    }
+  },
+  "hypergraph:evidence_hypergraph:reranker_lora": {
+    "system": "hypergraph:evidence_hypergraph",
+    "factor": "reranker_lora",
+    "recall_at_20": {
+      "mean": 0.007936507936507936,
+      "ci95_low": 0.004519400352733686,
+      "ci95_high": 0.011574074074074073,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 1512
+    },
+    "mrr": {
+      "mean": 0.04888138757186376,
+      "ci95_low": 0.03791879967475206,
+      "ci95_high": 0.06014968276873039,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 1512
+    },
+    "passage_recall_at_5": {
+      "mean": 0.00992063492063492,
+      "ci95_low": 0.005621693121693121,
+      "ci95_high": 0.01455026455026455,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 1512
+    },
+    "path_f1": {
+      "mean": 0.06084656084656084,
+      "ci95_low": 0.05092592592592592,
+      "ci95_high": 0.0710978835978836,
+      "p_two_sided": 9.999000099990002e-05,
+      "observations": 1512
+    }
+  }
+}

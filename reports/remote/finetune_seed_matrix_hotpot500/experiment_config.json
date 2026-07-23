@@ -1,0 +1,32 @@
+{
+  "dataset": "hotpotqa",
+  "input_path": "data/benchmarks/hotpot_dev_distractor_v1.json",
+  "limit": 500,
+  "fixed_partition_sizes": {
+    "train": 362,
+    "validation": 75,
+    "test": 63
+  },
+  "seeds": [
+    13,
+    42,
+    73
+  ],
+  "embedding_model": "/models/bge-m3",
+  "reranker_model": "/models/bge-reranker-v2-m3",
+  "embedding_adapters": {
+    "13": "data/models/bge_m3_query_lora_seed_13",
+    "42": "data/models/bge_m3_query_lora_seed_42",
+    "73": "data/models/bge_m3_query_lora_seed_73"
+  },
+  "reranker_adapters": {
+    "13": "data/models/bge_reranker_lora_seed_13",
+    "42": "data/models/bge_reranker_lora_seed_42",
+    "73": "data/models/bge_reranker_lora_seed_73"
+  },
+  "torch": "2.12.1+cu126",
+  "transformers": "5.13.0",
+  "peft": "0.19.1",
+  "cuda": "12.6",
+  "device": "cuda"
+}

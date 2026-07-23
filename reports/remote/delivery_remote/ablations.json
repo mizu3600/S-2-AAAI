@@ -1,0 +1,51 @@
+{
+  "ours-low": {
+    "status": "completed",
+    "recall@20": 1.0,
+    "change": "retain only low-frequency block"
+  },
+  "ours-fixed": {
+    "status": "completed",
+    "recall@20": 1.0,
+    "change": "replace query gate with equal weights"
+  },
+  "ours-no-high": {
+    "status": "completed",
+    "recall@20": 1.0,
+    "change": "remove high-frequency block"
+  },
+  "ours-no-raw": {
+    "status": "completed",
+    "recall@20": 1.0,
+    "change": "remove raw semantic residual"
+  },
+  "ours-concat": {
+    "status": "requires_rebuild",
+    "change": "semantic plus LapPE concatenation"
+  },
+  "ours-graph": {
+    "status": "requires_rebuild",
+    "change": "ordinary binary graph operator"
+  },
+  "ours-no-role": {
+    "status": "requires_rebuild",
+    "change": "single incidence matrix"
+  },
+  "ours-no-bridge-loss": {
+    "status": "requires_retrain",
+    "change": "bridge loss weight zero"
+  },
+  "ours-no-hard-negative": {
+    "status": "requires_retrain",
+    "change": "random negatives only"
+  },
+  "ours-eigen": {
+    "status": "requires_rebuild",
+    "change": "explicit Laplacian eigenvectors"
+  },
+  "ours-full": {
+    "status": "completed",
+    "recall@20": 1.0,
+    "change": "complete model"
+  }
+}

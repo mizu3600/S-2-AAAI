@@ -1,0 +1,276 @@
+{
+  "hop_count": {
+    "2": {
+      "bm25": {
+        "recall_at_10": 0.4666666666666667,
+        "recall_at_20": 0.6333333333333333,
+        "mrr": 0.32,
+        "ndcg_at_10": 0.33118744361518904,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.19438340095803142
+      },
+      "dense": {
+        "recall_at_10": 0.1,
+        "recall_at_20": 0.1,
+        "mrr": 0.04,
+        "ndcg_at_10": 0.047439542553859244,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.10137480567209423
+      },
+      "bm25+dense": {
+        "recall_at_10": 0.4666666666666667,
+        "recall_at_20": 0.6333333333333333,
+        "mrr": 0.22333333333333333,
+        "ndcg_at_10": 0.27237053878507206,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.31075800070539117
+      },
+      "node2vec": {
+        "recall_at_10": 0.4,
+        "recall_at_20": 0.4666666666666667,
+        "mrr": 0.1553846153846154,
+        "ndcg_at_10": 0.22980631064094623,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 24.45123379584402
+      },
+      "laplacian_eigenmaps": {
+        "recall_at_10": 0.3,
+        "recall_at_20": 0.4066666666666667,
+        "mrr": 0.33,
+        "ndcg_at_10": 0.2613147192765458,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 4.788858199026436
+      },
+      "semantic+lap_pe": {
+        "recall_at_10": 0.3,
+        "recall_at_20": 0.5333333333333333,
+        "mrr": 0.23333333333333334,
+        "ndcg_at_10": 0.19149890523797233,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 4.2531829967629164
+      },
+      "semantic+ppr": {
+        "recall_at_10": 0.3,
+        "recall_at_20": 0.5333333333333333,
+        "mrr": 0.4181818181818182,
+        "ndcg_at_10": 0.3226294385530917,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.6665832023136318
+      },
+      "gcn": {
+        "recall_at_10": 0.30666666666666664,
+        "recall_at_20": 0.48666666666666664,
+        "mrr": 0.465,
+        "ndcg_at_10": 0.30296586208710663,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.5691415979526937
+      },
+      "graphsage": {
+        "recall_at_10": 0.2,
+        "recall_at_20": 0.5266666666666666,
+        "mrr": 0.2776190476190476,
+        "ndcg_at_10": 0.17544306306760984,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.6344829977024347
+      },
+      "hypergraph_conv": {
+        "recall_at_10": 0.44,
+        "recall_at_20": 0.56,
+        "mrr": 0.27,
+        "ndcg_at_10": 0.3038051820642863,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.09551679249852896
+      },
+      "qmshe": {
+        "recall_at_10": 0.44,
+        "recall_at_20": 0.44,
+        "mrr": 0.525,
+        "ndcg_at_10": 0.37199295746108013,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 258.4057254018262
+      }
+    }
+  },
+  "query_type": {
+    "comparison": {
+      "bm25": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 1.0,
+        "mrr": 0.6,
+        "ndcg_at_10": 0.6185988563846481,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.13706251047551632
+      },
+      "dense": {
+        "recall_at_10": 0.25,
+        "recall_at_20": 0.25,
+        "mrr": 0.1,
+        "ndcg_at_10": 0.11859885638464811,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.11750000703614205
+      },
+      "bm25+dense": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 1.0,
+        "mrr": 0.375,
+        "ndcg_at_10": 0.4787472630949309,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.24212450080085546
+      },
+      "node2vec": {
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.35,
+        "ndcg_at_10": 0.5745157766023656,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 22.087750505306758
+      },
+      "laplacian_eigenmaps": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 0.75,
+        "mrr": 0.75,
+        "ndcg_at_10": 0.6532867981913646,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 3.02733299031388
+      },
+      "semantic+lap_pe": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.75,
+        "mrr": 0.29166666666666663,
+        "ndcg_at_10": 0.28532085947766006,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 2.735437505180016
+      },
+      "semantic+ppr": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.8065735963827292,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.281645498238504
+      },
+      "gcn": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.75,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.6131471927654584,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.6881250010337681
+      },
+      "graphsage": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.75,
+        "mrr": 0.625,
+        "ndcg_at_10": 0.43860765766902465,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.22866649669595063
+      },
+      "hypergraph_conv": {
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.625,
+        "ndcg_at_10": 0.7104933122450373,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.08731249545235187
+      },
+      "qmshe": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 0.75,
+        "ndcg_at_10": 0.5,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 307.2367710119579
+      }
+    },
+    "bridge": {
+      "bm25": {
+        "recall_at_10": 0.2777777777777778,
+        "recall_at_20": 0.3888888888888889,
+        "mrr": 0.13333333333333333,
+        "ndcg_at_10": 0.1395798351022163,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.2325973279463748
+      },
+      "dense": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.09062467142939568
+      },
+      "bm25+dense": {
+        "recall_at_10": 0.2777777777777778,
+        "recall_at_20": 0.3888888888888889,
+        "mrr": 0.12222222222222222,
+        "ndcg_at_10": 0.13478605591183282,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.356513667308415
+      },
+      "node2vec": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.1111111111111111,
+        "mrr": 0.025641025641025644,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 26.026889322868858
+      },
+      "laplacian_eigenmaps": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.17777777777777778,
+        "mrr": 0.049999999999999996,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.9632083381681396
+      },
+      "semantic+lap_pe": {
+        "recall_at_10": 0.16666666666666666,
+        "recall_at_20": 0.3888888888888889,
+        "mrr": 0.19444444444444445,
+        "ndcg_at_10": 0.1289509357448472,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.26501332448485
+      },
+      "semantic+ppr": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.2222222222222222,
+        "mrr": 0.030303030303030304,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.923208338363717
+      },
+      "gcn": {
+        "recall_at_10": 0.17777777777777778,
+        "recall_at_20": 0.3111111111111111,
+        "mrr": 0.10833333333333334,
+        "ndcg_at_10": 0.09617830830153881,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.48981932923197746
+      },
+      "graphsage": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.37777777777777777,
+        "mrr": 0.04603174603174603,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.9050273317067573
+      },
+      "hypergraph_conv": {
+        "recall_at_10": 0.06666666666666667,
+        "recall_at_20": 0.26666666666666666,
+        "mrr": 0.03333333333333333,
+        "ndcg_at_10": 0.03267976194378568,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.10098632386264701
+      },
+      "qmshe": {
+        "recall_at_10": 0.4,
+        "recall_at_20": 0.4,
+        "mrr": 0.375,
+        "ndcg_at_10": 0.2866549291018002,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 225.85169499507174
+      }
+    }
+  }
+}

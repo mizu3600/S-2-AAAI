@@ -1,0 +1,98 @@
+[
+  {
+    "question": "How does PEAI improve Voc?",
+    "mode": "hypergraph",
+    "raw": 0.2412090003490448,
+    "low": 0.2626582086086273,
+    "mid": 0.2425214648246765,
+    "high": 0.25361138582229614
+  },
+  {
+    "question": "How does PEAI improve Voc?",
+    "mode": "graph_entity_relation",
+    "raw": 0.2774006128311157,
+    "low": 0.23924724757671356,
+    "mid": 0.252614825963974,
+    "high": 0.23073741793632507
+  },
+  {
+    "question": "How does PEAI improve Voc?",
+    "mode": "graph_reified_fact",
+    "raw": 0.2774006128311157,
+    "low": 0.23924724757671356,
+    "mid": 0.252614825963974,
+    "high": 0.23073741793632507
+  },
+  {
+    "question": "What reduces non-radiative recombination?",
+    "mode": "hypergraph",
+    "raw": 0.24140214920043945,
+    "low": 0.2624378204345703,
+    "mid": 0.24046243727207184,
+    "high": 0.2556975781917572
+  },
+  {
+    "question": "What reduces non-radiative recombination?",
+    "mode": "graph_entity_relation",
+    "raw": 0.2754799425601959,
+    "low": 0.2396157830953598,
+    "mid": 0.2570124566555023,
+    "high": 0.22789186239242554
+  },
+  {
+    "question": "What reduces non-radiative recombination?",
+    "mode": "graph_reified_fact",
+    "raw": 0.2754799425601959,
+    "low": 0.2396157830953598,
+    "mid": 0.2570124566555023,
+    "high": 0.22789186239242554
+  },
+  {
+    "question": "What affects long-term stability?",
+    "mode": "hypergraph",
+    "raw": 0.2415999323129654,
+    "low": 0.25708481669425964,
+    "mid": 0.23926465213298798,
+    "high": 0.2620505690574646
+  },
+  {
+    "question": "What affects long-term stability?",
+    "mode": "graph_entity_relation",
+    "raw": 0.27711936831474304,
+    "low": 0.23806780576705933,
+    "mid": 0.2564302086830139,
+    "high": 0.2283826619386673
+  },
+  {
+    "question": "What affects long-term stability?",
+    "mode": "graph_reified_fact",
+    "raw": 0.27711936831474304,
+    "low": 0.23806780576705933,
+    "mid": 0.2564302086830139,
+    "high": 0.2283826619386673
+  },
+  {
+    "question": "Summarize the device mechanisms and conditions.",
+    "mode": "hypergraph",
+    "raw": 0.24275080859661102,
+    "low": 0.25964146852493286,
+    "mid": 0.24573016166687012,
+    "high": 0.2518775761127472
+  },
+  {
+    "question": "Summarize the device mechanisms and conditions.",
+    "mode": "graph_entity_relation",
+    "raw": 0.2719793915748596,
+    "low": 0.2438967376947403,
+    "mid": 0.24851368367671967,
+    "high": 0.23561018705368042
+  },
+  {
+    "question": "Summarize the device mechanisms and conditions.",
+    "mode": "graph_reified_fact",
+    "raw": 0.2719793915748596,
+    "low": 0.2438967376947403,
+    "mid": 0.24851368367671967,
+    "high": 0.23561018705368042
+  }
+]

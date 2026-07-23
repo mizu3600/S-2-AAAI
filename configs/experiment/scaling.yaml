@@ -1,0 +1,14 @@
+incremental:
+  node_rebuild_ratio: 0.03
+  hyperedge_rebuild_ratio: 0.05
+  approximate_neighbors: 8
+partitioning:
+  max_partition_size: 50000
+  build_coarse_graph: true
+cache:
+  max_items: 1024
+load_test:
+  requests: 100
+  concurrency: 8
+  p95_target_ms: 2000
+

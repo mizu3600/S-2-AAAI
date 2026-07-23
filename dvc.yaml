@@ -1,0 +1,20 @@
+stages:
+  download_samples:
+    cmd: uv run python scripts/download_benchmark_samples.py --rows 5
+    outs:
+      - data/benchmarks/hotpotqa_sample.json
+      - data/benchmarks/qasper_sample.json
+  public_experiment:
+    cmd: uv run python scripts/run_public_experiment.py --dataset hotpotqa --input-path data/benchmarks/hotpotqa_sample.json --output-dir data/experiments/public --limit 5
+    deps:
+      - data/benchmarks/hotpotqa_sample.json
+      - src/qmshe
+    outs:
+      - data/experiments/public/hotpotqa
+  train_stage_a:
+    cmd: uv run python scripts/train_public_benchmark.py --dataset hotpotqa --input-path data/benchmarks/hotpotqa_sample.json --output data/models/hotpot_sample_stage_a.pt --limit 5 --epochs 10
+    deps:
+      - data/benchmarks/hotpotqa_sample.json
+      - src/qmshe
+    outs:
+      - data/models/hotpot_sample_stage_a.pt

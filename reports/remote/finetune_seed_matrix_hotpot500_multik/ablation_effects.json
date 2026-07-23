@@ -1,0 +1,82 @@
+{
+  "graph:entity_relation": {
+    "recall_at_20": {
+      "embedding_only": -0.00970017636684295,
+      "reranker_only": 0.012345679012345734,
+      "joint": 0.005291005291005346,
+      "interaction": 0.002645502645502562
+    },
+    "mrr": {
+      "embedding_only": -0.002714466603355503,
+      "reranker_only": 0.04945022643435337,
+      "joint": 0.04676544085146228,
+      "interaction": 2.9681020464411567e-05
+    },
+    "ndcg_at_10": {
+      "embedding_only": -0.006642319827782517,
+      "reranker_only": 0.05300503123034617,
+      "joint": 0.048272205376331256,
+      "interaction": 0.0019094939737676064
+    }
+  },
+  "hypergraph:evidence_hypergraph": {
+    "recall_at_20": {
+      "embedding_only": 0.03395061728395066,
+      "reranker_only": 0.0,
+      "joint": 0.03395061728395066,
+      "interaction": 0.0
+    },
+    "mrr": {
+      "embedding_only": 0.014625850340136082,
+      "reranker_only": 0.046900982615268316,
+      "joint": 0.05289745527840761,
+      "interaction": -0.008629377676996786
+    },
+    "ndcg_at_10": {
+      "embedding_only": 0.021694838537559602,
+      "reranker_only": 0.03051990151618955,
+      "joint": 0.05013077858748227,
+      "interaction": -0.0020839614662668815
+    }
+  },
+  "vanilla_rag:dense_bge_compatible": {
+    "recall_at_20": {
+      "embedding_only": 0.023809523809523836,
+      "reranker_only": 0.0,
+      "joint": 0.023809523809523836,
+      "interaction": 0.0
+    },
+    "mrr": {
+      "embedding_only": 0.013227513227513255,
+      "reranker_only": 0.05820105820105825,
+      "joint": 0.07275132275132279,
+      "interaction": 0.001322751322751281
+    },
+    "ndcg_at_10": {
+      "embedding_only": 0.015197133887133174,
+      "reranker_only": 0.03431630925460327,
+      "joint": 0.04814444848850885,
+      "interaction": -0.0013689946532275954
+    }
+  },
+  "graph:reified_fact": {
+    "recall_at_20": {
+      "embedding_only": -0.0030864197530864335,
+      "reranker_only": 0.008818342151675429,
+      "joint": 0.0030864197530864335,
+      "interaction": -0.002645502645502562
+    },
+    "mrr": {
+      "embedding_only": -5.691839025179224e-05,
+      "reranker_only": 0.0524758524758524,
+      "joint": 0.05243200594077779,
+      "interaction": 1.3071855177182456e-05
+    },
+    "ndcg_at_10": {
+      "embedding_only": -0.0018610378399247507,
+      "reranker_only": 0.05459559410294623,
+      "joint": 0.05361580490753992,
+      "interaction": 0.0008812486445184398
+    }
+  }
+}

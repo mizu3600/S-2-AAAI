@@ -1,0 +1,18 @@
+{
+  "PathRAG": {
+    "repository": "https://github.com/BUPT-GAMMA/PathRAG.git",
+    "commit": "32567bfc93605b8393996d5fa9ccdc0edbb865b2"
+  },
+  "GraphRAG": {
+    "repository": "https://github.com/microsoft/graphrag.git",
+    "commit": "14a00ad88fc33cf2b52f4f113f25807556f8e25e"
+  },
+  "LightRAG": {
+    "repository": "https://github.com/HKUDS/LightRAG.git",
+    "commit": "e231b7e0435d101aad3ae4e3c3f2f9dfa4e93b84"
+  },
+  "HyperGraphRAG": {
+    "repository": "https://github.com/LHRLAB/HyperGraphRAG.git",
+    "commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "mode": "hypergraph",
+  "profile": "evidence_hypergraph",
+  "seed": 42,
+  "train_examples": 362,
+  "validation_examples": 75,
+  "input_dim": 1024,
+  "roles": [
+    "mention",
+    "source"
+  ],
+  "loss_history": [
+    5.7650678711042875,
+    4.84792771359175,
+    4.606089400323056
+  ],
+  "validation_history": [
+    {
+      "epoch": 1.0,
+      "recall_at_20": 0.6575555555555556,
+      "mrr": 0.36002652422409454
+    },
+    {
+      "epoch": 2.0,
+      "recall_at_20": 0.6731111111111111,
+      "mrr": 0.3652164661280324
+    },
+    {
+      "epoch": 3.0,
+      "recall_at_20": 0.6802222222222222,
+      "mrr": 0.38290711645146097
+    }
+  ],
+  "selected_epoch": 3,
+  "elapsed_seconds": 280.62629012414254,
+  "device": "cuda"
+}

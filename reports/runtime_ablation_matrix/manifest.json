@@ -1,0 +1,15 @@
+{
+  "track": "end_to_end_retrieval_runtime_ablation",
+  "held_out_examples": 63,
+  "seeds": [
+    13,
+    42,
+    73
+  ],
+  "fixed_tuned_reranker": true,
+  "generator_disabled": true,
+  "candidate_budget": 60,
+  "top_k": 40,
+  "timing_cache_policy": "query_embedding_and_reranker_caches_cleared_per_condition",
+  "cuda_synchronized": true
+}

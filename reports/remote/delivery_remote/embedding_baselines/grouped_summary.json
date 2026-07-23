@@ -1,0 +1,276 @@
+{
+  "hop_count": {
+    "2": {
+      "bm25": {
+        "recall_at_10": 0.4666666666666667,
+        "recall_at_20": 0.4666666666666667,
+        "mrr": 0.33,
+        "ndcg_at_10": 0.33656152557584795,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.4148172680288553
+      },
+      "dense": {
+        "recall_at_10": 0.1,
+        "recall_at_20": 0.1,
+        "mrr": 0.04,
+        "ndcg_at_10": 0.047439542553859244,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.22140243090689182
+      },
+      "bm25+dense": {
+        "recall_at_10": 0.4666666666666667,
+        "recall_at_20": 0.4666666666666667,
+        "mrr": 0.22333333333333333,
+        "ndcg_at_10": 0.27237053878507206,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.6959668360650539
+      },
+      "node2vec": {
+        "recall_at_10": 0.4,
+        "recall_at_20": 0.6,
+        "mrr": 0.1553846153846154,
+        "ndcg_at_10": 0.22980631064094623,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 60.94415159896016
+      },
+      "laplacian_eigenmaps": {
+        "recall_at_10": 0.3,
+        "recall_at_20": 0.4066666666666667,
+        "mrr": 0.32967032967032966,
+        "ndcg_at_10": 0.2613147192765458,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 6.428515166044235
+      },
+      "semantic+lap_pe": {
+        "recall_at_10": 0.3,
+        "recall_at_20": 0.5333333333333333,
+        "mrr": 0.23484848484848483,
+        "ndcg_at_10": 0.19149890523797233,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 6.297758221626282
+      },
+      "semantic+ppr": {
+        "recall_at_10": 0.3,
+        "recall_at_20": 0.5333333333333333,
+        "mrr": 0.4181818181818182,
+        "ndcg_at_10": 0.3226294385530917,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.229765037074685
+      },
+      "gcn": {
+        "recall_at_10": 0.30666666666666664,
+        "recall_at_20": 0.48666666666666664,
+        "mrr": 0.45,
+        "ndcg_at_10": 0.2962656946762226,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.8356435932219028
+      },
+      "graphsage": {
+        "recall_at_10": 0.2,
+        "recall_at_20": 0.5266666666666666,
+        "mrr": 0.2776190476190476,
+        "ndcg_at_10": 0.17544306306760984,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.529408572241664
+      },
+      "hypergraph_conv": {
+        "recall_at_10": 0.44,
+        "recall_at_20": 0.6,
+        "mrr": 0.27,
+        "ndcg_at_10": 0.3038051820642863,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.29217181727290154
+      },
+      "qmshe": {
+        "recall_at_10": 0.37333333333333335,
+        "recall_at_20": 0.44,
+        "mrr": 0.29047619047619044,
+        "ndcg_at_10": 0.23230964083897285,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 6.823269044980407
+      }
+    }
+  },
+  "query_type": {
+    "comparison": {
+      "bm25": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 0.75,
+        "mrr": 0.625,
+        "ndcg_at_10": 0.6320340612862955,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.3358190879225731
+      },
+      "dense": {
+        "recall_at_10": 0.25,
+        "recall_at_20": 0.25,
+        "mrr": 0.1,
+        "ndcg_at_10": 0.11859885638464811,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.21330814342945814
+      },
+      "bm25+dense": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 0.75,
+        "mrr": 0.375,
+        "ndcg_at_10": 0.4787472630949309,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.5910160252824426
+      },
+      "node2vec": {
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.35,
+        "ndcg_at_10": 0.5745157766023656,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 51.70588451437652
+      },
+      "laplacian_eigenmaps": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 0.75,
+        "mrr": 0.75,
+        "ndcg_at_10": 0.6532867981913646,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.660491995513439
+      },
+      "semantic+lap_pe": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.75,
+        "mrr": 0.29166666666666663,
+        "ndcg_at_10": 0.28532085947766006,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.1519665867090225
+      },
+      "semantic+ppr": {
+        "recall_at_10": 0.75,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.8065735963827292,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.317600560374558
+      },
+      "gcn": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.75,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.6131471927654584,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.5851585194468498
+      },
+      "graphsage": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.75,
+        "mrr": 0.625,
+        "ndcg_at_10": 0.43860765766902465,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.3081004144623876
+      },
+      "hypergraph_conv": {
+        "recall_at_10": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.625,
+        "ndcg_at_10": 0.7104933122450373,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.26452960446476936
+      },
+      "qmshe": {
+        "recall_at_10": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 0.15476190476190477,
+        "ndcg_at_10": 0.21139491720332515,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 7.447999087162316
+      }
+    },
+    "bridge": {
+      "bm25": {
+        "recall_at_10": 0.2777777777777778,
+        "recall_at_20": 0.2777777777777778,
+        "mrr": 0.13333333333333333,
+        "ndcg_at_10": 0.1395798351022163,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.4674827214330435
+      },
+      "dense": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.22679862255851427
+      },
+      "bm25+dense": {
+        "recall_at_10": 0.2777777777777778,
+        "recall_at_20": 0.2777777777777778,
+        "mrr": 0.12222222222222222,
+        "ndcg_at_10": 0.13478605591183282,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.7659340432534615
+      },
+      "node2vec": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.3333333333333333,
+        "mrr": 0.025641025641025644,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 67.10299632201593
+      },
+      "laplacian_eigenmaps": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.17777777777777778,
+        "mrr": 0.04945054945054945,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 6.940530613064766
+      },
+      "semantic+lap_pe": {
+        "recall_at_10": 0.16666666666666666,
+        "recall_at_20": 0.3888888888888889,
+        "mrr": 0.19696969696969696,
+        "ndcg_at_10": 0.1289509357448472,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 7.061619311571121
+      },
+      "semantic+ppr": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.2222222222222222,
+        "mrr": 0.030303030303030304,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 5.171208021541436
+      },
+      "gcn": {
+        "recall_at_10": 0.17777777777777778,
+        "recall_at_20": 0.3111111111111111,
+        "mrr": 0.08333333333333333,
+        "ndcg_at_10": 0.08501136261673213,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 2.0026336424052715
+      },
+      "graphsage": {
+        "recall_at_10": 0.0,
+        "recall_at_20": 0.37777777777777777,
+        "mrr": 0.04603174603174603,
+        "ndcg_at_10": 0.0,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 1.6769473440945148
+      },
+      "hypergraph_conv": {
+        "recall_at_10": 0.06666666666666667,
+        "recall_at_20": 0.3333333333333333,
+        "mrr": 0.03333333333333333,
+        "ndcg_at_10": 0.03267976194378568,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 0.31059995914498967
+      },
+      "qmshe": {
+        "recall_at_10": 0.28888888888888886,
+        "recall_at_20": 0.4,
+        "mrr": 0.38095238095238093,
+        "ndcg_at_10": 0.24625278992940466,
+        "bridge_recall_at_20": 0.0,
+        "latency_ms": 6.406782350192468
+      }
+    }
+  }
+}

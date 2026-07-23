@@ -1,0 +1,34 @@
+{
+  "graphrag": {
+    "raw_record_count": 306,
+    "raw_success_count": 288,
+    "raw_error_count": 18,
+    "duplicate_success_count": 0,
+    "selected_record_count": 288,
+    "selected_error_count": 0
+  },
+  "hypergraphrag": {
+    "raw_record_count": 288,
+    "raw_success_count": 288,
+    "raw_error_count": 0,
+    "duplicate_success_count": 0,
+    "selected_record_count": 288,
+    "selected_error_count": 0
+  },
+  "lightrag": {
+    "raw_record_count": 288,
+    "raw_success_count": 288,
+    "raw_error_count": 0,
+    "duplicate_success_count": 0,
+    "selected_record_count": 288,
+    "selected_error_count": 0
+  },
+  "pathrag": {
+    "raw_record_count": 288,
+    "raw_success_count": 288,
+    "raw_error_count": 0,
+    "duplicate_success_count": 0,
+    "selected_record_count": 288,
+    "selected_error_count": 0
+  }
+}

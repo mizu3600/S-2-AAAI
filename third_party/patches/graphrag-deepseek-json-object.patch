@@ -1,0 +1,17 @@
+diff --git a/packages/graphrag/graphrag/index/operations/summarize_communities/community_reports_extractor.py b/packages/graphrag/graphrag/index/operations/summarize_communities/community_reports_extractor.py
+index 4513abe..a4f4665 100644
+--- a/packages/graphrag/graphrag/index/operations/summarize_communities/community_reports_extractor.py
++++ b/packages/graphrag/graphrag/index/operations/summarize_communities/community_reports_extractor.py
+@@ -81,10 +81,10 @@ class CommunityReportsExtractor:
+             })
+             response = await self._model.completion_async(
+                 messages=prompt,
+-                response_format=CommunityReportResponse,  # A model is required when using json mode
++                response_format_json_object=True,
+             )
+ 
+-            output = response.formatted_response  # type: ignore
++            output = CommunityReportResponse.model_validate_json(response.content)
+         except Exception as e:
+             logger.exception("error generating community report")
+             self._on_error(e, traceback.format_exc(), None)

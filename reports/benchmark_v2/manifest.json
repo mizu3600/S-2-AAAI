@@ -1,0 +1,34 @@
+{
+  "protocol": "benchmark_v2",
+  "dataset": "HotpotQA distractor dev v1",
+  "dataset_sha256": "e3da074df24e8369009918aa5cdbdd254dadcde4c63f7569d36afd6f2268caa8",
+  "dataset_examples": 7405,
+  "evaluation_split": "official dev (distractor)",
+  "training_split_used": false,
+  "query_types": {
+    "bridge": 5918,
+    "comparison": 1487
+  },
+  "candidate_matrix": [
+    {
+      "candidate_count": 10,
+      "examples": 7405
+    },
+    {
+      "candidate_count": 100,
+      "examples": 1000
+    },
+    {
+      "candidate_count": 1000,
+      "examples": 200
+    }
+  ],
+  "nary_examples": 500,
+  "shared_retrieval_budget": 60,
+  "shared_reranker_inputs": 60,
+  "shared_output_facts": 40,
+  "ranking_source": "internal fact scores",
+  "structured_extractor": "rule-roles-v2",
+  "expanded_candidate_source": "label-free deterministic sampling from other dev passages",
+  "elapsed_seconds": 198.79195895799967
+}

@@ -1,0 +1,21 @@
+{
+  "cold_cache": {
+    "requests": 100,
+    "concurrency": 8,
+    "success_rate": 1.0,
+    "throughput_qps": 40.54272244572727,
+    "p50_ms": 169.64487501536496,
+    "p95_ms": 385.76008297968656,
+    "max_ms": 828.166749997763
+  },
+  "warm_cache": {
+    "requests": 100,
+    "concurrency": 8,
+    "success_rate": 1.0,
+    "throughput_qps": 272.61776043742157,
+    "p50_ms": 0.14237500727176666,
+    "p95_ms": 179.22799999359995,
+    "max_ms": 197.50566701986827
+  },
+  "total_load_test_seconds": 2.83596625001519
+}
