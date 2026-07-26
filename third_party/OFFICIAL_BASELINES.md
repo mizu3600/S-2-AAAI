@@ -1,51 +1,68 @@
-# Official open-source baseline protocol
+# External baseline protocol
 
-The benchmark pins the four upstream repositories in
-`official_baselines.lock.json`. Clone each repository at the recorded commit, then
-apply the corresponding compatibility patch in `patches/`. The patches only make
-unused optional inference backends optional, or translate Microsoft GraphRAG's
-typed JSON request to DeepSeek's supported JSON-object mode. They do not change
-retrieval, graph construction, prompts, or ranking algorithms.
-
-For example, from the project root:
+The pinned repository URLs and commits are stored in
+`official_baselines.lock.json`. Install the sources into an isolated directory:
 
 ```bash
-git -C third_party/official_baselines/PathRAG apply \
-  ../../patches/pathrag-optional-backends.patch
-git -C third_party/official_baselines/HyperGraphRAG apply \
-  ../../patches/hypergraphrag-optional-backends.patch
-git -C third_party/official_baselines/GraphRAG apply \
-  ../../patches/graphrag-deepseek-json-object.patch
+uv run python scripts/install_official_baselines.py --baseline all
 ```
 
-## Fair comparison unit
-
-- Dataset: the fixed 288-example test partition produced from the first 2,000
-  HotpotQA distractor examples.
-- Corpus: the same ten passages supplied with each question.
-- Gold evidence: passage IDs containing HotpotQA supporting facts.
-- Metrics: passage Recall@1/2/5/10, Hit@1, Complete@2/5, and MRR.
-- LLM: `deepseek-chat`; embedding: SiliconFlow `BAAI/bge-m3` (1,024 dimensions).
-- Extraction gleaning: zero for every official baseline, to make API cost and
-  latency bounded. This setting is disclosed because it may reduce graph quality.
-- Modes: PathRAG hybrid, LightRAG hybrid, HyperGraphRAG hybrid, and Microsoft
-  GraphRAG local search.
-
-Each official implementation receives the ten documents and question through its
-public API. The adapters only recover source passage IDs from the official returned
-context. QMSxE fact rankings are deduplicated into passage rankings before scoring.
-
-## Images
-
-The official packages have incompatible pandas constraints, so the Dockerfile has
-two independent targets:
+The strict external protocol currently covers HotpotQA passage retrieval only.
+Export the immutable canonical bundle first:
 
 ```bash
-docker build --target path-light -t qmsxe-baselines:path-light \
-  -f docker/official-baselines.Dockerfile .
-docker build --target graphrag -t qmsxe-baselines:graphrag \
-  -f docker/official-baselines.Dockerfile .
+uv run python scripts/export_official_baseline_bundle.py \
+  --input-path data/benchmarks/hotpot_dev_distractor_v1.json
 ```
 
-Raw JSONL files checkpoint after every example. Re-running the same command resumes
-by skipping IDs already written.
+The bundle uses the benchmark `passage_id` as each native `document_id` and writes
+a SHA-256 manifest. Each upstream project keeps its own environment, configuration
+and native runner.
+This repository does not replace an upstream ranking algorithm with a lexical or
+PPR proxy. Instead, it imports the native result file through a framework-specific
+adapter:
+
+```bash
+uv run python scripts/import_external_baseline_results.py \
+  --baseline graphrag \
+  --dataset hotpotqa \
+  --input-path data/benchmarks/hotpotqa.json \
+  --result-path /path/to/graphrag-results.jsonl
+```
+
+Every native result record must include `example_id` and a ranked result field.
+The adapters recognize framework-specific ranking fields, then map passage ID,
+
+| Baseline | Native ranking fields |
+|---|---|
+| GraphRAG | `community_ranking`, `chunk_ranking` |
+| LightRAG | `chunk_ranking`, `entity_ranking` |
+| PathRAG | `path_context_ranking` |
+| HyperGraphRAG | `hyperedge_ranking` |
+| HippoRAG2 | `ppr_ranking` |
+| Cog-RAG | `dual_hypergraph_ranking` |
+| HGRAG | `diffusion_ranking` |
+| Hyper-RAG | `hypergraph_ranking` |
+
+Native graph IDs must be accompanied by a per-example `source_id_map`:
+
+```json
+{
+  "example_id": "hotpot-example-id",
+  "community_ranking": [{"id": "community-7"}],
+  "source_id_map": {"community-7": ["canonical_passage_id"]},
+  "indexing_seconds": 1.2,
+  "retrieval_seconds": 0.08
+}
+```
+
+Missing rows, failed rows and unmapped native IDs are retained in the denominator.
+The report records `mapping_coverage`, missing/failed counts and `N/A` for metrics
+whose ranking level is unavailable. A passage ranking is never expanded into all
+sentences to manufacture a fact ranking.
+
+Optional `answer`, `citations`, `indexing_seconds`, `retrieval_seconds`,
+`total_seconds`, `status` and `error` fields are preserved. Native answer metrics
+are `N/A` unless the trace declares
+`generation_protocol=hotpotqa_shared_generation_v1`. Retrieval evidence citations
+and citations actually emitted in the answer are separate metrics.

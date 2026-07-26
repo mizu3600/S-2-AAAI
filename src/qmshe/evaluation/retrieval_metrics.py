@@ -26,6 +26,11 @@ def reciprocal_rank(ranked: list[str], relevant: set[str]) -> float:
 
 
 def ndcg_at_k(ranked: list[str], relevant: set[str], k: int) -> float:
-    dcg = sum(1.0 / math.log2(rank + 1) for rank, item in enumerate(ranked[:k], 1) if item in relevant)
+    unique_ranked = list(dict.fromkeys(ranked))
+    dcg = sum(
+        1.0 / math.log2(rank + 1)
+        for rank, item in enumerate(unique_ranked[:k], 1)
+        if item in relevant
+    )
     ideal = sum(1.0 / math.log2(rank + 1) for rank in range(1, min(k, len(relevant)) + 1))
     return dcg / ideal if ideal else 0.0

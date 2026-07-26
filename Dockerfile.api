@@ -10,7 +10,6 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY src ./src
 RUN python -m pip install --no-cache-dir .
-COPY configs ./configs
 COPY data/processed/synthetic.json ./data/processed/synthetic.json
 
 EXPOSE 8000

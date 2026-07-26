@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
-from itertools import combinations
 
 import networkx as nx
 import numpy as np
@@ -12,13 +10,8 @@ from qmshe.ingest.schemas import Corpus
 from qmshe.graph.ordinary_schemas import OrdinaryGraphEdge, OrdinaryGraphNode
 
 
-class GraphProfile(str, Enum):
-    REIFIED_FACT = "reified_fact"
-
-
 @dataclass(frozen=True)
 class OrdinaryGraphArtifacts:
-    profile: GraphProfile
     graph: nx.Graph
     node_ids: list[str]
     node_texts: list[str]
@@ -53,22 +46,14 @@ def normalized_propagation(adjacency: sparse.spmatrix | np.ndarray) -> sparse.cs
     return (scale @ augmented @ scale).tocsr()
 
 
-def build_ordinary_graph(
-    corpus: Corpus, profile: GraphProfile | str = GraphProfile.REIFIED_FACT
-) -> OrdinaryGraphArtifacts:
-    """Build an ordinary graph independently from the evidence hypergraph operator.
-
-    Entity-relation mode keeps entity nodes and evidence-bearing binary relations. Reified-fact
-    mode represents every n-ary fact as a normal node and connects its arguments with role edges.
-    In both cases, source fact IDs remain attached to edges for citation recovery.
-    """
-    profile = GraphProfile(profile)
+def build_reified_fact_graph(corpus: Corpus) -> OrdinaryGraphArtifacts:
+    """Represent each evidence fact as a node connected to its argument entities."""
     names = {entity.entity_id: entity.canonical_name for entity in corpus.entities}
     descriptions = {
         entity.entity_id: f"{entity.canonical_name}. {entity.description}".strip()
         for entity in corpus.entities
     }
-    graph = nx.Graph(mode="ordinary_graph", profile=profile.value)
+    graph = nx.Graph(mode="reified_fact")
     facts_by_entity: dict[str, set[str]] = {entity_id: set() for entity_id in names}
     fact_by_node: dict[str, str] = {}
 
@@ -118,14 +103,13 @@ def build_ordinary_graph(
         source_role, target_role = role_pairs[0] if role_pairs else (attributes.get("role"), None)
         fact_ids = attributes.get("fact_ids") or [attributes.get("fact_id")]
         edges.append(OrdinaryGraphEdge(
-            edge_id=f"{profile.value}:edge:{index}", source_id=left, target_id=right,
+            edge_id=f"reified_fact:edge:{index}", source_id=left, target_id=right,
             relation=attributes.get("relation") or "+".join(attributes.get("relations", [])),
             source_role=source_role, target_role=target_role,
             evidence_fact_ids=[item for item in fact_ids if item],
             weight=float(attributes.get("weight", 1.0)),
         ))
     return OrdinaryGraphArtifacts(
-        profile=profile,
         graph=graph,
         node_ids=node_ids,
         node_texts=node_texts,

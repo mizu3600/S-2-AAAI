@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -32,39 +33,61 @@ def main(
     for example in examples:
         built = build_example_corpus(example)
         entity_names = {entity.entity_id: entity.canonical_name for entity in built.corpus.entities}
-        chunk_by_id = {chunk.chunk_id: chunk for chunk in built.corpus.chunks}
-        chunks_by_document: dict[str, list] = {}
-        for chunk in built.corpus.chunks:
-            chunks_by_document.setdefault(chunk.document_id, []).append(chunk)
+        gold_passage_ids = sorted({
+            built.fact_to_passage[fact_id] for fact_id in built.gold_fact_ids
+        })
         payload.append(
             {
+                "schema": "hotpotqa_canonical_passage_v2",
+                "dataset": "hotpotqa",
+                "split": "test",
                 "example_id": example.example_id,
                 "question": example.question,
                 "answer": example.answer,
                 "documents": [
                     {
-                        "document_id": document.document_id,
-                        "title": document.title,
-                        "text": " ".join(
-                            chunk.text for chunk in chunks_by_document[document.document_id]
-                        ),
+                        "document_id": passage.passage_id,
+                        "passage_id": passage.passage_id,
+                        "title": passage.title,
+                        "text": " ".join(passage.sentences),
                     }
-                    for document in built.corpus.documents
+                    for passage in example.passages
                 ],
                 "facts": [
                     {
                         "fact_id": fact.hyperedge_id,
                         "text": _verbalize_fact(fact, entity_names),
                         "sentence": fact.evidence_sentence,
-                        "document_id": chunk_by_id[fact.evidence_chunk_ids[0]].document_id,
+                        "document_id": built.fact_to_passage[fact.hyperedge_id],
+                        "passage_id": built.fact_to_passage[fact.hyperedge_id],
                     }
                     for fact in built.corpus.evidence_hyperedges
                 ],
                 "gold_fact_ids": sorted(built.gold_fact_ids),
+                "gold_passage_ids": gold_passage_ids,
+                "source_id_map": {
+                    passage.title: passage.passage_id for passage in example.passages
+                },
             }
         )
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    manifest = {
+        "protocol": "hotpotqa_native_external_passage_v2",
+        "source": str(input_path),
+        "source_sha256": hashlib.sha256(input_path.read_bytes()).hexdigest(),
+        "output": str(output_path),
+        "output_sha256": hashlib.sha256(output_path.read_bytes()).hexdigest(),
+        "examples": len(payload),
+        "requested_limit": limit,
+        "partition": "stable_id_test_15_percent",
+        "ranking_unit": "canonical_passage_id",
+    }
+    output_path.with_suffix(".manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     typer.echo(f"wrote {len(payload)} examples to {output_path}")
 
 

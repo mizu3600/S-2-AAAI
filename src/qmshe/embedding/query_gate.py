@@ -13,17 +13,6 @@ class QueryBandGate(nn.Module):
         return torch.softmax(self.mlp(query_embedding), dim=-1)
 
 
-class QueryRelationGate(nn.Module):
-    def __init__(self, query_dim: int, num_relations: int, hidden_dim: int = 128):
-        super().__init__()
-        self.mlp = nn.Sequential(
-            nn.Linear(query_dim, hidden_dim), nn.GELU(), nn.Linear(hidden_dim, num_relations)
-        )
-
-    def forward(self, query_embedding: torch.Tensor) -> torch.Tensor:
-        return torch.softmax(self.mlp(query_embedding), dim=-1)
-
-
 def build_seed_weights(
     query_embedding: torch.Tensor,
     raw_embeddings: torch.Tensor,

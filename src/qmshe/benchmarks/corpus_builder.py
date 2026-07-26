@@ -20,6 +20,7 @@ class BuiltBenchmarkCorpus:
     gold_chunk_ids: set[str]
     bridge_entity_ids: set[str]
     gold_path: list[str]
+    fact_to_passage: dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -34,6 +35,7 @@ def build_example_corpus(example: BenchmarkExample) -> BuiltBenchmarkCorpus:
     entities: dict[str, Entity] = {}
     support_keys = {(item.passage_id, item.sentence_index) for item in example.supporting_facts}
     gold_fact_ids, gold_chunk_ids = set(), set()
+    fact_to_passage: dict[str, str] = {}
     title_entity_by_passage: dict[str, str] = {}
     concept_ids_by_name: dict[str, str] = {}
     for passage in example.passages:
@@ -74,6 +76,7 @@ def build_example_corpus(example: BenchmarkExample) -> BuiltBenchmarkCorpus:
                 )
                 arguments.append(Argument(role="statement", entity_id=sentence_entity_id))
             fact_id = _id("fact", chunk_id)
+            fact_to_passage[fact_id] = passage.passage_id
             facts.append(EvidenceHyperedge(
                 hyperedge_id=fact_id, predicate="states", arguments=arguments,
                 qualifiers={"dataset": example.dataset, "example_id": example.example_id},
@@ -93,6 +96,7 @@ def build_example_corpus(example: BenchmarkExample) -> BuiltBenchmarkCorpus:
                       graph_version=f"{example.dataset}-{example.example_id}-v1"),
         gold_fact_ids=gold_fact_ids, gold_chunk_ids=gold_chunk_ids,
         bridge_entity_ids=bridge_entity_ids, gold_path=path,
+        fact_to_passage=fact_to_passage,
     )
 
 

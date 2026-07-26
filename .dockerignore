@@ -9,9 +9,4 @@
 __pycache__
 .pytest_cache
 .ruff_cache
-data/models
 data/raw
-data/interim
-data/experiments
-reports
-mlruns

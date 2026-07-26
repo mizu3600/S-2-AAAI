@@ -17,18 +17,18 @@
   },
   "HippoRAG2": {
     "repository": "https://github.com/OSU-NLP-Group/HippoRAG.git",
-    "commit": "latest"
+    "commit": "e37fba2af1a951ac340d837a7c02efb9d8c9544a"
   },
   "Cog-RAG": {
     "repository": "https://github.com/haoohu/Cog-RAG.git",
-    "commit": "latest"
+    "commit": "30be9f60061d3ea74f5e5ce1abec46f25a4faaf2"
   },
   "HGRAG": {
     "repository": "https://github.com/MF-AIR/HGRAG.git",
-    "commit": "latest"
+    "commit": "dfff451d6cbf72babae28b530179d21de72b8eb9"
   },
   "Hyper-RAG": {
     "repository": "https://github.com/iMoonLab/Hyper-RAG.git",
-    "commit": "latest"
+    "commit": "46ff126225720a145546fa012e0abbba491b9ab3"
   }
 }

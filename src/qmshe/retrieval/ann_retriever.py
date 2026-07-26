@@ -12,7 +12,7 @@ class SearchHit:
 
 
 class ExactVectorIndex:
-    """Portable cosine gold index. Qdrant/FAISS can replace it without changing callers."""
+    """In-memory exact cosine index used by the single retrieval pipeline."""
 
     def __init__(self, object_ids: list[str], vectors: np.ndarray):
         if len(object_ids) != len(vectors):
@@ -29,4 +29,3 @@ class ExactVectorIndex:
             SearchHit(self.object_ids[index], float(scores[index]), rank + 1, source)
             for rank, index in enumerate(order)
         ]
-

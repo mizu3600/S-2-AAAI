@@ -29,10 +29,18 @@ class BenchmarkExample(BaseModel):
 
     @model_validator(mode="after")
     def supporting_facts_reference_passages(self):
-        passage_ids = {passage.passage_id for passage in self.passages}
+        passages = {passage.passage_id: passage for passage in self.passages}
+        passage_ids = set(passages)
         missing = {fact.passage_id for fact in self.supporting_facts} - passage_ids
         if missing:
             raise ValueError(f"supporting facts reference missing passages: {sorted(missing)}")
+        invalid = [
+            (fact.passage_id, fact.sentence_index)
+            for fact in self.supporting_facts
+            if fact.sentence_index >= len(passages[fact.passage_id].sentences)
+        ]
+        if invalid:
+            raise ValueError(f"supporting facts reference missing sentences: {invalid}")
         return self
 
 
@@ -42,4 +50,3 @@ class BenchmarkSuite(BaseModel):
     examples: list[BenchmarkExample]
     source: str
     version: str = "v1"
-

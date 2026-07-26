@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -37,14 +37,6 @@ class Chunk(BaseModel):
     page: int | None = None
 
 
-class Mention(BaseModel):
-    mention_id: str
-    chunk_id: str
-    text: str
-    start_char: int | None = None
-    end_char: int | None = None
-
-
 class Entity(BaseModel):
     entity_id: str
     canonical_name: str
@@ -75,20 +67,8 @@ class EvidenceHyperedge(BaseModel):
         return self
 
 
-class SemanticHyperedge(BaseModel):
-    semantic_edge_id: str
-    member_ids: list[str]
-    topic: str
-    construction_method: str = "mutual_knn"
-    confidence: float = Field(ge=0, le=1)
-    evidence_status: Literal["retrieval_only"] = "retrieval_only"
-
-
 class Corpus(BaseModel):
     documents: list[Document] = Field(default_factory=list)
     chunks: list[Chunk] = Field(default_factory=list)
     entities: list[Entity] = Field(default_factory=list)
     evidence_hyperedges: list[EvidenceHyperedge] = Field(default_factory=list)
-    semantic_hyperedges: list[SemanticHyperedge] = Field(default_factory=list)
-    graph_version: str = "graph-v1"
-

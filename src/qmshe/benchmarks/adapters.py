@@ -11,6 +11,42 @@ from qmshe.benchmarks.schemas import (
 )
 
 
+def _sentence_split(text: str) -> list[str]:
+    return [item.strip() for item in re.split(r"(?<=[.!?])\s+|\n+", str(text)) if item.strip()]
+
+
+def _qasper_answer(answers) -> str:
+    if not isinstance(answers, list):
+        return str(answers or "")
+    texts = []
+    for answer in answers:
+        if isinstance(answer, dict):
+            for key in ("free_form_answer", "extractive_spans", "yes_no"):
+                value = answer.get(key)
+                if isinstance(value, list):
+                    texts.extend(str(item) for item in value)
+                elif value:
+                    texts.append(str(value))
+        elif answer:
+            texts.append(str(answer))
+    return " ".join(texts)
+
+
+def _qasper_evidence(answers) -> list[str]:
+    evidence = []
+    if not isinstance(answers, list):
+        return evidence
+    for answer in answers:
+        if isinstance(answer, dict):
+            for key in ("evidence", "evidence_text", "extractive_spans"):
+                value = answer.get(key, [])
+                if isinstance(value, list):
+                    evidence.extend(str(item) for item in value)
+                elif value:
+                    evidence.append(str(value))
+    return evidence
+
+
 def _safe_id(value: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_.-]+", "_", value).strip("_") or "item"
 
@@ -68,6 +104,8 @@ class HotpotAdapter(BenchmarkAdapter):
             for title, sentence_id in raw_support
             if str(title) in title_to_id
         ]
+        if not support:
+            raise ValueError(f"HotpotQA example {example_id} has no valid supporting facts")
         support_titles = [title for title, pid in title_to_id.items() if any(x.passage_id == pid for x in support)]
         support_passage_ids = [title_to_id[title] for title in support_titles]
         bridges = support_titles[:-1] if row.get("type") == "bridge" else support_titles[1:-1]
@@ -76,7 +114,12 @@ class HotpotAdapter(BenchmarkAdapter):
             passages=passages, supporting_facts=support, bridge_entities=bridges,
             gold_path=support_passage_ids, hop_count=max(2, len(set(support_titles))),
             query_type=row.get("type", "unknown"), dataset=self.name, split=split,
-            metadata={"level": row.get("level")},
+            metadata={
+                "level": row.get("level"),
+                "metric_profile": "hotpotqa_official",
+                "evidence_level": "sentence",
+                "answer_language": "en",
+            },
         )
 
 

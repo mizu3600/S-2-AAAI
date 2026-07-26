@@ -10,22 +10,19 @@ def _tokens(text: str) -> list[str]:
 
 def chunk_document(
     parsed: ParsedDocument,
-    target_tokens: int = 512,
-    min_tokens: int = 160,
-    max_tokens: int = 768,
+    chunk_tokens: int = 512,
     overlap_tokens: int = 96,
 ) -> list[Chunk]:
-    del min_tokens
-    if not 0 <= overlap_tokens < target_tokens <= max_tokens:
-        raise ValueError("expected 0 <= overlap < target <= max")
+    if not 0 <= overlap_tokens < chunk_tokens:
+        raise ValueError("expected 0 <= overlap_tokens < chunk_tokens")
     chunks: list[Chunk] = []
     for section in parsed.sections:
         tokens = _tokens(section.text)
         if not tokens:
             continue
-        step = target_tokens - overlap_tokens
+        step = chunk_tokens - overlap_tokens
         for start in range(0, len(tokens), step):
-            window = tokens[start : start + max_tokens]
+            window = tokens[start : start + chunk_tokens]
             if not window:
                 break
             text = " ".join(window)
@@ -44,11 +41,10 @@ def chunk_document(
                     page=section.page,
                 )
             )
-            if start + max_tokens >= len(tokens):
+            if start + chunk_tokens >= len(tokens):
                 break
     return chunks
 
 
 def _approx_char_offset(tokens: list[str], start: int) -> int:
     return sum(len(token) + 1 for token in tokens[:start])
-
