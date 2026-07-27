@@ -186,13 +186,17 @@ def canonical_row_to_example(
     for document in documents:
         document_id = str(document["document_id"])
         document_facts = facts_by_document[document_id]
-        sentences = [
-            str(fact.get("sentence") or fact.get("text") or "").strip()
-            for fact in document_facts
-        ]
-        if not sentences:
+        if document_facts:
+            sentences = []
+            for fact in document_facts:
+                sentence = str(fact.get("sentence") or fact.get("text") or "").strip()
+                if not sentence:
+                    raise ValueError(
+                        f"fact {fact.get('fact_id')} contains no usable sentence/text"
+                    )
+                sentences.append(sentence)
+        else:
             sentences = _sentence_split(str(document.get("text", "")))
-        sentences = [sentence for sentence in sentences if sentence]
         if not sentences:
             raise ValueError(f"document {document_id} contains no usable text")
         passages.append(

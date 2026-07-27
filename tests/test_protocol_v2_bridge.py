@@ -112,6 +112,15 @@ def test_bridge_validation_rejects_noncanonical_ranking():
         _validate_bridge_records([record], rows=[row], expected_count=1)
 
 
+def test_canonical_row_rejects_empty_fact_text_without_shifting_gold_index():
+    row = _canonical_row()
+    row["facts"][0]["sentence"] = ""
+    row["facts"][0]["text"] = ""
+
+    with pytest.raises(ValueError, match="contains no usable"):
+        canonical_row_to_example(row, dataset="hotpotqa", seed=42)
+
+
 def test_base_model_preflight_rejects_lora_directory(tmp_path):
     (tmp_path / "adapter_config.json").write_text(
         '{"peft_type": "LORA"}',
