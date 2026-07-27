@@ -112,12 +112,24 @@ def test_bridge_validation_rejects_noncanonical_ranking():
         _validate_bridge_records([record], rows=[row], expected_count=1)
 
 
-def test_canonical_row_rejects_empty_fact_text_without_shifting_gold_index():
+def test_canonical_row_skips_empty_fact_without_shifting_gold_index():
+    row = _canonical_row()
+    row["facts"][0]["sentence"] = ""
+    row["facts"][0]["text"] = ""
+    row["gold_fact_ids"] = ["fact_a2"]
+
+    example = canonical_row_to_example(row, dataset="hotpotqa", seed=42)
+
+    assert example.passages[0].sentences == ["She wrote notes."]
+    assert example.supporting_facts[0].sentence_index == 0
+
+
+def test_canonical_row_rejects_empty_gold_fact():
     row = _canonical_row()
     row["facts"][0]["sentence"] = ""
     row["facts"][0]["text"] = ""
 
-    with pytest.raises(ValueError, match="contains no usable"):
+    with pytest.raises(ValueError, match="gold fact fact_a1 is absent"):
         canonical_row_to_example(row, dataset="hotpotqa", seed=42)
 
 

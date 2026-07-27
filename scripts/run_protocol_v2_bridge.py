@@ -168,7 +168,7 @@ def canonical_row_to_example(
     facts_by_document: dict[str, list[dict[str, Any]]] = {
         document_id: [] for document_id in document_ids
     }
-    fact_location: dict[str, tuple[str, int]] = {}
+    seen_fact_ids: set[str] = set()
     for fact in row.get("facts") or []:
         document_id = str(fact["document_id"])
         if document_id not in facts_by_document:
@@ -176,13 +176,13 @@ def canonical_row_to_example(
                 f"fact {fact.get('fact_id')} references unknown document {document_id}"
             )
         fact_id = str(fact["fact_id"])
-        if fact_id in fact_location:
+        if fact_id in seen_fact_ids:
             raise ValueError(f"duplicate fact ID: {fact_id}")
-        sentence_index = len(facts_by_document[document_id])
+        seen_fact_ids.add(fact_id)
         facts_by_document[document_id].append(fact)
-        fact_location[fact_id] = (document_id, sentence_index)
 
     passages = []
+    fact_location: dict[str, tuple[str, int]] = {}
     for document in documents:
         document_id = str(document["document_id"])
         document_facts = facts_by_document[document_id]
@@ -191,11 +191,15 @@ def canonical_row_to_example(
             for fact in document_facts:
                 sentence = str(fact.get("sentence") or fact.get("text") or "").strip()
                 if not sentence:
-                    raise ValueError(
-                        f"fact {fact.get('fact_id')} contains no usable sentence/text"
-                    )
+                    continue
+                fact_location[str(fact["fact_id"])] = (
+                    document_id,
+                    len(sentences),
+                )
                 sentences.append(sentence)
         else:
+            sentences = []
+        if not sentences:
             sentences = _sentence_split(str(document.get("text", "")))
         if not sentences:
             raise ValueError(f"document {document_id} contains no usable text")
