@@ -99,23 +99,41 @@ uv run python scripts/compare_extraction_protocols.py
 
 ## 多数据集跑分
 
-已恢复数据集适配和统一评测层。支持的 adapter 包括：
+固定正式评测集为以下四个，每个数据集使用 seed `42` 确定性抽取 1000 题：
 
 ```text
-hotpotqa
-2wikimultihopqa
-musique
-ultradomain
-mix
+hotpotqa          data/benchmarks/hotpotqa_1000.jsonl
+musique           data/benchmarks/musique_1000.jsonl
+2wikimultihopqa   data/benchmarks/2wikimultihopqa_1000.jsonl
+ultradomain       data/benchmarks/ultradomain_1000.jsonl
 ```
+
+HotpotQA 和 2WikiMultiHopQA 只从至少包含两个 gold supporting passage 的题目中
+抽样；MuSiQue 只抽取 `answerable=true` 且 decomposition 至少两步的题目。
+UltraDomain 没有 hop 或 gold evidence 标注，因此不声称其为多跳题；它按 19 个官方
+领域均衡分层抽样，每个领域 52 或 53 题，sentence evidence 指标记为 `N/A`。
+样本清单、来源和 SHA-256 写入 `data/benchmarks/manifest.json`。
+
+生成这四份固定样本：
+
+```bash
+uv run python scripts/prepare_four_benchmarks.py \
+  --hotpot-source /path/to/hotpot_dev_distractor_v1.json \
+  --musique-source /path/to/musique_ans_v1.0_dev.jsonl \
+  --two-wiki-source /path/to/2wikimultihopqa/dev.json \
+  --ultradomain-source-dir /path/to/ultradomain
+```
+
+这里的 HotpotQA 使用 `distractor` 协议，每道题只检索该题自带的候选 passages。
+只有 `fullwiki` 协议才应使用数据集级全局语料；两种协议的结果不能混在同一张榜中。
+`mix` adapter 仅用于兼容组合输入，不属于上述四个正式评测集。
 
 单个数据集：
 
 ```bash
 uv run python scripts/run_public_experiment.py \
   --dataset hotpotqa \
-  --input-path data/benchmarks/hotpotqa_sample.json \
-  --limit 20
+  --input-path data/benchmarks/hotpotqa_1000.jsonl
 ```
 
 单随机种子（固定为 42）：
@@ -123,7 +141,7 @@ uv run python scripts/run_public_experiment.py \
 ```bash
 uv run python scripts/run_multi_seed_benchmark.py \
   --dataset hotpotqa \
-  --input-path data/benchmarks/hotpotqa.json \
+  --input-path data/benchmarks/hotpotqa_1000.jsonl \
   --seeds 42
 ```
 
@@ -168,36 +186,44 @@ reified_fact_hybrid
 ```bash
 uv run python scripts/run_public_experiment.py \
   --dataset hotpotqa \
-  --input-path data/benchmarks/hotpotqa.json \
+  --input-path data/benchmarks/hotpotqa_1000.jsonl \
   --methods all
 ```
 
 GraphRAG、LightRAG、PathRAG、HyperGraphRAG、HippoRAG2、Cog-RAG、HGRAG、
-Hyper-RAG 都有独立结果 adapter。外部原生比较只使用 HotpotQA passage-level 榜；
-没有 canonical sentence/fact ranking 时，fact、fact citation 和 Joint 指标输出 `N/A`。
+Hyper-RAG 都有独立结果 adapter。四个固定数据集都可以导出相同结构的
+passage-level bundle 并导入官方框架结果；没有 canonical sentence/fact ranking 时，
+fact、citation 和 Joint 指标输出 `N/A`。UltraDomain 没有 gold evidence，因而它的
+passage/fact evidence 指标也输出 `N/A`。
 先导出统一 passage bundle、安装锁定源码，再用原生 runner 生成 JSON/JSONL：
 
 ```bash
 uv run python scripts/export_official_baseline_bundle.py \
-  --input-path data/benchmarks/hotpot_dev_distractor_v1.json
+  --dataset hotpotqa \
+  --input-path data/benchmarks/hotpotqa_1000.jsonl
 
 uv run python scripts/install_official_baselines.py --baseline all
 
 uv run python scripts/import_external_baseline_results.py \
   --baseline graphrag \
   --dataset hotpotqa \
-  --input-path data/benchmarks/hotpotqa.json \
+  --input-path data/benchmarks/hotpotqa_1000.jsonl \
   --result-path /path/to/graphrag-results.jsonl
 ```
 
 adapter 会把 framework-specific 的 passage/title/index 排名和 `source_id_map` 映射回
 canonical passage ID。缺题、失败和无法映射的题仍保留在评测分母中；报告包含 mapping
 coverage。capability 由 adapter 固定，不能由结果提交者修改。只有
-`generation_protocol=shared_deepseek_v1` 且 model、完整 prompt hash、temperature、
+`generation_protocol=unified_concise_deepseek_v1` 且 model、完整 prompt hash、temperature、
 max tokens、重试策略和 context budget 全部匹配时，整个系统才能进入共同生成榜。
 生产导入还会校验 evaluator 生成的 `shared_model_trace`：BGE embedding/reranker
 权重 hash 与配置、DeepSeek entity/fact extraction 模型和两个 prompt hash 必须一致；
 缺失或不匹配时 retrieval 指标记为 protocol mismatch，不进入统一榜。
+
+这八个框架使用 `third_party/official_baselines.lock.json` 中列出的官方 Git 仓库和
+固定 commit，通过 `scripts/install_official_baselines.py` clone 到
+`third_party/official_baselines/`。S²-RAG 不修改这些官方 worktree，也不以自写实现
+替代官方算法；运行前可用 `git -C <repo> status --short` 检查 worktree 必须为空。
 
 所有结果使用同一个 `unified_shared_models_v1` 报告协议，但指标按 capability
 显示：内部方法可报告 fact 与 passage 指标；外部系统只有 canonical passage 输出时，
@@ -220,8 +246,7 @@ artifact 上切换检索通道，默认只为三个正式方法生成答案：
 ```bash
 uv run python scripts/run_public_experiment.py \
   --dataset hotpotqa \
-  --input-path data/benchmarks/hotpotqa.json \
-  --limit 1000 \
+  --input-path data/benchmarks/hotpotqa_1000.jsonl \
   --methods all_ablations \
   --generate-methods bm25,dense,reified_fact_hybrid
 ```

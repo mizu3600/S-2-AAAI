@@ -7,7 +7,6 @@ from pathlib import Path
 import typer
 
 from s2rag.benchmarks import load_benchmark
-from s2rag.evaluation.splits import fixed_partition
 from s2rag.evaluation.experiment import (
     UNIFIED_RETRIEVAL_PROTOCOL,
     expected_shared_model_trace,
@@ -15,19 +14,32 @@ from s2rag.evaluation.experiment import (
 
 
 def main(
-    input_path: Path = typer.Option(Path("data/benchmarks/hotpot_dev_distractor_v1.json")),
-    output_path: Path = typer.Option(Path("data/benchmarks/hotpotqa_official_baselines_288.json")),
-    limit: int = typer.Option(2000),
+    dataset: str = typer.Option("hotpotqa"),
+    input_path: Path = typer.Option(Path("data/benchmarks/hotpotqa_1000.jsonl")),
+    output_dir: Path = typer.Option(Path("data/benchmarks/official_baseline_bundles")),
+    limit: int = typer.Option(0, help="0 means all 1,000 prepared examples"),
 ) -> None:
-    suite = load_benchmark("hotpotqa", input_path, split="test", limit=limit)
-    examples = fixed_partition(suite.examples)["test"]
+    dataset = dataset.casefold()
+    if dataset not in {"hotpotqa", "musique", "2wikimultihopqa", "ultradomain"}:
+        raise typer.BadParameter(
+            "dataset must be one of hotpotqa, musique, 2wikimultihopqa, ultradomain",
+            param_hint="--dataset",
+        )
+    suite = load_benchmark(
+        dataset,
+        input_path,
+        split="test",
+        limit=None if limit == 0 else limit,
+    )
+    examples = suite.examples
+    output_path = output_dir / f"{dataset}_official_baselines_1000.json"
     payload = []
     for example in examples:
         gold_passage_ids = sorted({support.passage_id for support in example.supporting_facts})
         payload.append(
             {
-                "schema": "hotpotqa_canonical_source_passage_v1",
-                "dataset": "hotpotqa",
+                "schema": "canonical_source_passage_v1",
+                "dataset": dataset,
                 "split": "test",
                 "example_id": example.example_id,
                 "question": example.question,
@@ -51,6 +63,7 @@ def main(
     output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     manifest = {
         "protocol": UNIFIED_RETRIEVAL_PROTOCOL,
+        "dataset": dataset,
         "evaluation_view": "native_external_passage",
         "source": str(input_path),
         "source_sha256": hashlib.sha256(input_path.read_bytes()).hexdigest(),
@@ -58,7 +71,7 @@ def main(
         "output_sha256": hashlib.sha256(output_path.read_bytes()).hexdigest(),
         "examples": len(payload),
         "requested_limit": limit,
-        "partition": "stable_id_test_15_percent",
+        "partition": "prepared_suite_all_examples",
         "ranking_unit": "canonical_passage_id",
         "corpus_protocol": "canonical_source_passages_v1",
         "fact_extraction": "not_applicable",

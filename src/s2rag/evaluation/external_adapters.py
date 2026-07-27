@@ -71,8 +71,8 @@ _NATIVE_PASSAGE_CAPABILITY = SystemCapability(
     supports_passage_ranking=True,
     supports_fact_ranking=False,
     supports_answer_generation=True,
-    citation_capability="passage",
-    generation_protocol="shared_deepseek_v1",
+    citation_capability="none",
+    generation_protocol="unified_concise_deepseek_v1",
 )
 
 

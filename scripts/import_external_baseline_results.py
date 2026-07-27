@@ -30,9 +30,9 @@ def main(
 ) -> None:
     baseline = baseline.casefold()
     dataset = dataset.casefold()
-    if dataset != "hotpotqa":
+    if dataset not in {"hotpotqa", "musique", "2wikimultihopqa", "ultradomain"}:
         raise typer.BadParameter(
-            "the strict external comparison protocol currently supports hotpotqa only",
+            "dataset must be one of hotpotqa, musique, 2wikimultihopqa, ultradomain",
             param_hint="--dataset",
         )
     suite = load_benchmark(dataset, input_path, split=split, limit=None if limit == 0 else limit)

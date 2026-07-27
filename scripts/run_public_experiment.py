@@ -8,9 +8,9 @@ from s2rag.evaluation.experiment import BenchmarkExperimentRunner
 
 def main(
     dataset: str = typer.Option("hotpotqa"),
-    input_path: Path = typer.Option(Path("data/benchmarks/hotpotqa_sample.json")),
+    input_path: Path = typer.Option(Path("data/benchmarks/hotpotqa_1000.jsonl")),
     output_dir: Path = typer.Option(Path("data/experiments/public")),
-    limit: int = typer.Option(20),
+    limit: int = typer.Option(0, help="0 means all 1,000 prepared examples"),
     split: str = typer.Option("validation"),
     seed: int = typer.Option(42),
     methods: str = typer.Option(
@@ -22,7 +22,12 @@ def main(
         help="Methods that receive answer generation; retrieval-only ablations are omitted",
     ),
 ) -> None:
-    suite = load_benchmark(dataset, input_path, split=split, limit=limit)
+    suite = load_benchmark(
+        dataset,
+        input_path,
+        split=split,
+        limit=None if limit == 0 else limit,
+    )
     from s2rag.evaluation.internal_baselines import (
         ALL_EXPERIMENT_METHODS,
         BENCHMARK_METHODS,

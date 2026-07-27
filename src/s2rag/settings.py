@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     deepseek_base_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-v4-flash"
     deepseek_temperature: float = 0.0
-    deepseek_max_tokens: int = 2048
+    deepseek_max_tokens: int = 256
     deepseek_extraction_max_tokens: int = 8192
     deepseek_retry_initial_seconds: float = 1.0
     deepseek_retry_max_seconds: float = 60.0

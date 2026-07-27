@@ -425,7 +425,7 @@ def test_external_passage_ranking_is_not_expanded_into_fact_ranking(tmp_path):
 
     assert score["passage_recall_at_1"] == 1.0
     assert score["fact_recall_at_1"] is None
-    assert score["generated_passage_citation_f1"] == 1.0
+    assert score["generated_passage_citation_f1"] is None
     assert score["generated_fact_citation_f1"] is None
     assert score["answer_f1"] is None
     assert score["joint_f1"] is None
@@ -483,8 +483,8 @@ def test_missing_external_results_stay_in_the_denominator(tmp_path):
     assert len(results) == 2
     assert missing.status == "missing"
     assert score["passage_recall_at_1"] == 0.0
-    assert score["generated_passage_citation_f1"] == 0.0
-    assert score["generated_passage_citation_available"] is True
+    assert score["generated_passage_citation_f1"] is None
+    assert score["generated_passage_citation_available"] is False
     assert score["result_missing"] is True
 
 
@@ -598,7 +598,7 @@ def test_partially_mapped_rankings_keep_unknown_items_as_irrelevant(tmp_path):
     assert score["passage_recall_at_3"] == 1.0
 
 
-def test_shared_hotpot_generation_respects_passage_citation_capability(tmp_path):
+def test_shared_generation_marks_native_baseline_citations_unsupported(tmp_path):
     example = BenchmarkExample(
         example_id="shared",
         question="Who won?",
@@ -638,7 +638,7 @@ def test_shared_hotpot_generation_respects_passage_citation_capability(tmp_path)
     score = score_external_result(example, built, result)
 
     assert score["answer_f1"] == 1.0
-    assert score["generated_passage_citation_f1"] == 1.0
+    assert score["generated_passage_citation_f1"] is None
     assert score["generated_fact_citation_f1"] is None
     assert score["joint_f1"] is None
 
@@ -697,10 +697,10 @@ def test_explicit_empty_citations_do_not_fall_back_to_answer(tmp_path):
     result = load_external_results("graphrag", result_path, suite)[0]
     score = score_external_result(example, build_example_corpus(example), result)
 
-    assert result.capability.citation_capability == "passage"
+    assert result.capability.citation_capability == "none"
     assert result.citations == []
-    assert score["generated_passage_citation_f1"] == 0.0
-    assert score["citation_status"] == "citation_empty"
+    assert score["generated_passage_citation_f1"] is None
+    assert score["citation_status"] == "unsupported"
 
 
 def test_passage_title_citation_is_removed_before_answer_scoring(tmp_path):
@@ -739,7 +739,8 @@ def test_passage_title_citation_is_removed_before_answer_scoring(tmp_path):
     score = score_external_result(example, build_example_corpus(example), result)
 
     assert score["answer_f1"] == 1.0
-    assert score["generated_passage_citation_f1"] == 1.0
+    assert score["generated_passage_citation_f1"] is None
+    assert score["citation_status"] == "unsupported"
 
 
 def test_invalid_citation_ids_score_zero_and_keep_mapping_audit(tmp_path):
@@ -768,8 +769,8 @@ def test_invalid_citation_ids_score_zero_and_keep_mapping_audit(tmp_path):
     result = load_external_results("graphrag", result_path, suite)[0]
     score = score_external_result(example, build_example_corpus(example), result)
 
-    assert score["generated_passage_citation_f1"] == 0.0
-    assert score["citation_status"] == "citation_invalid_id"
+    assert score["generated_passage_citation_f1"] is None
+    assert score["citation_status"] == "unsupported"
     assert score["received_citation_count"] == 1
     assert score["valid_citation_count"] == 0
     assert score["citation_mapping_coverage"] == 0.0
@@ -929,7 +930,7 @@ def test_system_manifest_keeps_failed_questions_in_shared_generation(tmp_path):
     assert all(result.generation_protocol_matched for result in results)
     assert failed_score["answer_f1"] == 0.0
     assert failed_score["passage_recall_at_1"] == 0.0
-    assert failed_score["generated_passage_citation_f1"] == 0.0
+    assert failed_score["generated_passage_citation_f1"] is None
     assert failed_score["result_failed"] is True
 
 
@@ -958,5 +959,5 @@ def test_unparseable_answer_citation_is_audited(tmp_path):
     result = load_external_results("graphrag", result_path, suite)[0]
     score = score_external_result(example, build_example_corpus(example), result)
 
-    assert score["generated_passage_citation_f1"] == 0.0
-    assert score["citation_status"] == "citation_parse_failed"
+    assert score["generated_passage_citation_f1"] is None
+    assert score["citation_status"] == "unsupported"

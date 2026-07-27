@@ -1,10 +1,13 @@
 from concurrent.futures import ThreadPoolExecutor
+import json
 import threading
 import time
 
+import httpx
 import pytest
 
 from s2rag.generation.generator import EvidenceGenerator
+from s2rag.generation.prompt_builder import SYSTEM_PROMPT, build_prompt
 from s2rag.providers import DeepSeekClient, ProviderError
 from s2rag.settings import Settings
 
@@ -46,6 +49,58 @@ def test_generator_never_falls_back_when_client_raises():
 
     with pytest.raises(StopRetry):
         EvidenceGenerator(client=FailingClient()).generate("question", "context")
+
+
+def test_generator_uses_unified_concise_prompt_without_system_message():
+    calls = []
+
+    class RecordingClient:
+        def complete(self, system, prompt):
+            calls.append((system, prompt))
+            return "answer"
+
+    answer = EvidenceGenerator(client=RecordingClient()).generate(
+        "Who won?", "[e1] Ada won."
+    )
+
+    assert answer == "answer"
+    assert calls == [
+        (
+            "",
+            "Answer concisely using only the evidence.\n\n"
+            "Question:\nWho won?\n\nEvidence:\n[e1] Ada won.",
+        )
+    ]
+    assert SYSTEM_PROMPT == ""
+    assert build_prompt("Q", "E").startswith(
+        "Answer concisely using only the evidence."
+    )
+
+
+def test_empty_system_prompt_is_omitted_from_deepseek_messages(tmp_path):
+    requests = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": "Ada"}}]},
+        )
+
+    settings = Settings(
+        deepseek_api_key="test",
+        deepseek_response_cache_dir=tmp_path,
+    )
+    http_client = httpx.Client(
+        base_url="https://example.test",
+        transport=httpx.MockTransport(respond),
+    )
+    client = DeepSeekClient(settings, http_client=http_client)
+
+    assert client.complete("", "Answer concisely.") == "Ada"
+    assert requests[0]["messages"] == [
+        {"role": "user", "content": "Answer concisely."}
+    ]
 
 
 def test_concurrent_identical_requests_are_coalesced(tmp_path):

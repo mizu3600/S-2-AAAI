@@ -22,7 +22,8 @@ def _safe_id(value: str) -> str:
 def _read_records(path: str | Path) -> list[dict]:
     path = Path(path)
     if path.suffix == ".jsonl":
-        return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        with path.open(encoding="utf-8") as handle:
+            return [json.loads(line) for line in handle if line.strip()]
     data = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(data, list):
         return data
@@ -133,8 +134,19 @@ class UltraDomainAdapter(BenchmarkAdapter):
     name = "ultradomain"
 
     def convert(self, row: dict, split: str) -> BenchmarkExample:
-        example_id = str(row.get("id", row.get("example_id", "unknown")))
-        domain = row.get("domain", row.get("category", "general"))
+        example_id = str(
+            row.get("_id", row.get("id", row.get("example_id", "unknown")))
+        )
+        question = str(row.get("question", row.get("input", ""))).strip()
+        if not question:
+            raise ValueError(f"UltraDomain example {example_id} has no question/input")
+        domain = row.get(
+            "_s2rag_domain",
+            row.get(
+                "_ureval_domain",
+                row.get("domain", row.get("category", row.get("dataset", "general"))),
+            ),
+        )
         context = row.get("context", row.get("paragraphs", []))
         passages = []
         if isinstance(context, list):
@@ -148,15 +160,20 @@ class UltraDomainAdapter(BenchmarkAdapter):
         else:
             passages.append(Passage(passage_id=f"{_safe_id(example_id)}_p0", title=f"Domain_{domain}", sentences=_sentence_split(str(context))))
         
-        support = []
-        for p in passages:
-            for s_idx, _ in enumerate(p.sentences):
-                support.append(SupportingFact(passage_id=p.passage_id, sentence_index=s_idx))
         return BenchmarkExample(
-            example_id=example_id, question=row["question"], answer=row.get("answer", ""),
-            passages=passages, supporting_facts=support, hop_count=max(1, len(passages)),
+            example_id=example_id,
+            question=question,
+            answer=row.get("answer", row.get("answers", "")),
+            passages=passages,
+            supporting_facts=[],
+            hop_count=1,
             query_type=f"domain_{domain}", dataset=self.name, split=split,
-            metadata={"domain": domain, "context_length": sum(len(" ".join(p.sentences)) for p in passages)},
+            metadata={
+                "domain": domain,
+                "context_length": sum(len(" ".join(p.sentences)) for p in passages),
+                "evidence_level": "unavailable",
+                "multi_hop_annotation": "unavailable",
+            },
         )
 
 

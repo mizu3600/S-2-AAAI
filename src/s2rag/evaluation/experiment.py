@@ -381,8 +381,12 @@ class BenchmarkExperimentRunner:
                 generation_error = f"{type(exc).__name__}: {exc}"
         generation_ms = (perf_counter() - generation_started) * 1000
 
+        citations_requested = (
+            should_generate
+            and getattr(self.generator, "citation_capability", "fact") != "none"
+        )
         valid_fact_ids = set(built.fact_to_passage)
-        received_citations = extract_citation_ids(answer)
+        received_citations = extract_citation_ids(answer) if citations_requested else []
         generated_fact_citations = [
             citation for citation in received_citations if citation in valid_fact_ids
         ]
@@ -408,7 +412,7 @@ class BenchmarkExperimentRunner:
                 generated_fact_citation_evidence,
                 built.gold_chunk_ids,
             )
-            if should_generate
+            if citations_requested
             else None
         )
         joint = _joint_scores(answer_metric, citation_metric)
@@ -438,8 +442,8 @@ class BenchmarkExperimentRunner:
             "fact_ranking_available": True,
             "passage_ranking_available": True,
             "answer_metric_available": should_generate,
-            "generated_fact_citation_available": should_generate,
-            "generated_passage_citation_available": should_generate,
+            "generated_fact_citation_available": citations_requested,
+            "generated_passage_citation_available": citations_requested,
             "mapping_coverage": 1.0,
             "extraction_coverage": built.extraction_coverage,
             "answer": answer,
@@ -458,7 +462,7 @@ class BenchmarkExperimentRunner:
                 bool(built.gold_chunk_ids),
                 False,
             )
-            if should_generate
+            if citations_requested
             else "not_requested",
             "received_citation_count": len(received_citations),
             "valid_citation_count": len(generated_fact_citations),
@@ -539,7 +543,7 @@ class BenchmarkExperimentRunner:
                 "generated_passage_citation",
                 record["generated_passage_citations"],
                 gold_passages,
-                available=should_generate,
+                available=citations_requested,
             )
         )
         return record
@@ -818,17 +822,21 @@ def score_external_result(
         "generated_passage_citations": generated_passage_citations,
         "citation_capability": capability.citation_capability,
         "citation_source": result.citation_source,
-        "citation_status": _citation_status(
-            result.status,
-            received_citation_count,
-            valid_citation_count,
-            unmapped_citations,
-            (
-                not no_gold_fact_evidence
-                if capability.citation_capability == "fact"
-                else not no_gold_passage_evidence
-            ),
-            result.citation_parse_failed,
+        "citation_status": (
+            "unsupported"
+            if capability.citation_capability == "none"
+            else _citation_status(
+                result.status,
+                received_citation_count,
+                valid_citation_count,
+                unmapped_citations,
+                (
+                    not no_gold_fact_evidence
+                    if capability.citation_capability == "fact"
+                    else not no_gold_passage_evidence
+                ),
+                result.citation_parse_failed,
+            )
         ),
         "received_citation_count": received_citation_count,
         "valid_citation_count": valid_citation_count,

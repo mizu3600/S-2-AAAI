@@ -200,12 +200,13 @@ class DeepSeekClient:
     ) -> str:
         if not self.settings.deepseek_api_key:
             raise PermanentProviderError("DEEPSEEK_API_KEY is not configured")
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
         payload = {
             "model": self.settings.deepseek_model,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": prompt},
-            ],
+            "messages": messages,
             "temperature": self.settings.deepseek_temperature,
             "max_tokens": max_tokens or self.settings.deepseek_max_tokens,
             "thinking": {"type": "disabled"},
