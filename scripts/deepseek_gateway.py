@@ -5,7 +5,7 @@ import asyncio
 import json
 import os
 import time
-from collections import deque
+from collections import Counter, deque
 from pathlib import Path
 
 import httpx
@@ -42,6 +42,8 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     cache_lock = asyncio.Lock()
     request_locks: dict[str, asyncio.Lock] = {}
     limiter = SlidingWindowLimiter(args.requests_per_minute)
+    stats: Counter[str] = Counter()
+    framework_requests: Counter[str] = Counter()
     client = httpx.AsyncClient(
         base_url=args.upstream.rstrip("/"),
         headers={"Authorization": f"Bearer {api_key}"},
@@ -58,31 +60,37 @@ def create_app(args: argparse.Namespace) -> FastAPI:
             "status": "ok",
             "max_concurrency": args.max_concurrency,
             "requests_per_minute": args.requests_per_minute,
+            "inflight_request_keys": sum(
+                request_lock.locked() for request_lock in request_locks.values()
+            ),
+            "stats": dict(stats),
+            "framework_requests": dict(framework_requests),
         }
 
     @app.post("/v1/chat/completions")
     @app.post("/chat/completions")
     async def completions(
         request: Request,
-        authorization: str | None = Header(default=None),
         x_s2rag_framework: str | None = Header(default=None),
     ):
         payload = await request.json()
-        namespace = x_s2rag_framework or _bearer_namespace(authorization)
-        key = {
-            "framework": namespace,
-            "upstream": args.upstream,
-            "request": payload,
-        }
+        framework = x_s2rag_framework or "unspecified"
+        framework_requests[framework] += 1
+        key = request_cache_key(args.upstream, payload)
         cached = cache.get("chat_completions", key)
         if isinstance(cached, dict):
+            stats["cache_hits"] += 1
             return JSONResponse(cached)
+        stats["cache_misses"] += 1
 
         request_digest = JsonFileCache.digest("chat_completions", key)
         request_lock = request_locks.setdefault(request_digest, asyncio.Lock())
+        if request_lock.locked():
+            stats["coalesced_waits"] += 1
         async with request_lock:
             cached = cache.get("chat_completions", key)
             if isinstance(cached, dict):
+                stats["cache_hits_after_wait"] += 1
                 return JSONResponse(cached)
 
             delay = 1.0
@@ -90,9 +98,11 @@ def create_app(args: argparse.Namespace) -> FastAPI:
             for attempt in range(1, args.max_attempts + 1):
                 await limiter.acquire()
                 async with semaphore:
+                    stats["upstream_requests"] += 1
                     try:
                         response = await client.post("chat/completions", json=payload)
                     except httpx.HTTPError as exc:
+                        stats["upstream_transport_errors"] += 1
                         if attempt >= args.max_attempts:
                             return JSONResponse(
                                 {
@@ -105,6 +115,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                             )
                     else:
                         last_response = response
+                        stats[f"upstream_status_{response.status_code}"] += 1
+                        if response.status_code == 429:
+                            stats["upstream_429s"] += 1
                         if response.status_code < 400:
                             result = response.json()
                             async with cache_lock:
@@ -120,6 +133,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                                 _response_payload(response),
                                 status_code=response.status_code,
                             )
+                stats["retries"] += 1
                 await asyncio.sleep(delay)
                 delay = min(delay * 2, 60.0)
             return JSONResponse(
@@ -159,12 +173,12 @@ class SlidingWindowLimiter:
             await asyncio.sleep(delay)
 
 
-def _bearer_namespace(authorization: str | None) -> str:
-    if not authorization:
-        return "anonymous"
-    prefix = "bearer "
-    value = authorization.strip()
-    return value[len(prefix):] if value.casefold().startswith(prefix) else value
+def request_cache_key(upstream: str, payload: dict) -> dict:
+    """Share exact deterministic requests across every benchmark framework."""
+    return {
+        "upstream": upstream.rstrip("/"),
+        "request": payload,
+    }
 
 
 def _response_payload(response: httpx.Response) -> dict:
