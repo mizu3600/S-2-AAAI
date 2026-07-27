@@ -49,19 +49,27 @@ class LocalBGEEncoder:
         if missing:
             model = self._model_instance()
             with self._encode_lock:
-                encoded = np.asarray(
-                    model.encode(
-                        missing,
-                        batch_size=self.batch_size,
-                        convert_to_numpy=True,
-                        normalize_embeddings=True,
-                        show_progress_bar=False,
-                    ),
-                    dtype=np.float32,
-                )
-            for text, vector in zip(missing, encoded, strict=True):
-                vectors_by_text[text] = vector
-                self._cache.put(self._cache_namespace, text, vector)
+                still_missing = []
+                for text in missing:
+                    cached = self._cache.get(self._cache_namespace, text)
+                    if cached is None:
+                        still_missing.append(text)
+                    else:
+                        vectors_by_text[text] = cached
+                if still_missing:
+                    encoded = np.asarray(
+                        model.encode(
+                            still_missing,
+                            batch_size=self.batch_size,
+                            convert_to_numpy=True,
+                            normalize_embeddings=True,
+                            show_progress_bar=False,
+                        ),
+                        dtype=np.float32,
+                    )
+                    for text, vector in zip(still_missing, encoded, strict=True):
+                        vectors_by_text[text] = vector
+                        self._cache.put(self._cache_namespace, text, vector)
         return np.stack([vectors_by_text[text] for text in values]).astype(np.float32)
 
     def encode_documents(self, texts: Sequence[str]) -> np.ndarray:

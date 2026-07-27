@@ -1,4 +1,6 @@
 import hashlib
+import threading
+import time
 from dataclasses import replace
 
 import numpy as np
@@ -80,6 +82,24 @@ class FailingReranker:
 class FailingGenerator(FakeGenerator):
     def generate(self, question, context):
         raise RuntimeError("generation unavailable")
+
+
+class ConcurrencyTrackingGenerator(FakeGenerator):
+    def __init__(self):
+        self.active = 0
+        self.max_active = 0
+        self.lock = threading.Lock()
+
+    def generate(self, question, context):
+        with self.lock:
+            self.active += 1
+            self.max_active = max(self.max_active, self.active)
+        try:
+            time.sleep(0.05)
+            return super().generate(question, context)
+        finally:
+            with self.lock:
+                self.active -= 1
 
 
 class DifferentModelExtractionClient:
@@ -206,6 +226,47 @@ def test_no_bge_reranker_ablation_bypasses_shared_reranker(tmp_path):
     assert records[0]["rerank_input_count"] == 0
     assert records[0]["shared_rerank_ms"] == 0.0
     assert records[0]["answer_metric_available"] is False
+
+
+def test_benchmark_examples_run_concurrently(tmp_path):
+    examples = [
+        BenchmarkExample(
+            example_id=f"parallel-{index}",
+            question="Who won?",
+            answer="Ada",
+            passages=[
+                Passage(
+                    passage_id=f"p{index}",
+                    title="Result",
+                    sentences=["Ada won."],
+                )
+            ],
+            supporting_facts=[
+                SupportingFact(passage_id=f"p{index}", sentence_index=0)
+            ],
+            dataset="toy",
+            split="test",
+        )
+        for index in range(2)
+    ]
+    suite = BenchmarkSuite(
+        name="toy",
+        split="test",
+        examples=examples,
+        source="memory://toy",
+    )
+    generator = ConcurrencyTrackingGenerator()
+
+    records = BenchmarkExperimentRunner(
+        methods=("bm25",),
+        encoder=LocalEncoder(),
+        use_local_reranker=False,
+        generator=generator,
+        use_llm_extraction=False,
+    ).run(suite, tmp_path, seed=42)
+
+    assert len(records) == 2
+    assert generator.max_active == 2
 
 
 def test_generation_failure_scores_zero_instead_of_dropping_the_question(tmp_path):

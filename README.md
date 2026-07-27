@@ -28,7 +28,7 @@ PDF/TXT/MD
 
 字符串匹配只用于验证 LLM 输出是否落在原文中，不承担规则抽取。系统没有规则
 fallback；未配置 `DEEPSEEK_API_KEY`、响应无效或远程调用失败时，客户端采用等待间隔
-封顶的指数退避，重试次数不设上限，直到 DeepSeek 返回有效结果。
+封顶的指数退避和有限重试；永久错误立即失败，避免评测进程无限挂起。
 
 Embedding 和 reranking 不调用任何云端模型服务。S²-RAG 只从本地目录加载
 `BAAI/bge-m3` 与 `BAAI/bge-reranker-v2-m3`，且启用 `local_files_only`，模型缺失时
@@ -213,6 +213,9 @@ S²-RAG 图频带编码为 training-free：raw/low/mid/high 由传播矩阵解�
 ## Accelerated benchmark execution
 
 实体和事实抽取按 passage 批处理，DeepSeek 响应及 BGE embedding 使用内容寻址缓存。
+默认题级并发为 8、题内 passage 并发为 8、DeepSeek 全局并发为 32；相同缓存键的并发
+请求会合并为一次上游调用。可通过 `BENCHMARK_EXAMPLE_WORKERS`、
+`EXTRACTION_WORKERS` 和 `DEEPSEEK_MAX_CONCURRENCY` 调整。
 每题只构建一次 corpus、embedding 和 reified graph；`all_ablations` 在这份共享
 artifact 上切换检索通道，默认只为三个正式方法生成答案：
 
