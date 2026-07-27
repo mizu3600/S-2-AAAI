@@ -1,5 +1,5 @@
-from qmshe.evaluation.external_adapters import BASELINE_SPECS
-from qmshe.evaluation.internal_baselines import INTERNAL_BASELINES
+from s2rag.evaluation.external_adapters import BASELINE_SPECS
+from s2rag.evaluation.internal_baselines import INTERNAL_BASELINES
 
 
 if __name__ == "__main__":

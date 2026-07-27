@@ -2,8 +2,8 @@ from pathlib import Path
 
 import typer
 
-from qmshe.benchmarks import load_benchmark
-from qmshe.evaluation.experiment import BenchmarkExperimentRunner
+from s2rag.benchmarks import load_benchmark
+from s2rag.evaluation.experiment import BenchmarkExperimentRunner
 
 
 def main(
@@ -14,17 +14,38 @@ def main(
     split: str = typer.Option("validation"),
     seed: int = typer.Option(42),
     methods: str = typer.Option(
-        "bm25,dense,bm25_dense_rrf,reified_fact_hybrid",
-        help="Comma-separated methods, or 'all' for every internal baseline",
+        "bm25,dense,reified_fact_hybrid",
+        help="Comma-separated methods, or 'all' for every selected baseline",
+    ),
+    generate_methods: str = typer.Option(
+        "bm25,dense,reified_fact_hybrid",
+        help="Methods that receive answer generation; retrieval-only ablations are omitted",
     ),
 ) -> None:
     suite = load_benchmark(dataset, input_path, split=split, limit=limit)
-    from qmshe.evaluation.internal_baselines import INTERNAL_BASELINES
-
-    selected = INTERNAL_BASELINES if methods == "all" else tuple(
-        item.strip() for item in methods.split(",") if item.strip()
+    from s2rag.evaluation.internal_baselines import (
+        ALL_EXPERIMENT_METHODS,
+        BENCHMARK_METHODS,
     )
-    records = BenchmarkExperimentRunner(methods=selected).run(
+
+    selected = (
+        ALL_EXPERIMENT_METHODS
+        if methods == "all_ablations"
+        else BENCHMARK_METHODS
+        if methods == "all"
+        else tuple(
+        item.strip() for item in methods.split(",") if item.strip()
+        )
+    )
+    generated = tuple(
+        item.strip()
+        for item in generate_methods.split(",")
+        if item.strip() in selected
+    )
+    records = BenchmarkExperimentRunner(
+        methods=selected,
+        generate_for_methods=generated,
+    ).run(
         suite, output_dir / dataset, seed=seed
     )
     typer.echo(f"wrote {len(records)} records to {output_dir / dataset}")

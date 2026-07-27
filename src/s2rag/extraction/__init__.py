@@ -1,0 +1,1 @@
+OPEN_DOMAIN_EXTRACTION_PROTOCOL = "shared_deepseek_openie_nary_v2"

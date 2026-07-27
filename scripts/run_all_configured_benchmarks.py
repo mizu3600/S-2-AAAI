@@ -5,8 +5,8 @@ from pathlib import Path
 
 import typer
 
-from qmshe.benchmarks import load_benchmark
-from qmshe.evaluation.experiment import BenchmarkExperimentRunner
+from s2rag.benchmarks import load_benchmark
+from s2rag.evaluation.experiment import BenchmarkExperimentRunner
 
 
 def main(
@@ -14,13 +14,26 @@ def main(
         Path("data/benchmarks/configured_suites/manifest.json")
     ),
     output_dir: Path = typer.Option(Path("data/experiments/configured")),
-    methods: str = typer.Option("bm25,dense,bm25_dense_rrf,reified_fact_hybrid"),
+    methods: str = typer.Option("bm25,dense,reified_fact_hybrid"),
+    generate_methods: str = typer.Option("bm25,dense,reified_fact_hybrid"),
 ) -> None:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    from qmshe.evaluation.internal_baselines import INTERNAL_BASELINES
+    from s2rag.evaluation.internal_baselines import (
+        ALL_EXPERIMENT_METHODS,
+        BENCHMARK_METHODS,
+    )
 
-    selected = INTERNAL_BASELINES if methods == "all" else tuple(
-        item.strip() for item in methods.split(",") if item.strip()
+    selected = (
+        ALL_EXPERIMENT_METHODS
+        if methods == "all_ablations"
+        else BENCHMARK_METHODS
+        if methods == "all"
+        else tuple(item.strip() for item in methods.split(",") if item.strip())
+    )
+    generated = tuple(
+        item.strip()
+        for item in generate_methods.split(",")
+        if item.strip() in selected
     )
     for suite_name, spec in manifest.get("suites", {}).items():
         suite = load_benchmark(
@@ -30,7 +43,10 @@ def main(
             limit=spec.get("examples"),
         )
         target = output_dir / suite_name
-        BenchmarkExperimentRunner(methods=selected).run(
+        BenchmarkExperimentRunner(
+            methods=selected,
+            generate_for_methods=generated,
+        ).run(
             suite, target, seed=int(spec["seed"])
         )
         typer.echo(f"{suite_name}: {len(suite.examples)} examples -> {target}")

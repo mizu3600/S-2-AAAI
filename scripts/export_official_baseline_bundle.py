@@ -6,20 +6,12 @@ from pathlib import Path
 
 import typer
 
-from qmshe.benchmarks import load_benchmark
-from qmshe.benchmarks.corpus_builder import build_example_corpus
-from qmshe.evaluation.splits import fixed_partition
-
-
-def _verbalize_fact(fact, entity_names: dict[str, str]) -> str:
-    arguments = ", ".join(
-        f"{argument.role}={entity_names.get(argument.entity_id, argument.entity_id)}"
-        for argument in fact.arguments
-    )
-    qualifiers = ", ".join(
-        f"{key}={value}" for key, value in fact.qualifiers.items() if value is not None
-    )
-    return f"{fact.predicate}: {arguments}" + (f"; {qualifiers}" if qualifiers else "")
+from s2rag.benchmarks import load_benchmark
+from s2rag.evaluation.splits import fixed_partition
+from s2rag.evaluation.experiment import (
+    UNIFIED_RETRIEVAL_PROTOCOL,
+    expected_shared_model_trace,
+)
 
 
 def main(
@@ -31,14 +23,10 @@ def main(
     examples = fixed_partition(suite.examples)["test"]
     payload = []
     for example in examples:
-        built = build_example_corpus(example)
-        entity_names = {entity.entity_id: entity.canonical_name for entity in built.corpus.entities}
-        gold_passage_ids = sorted({
-            built.fact_to_passage[fact_id] for fact_id in built.gold_fact_ids
-        })
+        gold_passage_ids = sorted({support.passage_id for support in example.supporting_facts})
         payload.append(
             {
-                "schema": "hotpotqa_canonical_passage_v2",
+                "schema": "hotpotqa_canonical_source_passage_v1",
                 "dataset": "hotpotqa",
                 "split": "test",
                 "example_id": example.example_id,
@@ -53,17 +41,6 @@ def main(
                     }
                     for passage in example.passages
                 ],
-                "facts": [
-                    {
-                        "fact_id": fact.hyperedge_id,
-                        "text": _verbalize_fact(fact, entity_names),
-                        "sentence": fact.evidence_sentence,
-                        "document_id": built.fact_to_passage[fact.hyperedge_id],
-                        "passage_id": built.fact_to_passage[fact.hyperedge_id],
-                    }
-                    for fact in built.corpus.evidence_hyperedges
-                ],
-                "gold_fact_ids": sorted(built.gold_fact_ids),
                 "gold_passage_ids": gold_passage_ids,
                 "source_id_map": {
                     passage.title: passage.passage_id for passage in example.passages
@@ -71,11 +48,10 @@ def main(
             }
         )
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
+    output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     manifest = {
-        "protocol": "hotpotqa_native_external_passage_v2",
+        "protocol": UNIFIED_RETRIEVAL_PROTOCOL,
+        "evaluation_view": "native_external_passage",
         "source": str(input_path),
         "source_sha256": hashlib.sha256(input_path.read_bytes()).hexdigest(),
         "output": str(output_path),
@@ -84,6 +60,9 @@ def main(
         "requested_limit": limit,
         "partition": "stable_id_test_15_percent",
         "ranking_unit": "canonical_passage_id",
+        "corpus_protocol": "canonical_source_passages_v1",
+        "fact_extraction": "not_applicable",
+        "required_shared_model_trace": expected_shared_model_trace(),
     }
     output_path.with_suffix(".manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"

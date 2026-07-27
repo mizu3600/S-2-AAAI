@@ -6,7 +6,7 @@ import json
 import random
 from pathlib import Path
 
-from qmshe.benchmarks.adapters import _read_records
+from s2rag.benchmarks.adapters import _read_records
 
 
 def main() -> None:

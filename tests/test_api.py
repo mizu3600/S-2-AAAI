@@ -1,24 +1,42 @@
+import hashlib
+
+import numpy as np
 from fastapi.testclient import TestClient
 
-from qmshe.api.dependencies import set_pipeline
-from qmshe.api.main import app
-from qmshe.pipeline import QMSHERAGPipeline
-from qmshe.providers import DeterministicEmbedder
-from qmshe.synthetic import make_synthetic_corpus
+from s2rag.api.dependencies import set_pipeline
+from s2rag.api.main import app
+from s2rag.pipeline import S2RAGPipeline
+from s2rag.synthetic import make_synthetic_corpus
 
 
 class LocalEncoder:
     def encode(self, texts):
-        return DeterministicEmbedder(64).embed(texts)
+        matrix = np.zeros((len(texts), 64), dtype=np.float32)
+        for row, text in enumerate(texts):
+            for token in text.casefold().split():
+                index = (
+                    int.from_bytes(
+                        hashlib.blake2b(token.encode(), digest_size=8).digest(),
+                        "little",
+                    )
+                    % matrix.shape[1]
+                )
+                matrix[row, index] += 1
+        return matrix / np.maximum(np.linalg.norm(matrix, axis=1, keepdims=True), 1e-12)
+
+
+class FakeGenerator:
+    def generate(self, question, context):
+        return "Generated from evidence."
 
 
 def test_health_query_and_metrics():
-    pipeline = QMSHERAGPipeline(
+    pipeline = S2RAGPipeline(
         make_synthetic_corpus(),
         text_encoder=LocalEncoder(),
-        enable_remote_reranker=False,
+        use_local_reranker=False,
+        generator=FakeGenerator(),
     )
-    pipeline.generator.client = None
     set_pipeline(pipeline)
     client = TestClient(app)
 
@@ -29,7 +47,7 @@ def test_health_query_and_metrics():
     response = client.post(
         "/v1/query",
         json={
-            "question": "How does PEAI improve Voc?",
+            "question": "How does request caching improve response latency?",
             "top_k": 3,
             "return_debug": True,
         },

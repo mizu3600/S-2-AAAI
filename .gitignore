@@ -14,4 +14,5 @@ data/processed/*
 !data/processed/.gitkeep
 data/benchmarks/
 data/experiments/
+data/cache/
 third_party/official_baselines/
