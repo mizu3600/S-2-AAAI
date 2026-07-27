@@ -30,13 +30,18 @@ def main(
     dataset: str = typer.Option("hotpotqa"),
     input_path: Path = typer.Option(...),
     output_dir: Path = typer.Option(Path("data/experiments/multi_seed")),
-    seeds: str = typer.Option("13,42,73"),
+    seeds: str = typer.Option("42", help="Exactly one evaluation seed"),
     limit: int = typer.Option(0, help="0 means all examples"),
     split: str = typer.Option("validation"),
     methods: str = typer.Option("bm25,dense,reified_fact_hybrid"),
     generate_methods: str = typer.Option("bm25,dense,reified_fact_hybrid"),
 ) -> None:
     parsed_seeds = [int(item.strip()) for item in seeds.split(",") if item.strip()]
+    if len(parsed_seeds) != 1:
+        raise typer.BadParameter(
+            "exactly one seed is supported; use --seeds 42",
+            param_hint="--seeds",
+        )
     all_records = []
     from s2rag.evaluation.internal_baselines import (
         ALL_EXPERIMENT_METHODS,

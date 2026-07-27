@@ -9,10 +9,6 @@ ENDPOINTS = {
         "https://datasets-server.huggingface.co/rows",
         {"dataset": "hotpotqa/hotpot_qa", "config": "distractor", "split": "validation"},
     ),
-    "qasper": (
-        "https://datasets-server.huggingface.co/rows",
-        {"dataset": "allenai/qasper", "config": "qasper", "split": "validation"},
-    ),
 }
 
 

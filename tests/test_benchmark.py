@@ -28,6 +28,7 @@ from s2rag.benchmarks.corpus_builder import (
     build_native_passage_evaluation_corpus,
     build_sentence_fixture_corpus as build_example_corpus,
 )
+from s2rag.benchmarks.adapters import ADAPTERS as BENCHMARK_ADAPTERS
 
 
 class LocalEncoder:
@@ -352,6 +353,17 @@ def test_all_internal_baselines_share_the_benchmark_contract(tmp_path):
 def test_baseline_registry_contains_only_the_selected_methods():
     assert INTERNAL_BASELINES == ("bm25", "dense", "reified_fact_hybrid")
     assert BENCHMARK_METHODS == ("bm25", "dense", "reified_fact_hybrid")
+
+
+def test_benchmark_registry_excludes_qasper_and_metaqa():
+    assert set(BENCHMARK_ADAPTERS) == {
+        "hotpotqa",
+        "2wiki",
+        "2wikimultihopqa",
+        "musique",
+        "ultradomain",
+        "mix",
+    }
 
 
 def test_each_external_adapter_normalizes_title_rankings(tmp_path):

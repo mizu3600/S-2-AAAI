@@ -15,38 +15,6 @@ def _sentence_split(text: str) -> list[str]:
     return [item.strip() for item in re.split(r"(?<=[.!?])\s+|\n+", str(text)) if item.strip()]
 
 
-def _qasper_answer(answers) -> str:
-    if not isinstance(answers, list):
-        return str(answers or "")
-    texts = []
-    for answer in answers:
-        if isinstance(answer, dict):
-            for key in ("free_form_answer", "extractive_spans", "yes_no"):
-                value = answer.get(key)
-                if isinstance(value, list):
-                    texts.extend(str(item) for item in value)
-                elif value:
-                    texts.append(str(value))
-        elif answer:
-            texts.append(str(answer))
-    return " ".join(texts)
-
-
-def _qasper_evidence(answers) -> list[str]:
-    evidence = []
-    if not isinstance(answers, list):
-        return evidence
-    for answer in answers:
-        if isinstance(answer, dict):
-            for key in ("evidence", "evidence_text", "extractive_spans"):
-                value = answer.get(key, [])
-                if isinstance(value, list):
-                    evidence.extend(str(item) for item in value)
-                elif value:
-                    evidence.append(str(value))
-    return evidence
-
-
 def _safe_id(value: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_.-]+", "_", value).strip("_") or "item"
 
@@ -161,85 +129,6 @@ class MusiqueAdapter(BenchmarkAdapter):
         )
 
 
-class QasperAdapter(BenchmarkAdapter):
-    name = "qasper"
-
-    def load(self, path: str | Path, split: str = "validation", limit: int | None = None) -> BenchmarkSuite:
-        examples = []
-        for paper in _read_records(path):
-            qas = paper.get("qas", {})
-            if not isinstance(qas, dict):
-                examples.append(self.convert(paper, split))
-                continue
-            questions = qas.get("question", [])
-            question_ids = qas.get("question_id", [])
-            answers = qas.get("answers", [])
-            for index, question in enumerate(questions):
-                flattened = {
-                    "id": question_ids[index] if index < len(question_ids) else f"{paper.get('id')}-{index}",
-                    "question": question,
-                    "answers": answers[index] if index < len(answers) else [],
-                    "full_text": paper.get("full_text", {}),
-                    "paper_id": paper.get("id"),
-                    "paper_title": paper.get("title"),
-                }
-                examples.append(self.convert(flattened, split))
-                if limit is not None and len(examples) >= limit:
-                    return BenchmarkSuite(name=self.name, split=split, examples=examples,
-                                          source=str(Path(path)))
-        return BenchmarkSuite(name=self.name, split=split, examples=examples, source=str(Path(path)))
-
-    def convert(self, row: dict, split: str) -> BenchmarkExample:
-        example_id = str(row.get("id", row.get("question_id", "unknown")))
-        full_text = row.get("full_text", row.get("context", {}))
-        if isinstance(full_text, dict):
-            section_names = full_text.get("section_name", [])
-            paragraphs = full_text.get("paragraphs", [])
-        else:
-            section_names, paragraphs = ["Paper"], [full_text]
-        passages = []
-        for index, paragraphs_in_section in enumerate(paragraphs):
-            if isinstance(paragraphs_in_section, str):
-                paragraphs_in_section = [paragraphs_in_section]
-            passages.append(Passage(
-                passage_id=f"{_safe_id(example_id)}_p{index}",
-                title=str(section_names[index]) if index < len(section_names) else f"Section {index}",
-                sentences=[sentence for paragraph in paragraphs_in_section for sentence in _sentence_split(paragraph)],
-            ))
-        answers = row.get("answers", row.get("answer", ""))
-        answer = _qasper_answer(answers)
-        evidence_strings = _qasper_evidence(answers)
-        support = []
-        for passage in passages:
-            for sentence_index, sentence in enumerate(passage.sentences):
-                if any(evidence in sentence or sentence in evidence for evidence in evidence_strings):
-                    support.append(SupportingFact(passage_id=passage.passage_id, sentence_index=sentence_index))
-        return BenchmarkExample(
-            example_id=example_id, question=row["question"], answer=answer, passages=passages,
-            supporting_facts=support, hop_count=max(1, len({x.passage_id for x in support})),
-            query_type="scientific_qa", dataset=self.name, split=split,
-            metadata={"paper_id": row.get("paper_id"), "paper_title": row.get("paper_title")},
-        )
-
-
-class MetaQAAdapter(BenchmarkAdapter):
-    name = "metaqa"
-
-    def convert(self, row: dict, split: str) -> BenchmarkExample:
-        context = row.get("context", row.get("triples", []))
-        passages = []
-        for index, triple in enumerate(context):
-            text = " | ".join(triple) if isinstance(triple, list) else str(triple)
-            passages.append(Passage(passage_id=f"meta_{index}", title="Knowledge graph", sentences=[text]))
-        hops = int(row.get("hop", row.get("hop_count", 1)))
-        return BenchmarkExample(
-            example_id=str(row.get("id", "unknown")), question=row["question"],
-            answer=row.get("answer", row.get("answers", [])), passages=passages,
-            gold_path=[str(item) for item in row.get("path", [])], hop_count=hops,
-            query_type=f"{hops}-hop", dataset=self.name, split=split,
-        )
-
-
 class UltraDomainAdapter(BenchmarkAdapter):
     name = "ultradomain"
 
@@ -275,8 +164,10 @@ class MixAdapter(BenchmarkAdapter):
     name = "mix"
 
     def convert(self, row: dict, split: str) -> BenchmarkExample:
-        sub_dataset = row.get("dataset", "mix")
-        adapter = ADAPTERS.get(sub_dataset.casefold(), HotpotAdapter())
+        sub_dataset = str(row.get("dataset", "")).casefold()
+        adapter = ADAPTERS.get(sub_dataset)
+        if adapter is None or adapter is self:
+            raise ValueError(f"unsupported dataset in mix row: {sub_dataset or 'missing'}")
         example = adapter.convert(row, split)
         example.dataset = self.name
         example.metadata["original_dataset"] = sub_dataset
@@ -285,8 +176,7 @@ class MixAdapter(BenchmarkAdapter):
 
 ADAPTERS = {
     "hotpotqa": HotpotAdapter(), "2wiki": TwoWikiAdapter(), "2wikimultihopqa": TwoWikiAdapter(),
-    "musique": MusiqueAdapter(), "qasper": QasperAdapter(), "metaqa": MetaQAAdapter(),
-    "ultradomain": UltraDomainAdapter(), "mix": MixAdapter(),
+    "musique": MusiqueAdapter(), "ultradomain": UltraDomainAdapter(), "mix": MixAdapter(),
 }
 
 

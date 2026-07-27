@@ -105,8 +105,6 @@ uv run python scripts/compare_extraction_protocols.py
 hotpotqa
 2wikimultihopqa
 musique
-qasper
-metaqa
 ultradomain
 mix
 ```
@@ -120,13 +118,13 @@ uv run python scripts/run_public_experiment.py \
   --limit 20
 ```
 
-多随机种子：
+单随机种子（固定为 42）：
 
 ```bash
 uv run python scripts/run_multi_seed_benchmark.py \
   --dataset hotpotqa \
   --input-path data/benchmarks/hotpotqa.json \
-  --seeds 13,42,73
+  --seeds 42
 ```
 
 批量配置和运行：
@@ -152,8 +150,8 @@ fact 构造器只供单元测试和 evaluator-owned passage ID 对齐使用，�
 当前严格评测协议只覆盖 HotpotQA。指标包括 passage/fact Recall@K、Precision@K、
 Hit@K、Complete@K、MRR、nDCG、Answer EM/F1、retrieval evidence、
 generated citation、Hotpot Joint F1，以及分阶段耗时和 ranking provenance。
-多 seed 使用固定测试题；统计先按 question 聚合 seed，再对所有系统对和主指标计算
-paired randomization p-value、paired Cohen's d 和 Holm 校正后的 p-value。
+评测只使用 seed 42；对所有系统对和主指标计算 paired randomization p-value、
+paired Cohen's d 和 Holm 校正后的 p-value。
 
 ## Baselines
 

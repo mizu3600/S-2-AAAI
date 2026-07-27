@@ -10,20 +10,22 @@ from s2rag.benchmarks.adapters import _read_records
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create reproducible multi-seed benchmark suites")
+    parser = argparse.ArgumentParser(description="Create reproducible single-seed benchmark suites")
     parser.add_argument("--input-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, default=Path("data/benchmarks/configured_suites"))
     parser.add_argument("--datasets", default="hotpotqa")
-    parser.add_argument("--seeds", default="13,42,73")
+    parser.add_argument("--seeds", default="42", help="Exactly one evaluation seed")
     parser.add_argument("--sample-size", type=int, default=1000)
     parser.add_argument("--sample-seed", type=int, default=2026)
     args = parser.parse_args()
 
     seeds = [int(item) for item in args.seeds.split(",") if item.strip()]
+    if len(seeds) != 1:
+        parser.error("exactly one seed is supported; use --seeds 42")
     datasets = [item.strip() for item in args.datasets.split(",") if item.strip()]
     args.output_dir.mkdir(parents=True, exist_ok=True)
     manifest = {
-        "protocol": "single_pipeline_multi_seed_v1",
+        "protocol": "single_pipeline_single_seed_v1",
         "seeds": seeds,
         "sample_size": args.sample_size,
         "sample_seed": args.sample_seed,

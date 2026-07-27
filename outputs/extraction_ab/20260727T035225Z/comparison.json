@@ -1,0 +1,3038 @@
+{
+  "run_id": "20260727T035225Z",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "max_tokens": 2048,
+  "comparison_design": "shared_current_grounding_validator",
+  "protocols": {
+    "shared_deepseek_entity_fact_v1": {
+      "protocol": "shared_deepseek_entity_fact_v1",
+      "entity_prompt_sha256": "e4d453300e42230ceefb114832f96c898805da621d4ee3052f029635cdc056e6",
+      "fact_prompt_sha256": "bb0df0a851f7edb77f52ea1b45e70faffd2f813791c582f55ee60d3f8dcc3729",
+      "summary": {
+        "entity_count": 16,
+        "expected_entity_count": 40,
+        "covered_entity_count": 16,
+        "raw_entity_count": 16,
+        "fact_count": 9,
+        "expected_fact_count": 16,
+        "covered_fact_count": 2,
+        "raw_fact_count": 15,
+        "grounded_raw_fact_count": 15,
+        "raw_unknown_argument_count": 8,
+        "nary_fact_count": 1,
+        "total_fact_arguments": 19,
+        "latency_ms": 22090.598081995267,
+        "prompt_tokens": 2484,
+        "completion_tokens": 2960,
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 436,
+        "entity_coverage": 0.4,
+        "fact_coverage": 0.125,
+        "entity_retention": 1.0,
+        "fact_retention": 0.6,
+        "raw_evidence_grounding": 1.0,
+        "nary_fact_rate": 0.1111111111111111,
+        "mean_fact_arity": 2.111111111111111
+      },
+      "cases": [
+        {
+          "case": {
+            "case_id": "encyclopedia",
+            "domain": "encyclopedia",
+            "text": "Radio City is India's first private FM radio station and started on 3 July 2001. It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+            "expected_entities": [
+              "Radio City",
+              "India",
+              "private FM radio station",
+              "3 July 2001",
+              "PlanetRadiocity.com",
+              "May 2008",
+              "Hindi",
+              "English"
+            ],
+            "expected_facts": [
+              [
+                "Radio City",
+                "India"
+              ],
+              [
+                "Radio City",
+                "private FM radio station"
+              ],
+              [
+                "Radio City",
+                "3 July 2001"
+              ],
+              [
+                "Radio City",
+                "PlanetRadiocity.com",
+                "May 2008"
+              ],
+              [
+                "Radio City",
+                "Hindi"
+              ],
+              [
+                "Radio City",
+                "English"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 2,
+            "expected_entity_count": 8,
+            "covered_entity_count": 2,
+            "raw_entity_count": 2,
+            "fact_count": 1,
+            "expected_fact_count": 6,
+            "covered_fact_count": 0,
+            "raw_fact_count": 5,
+            "grounded_raw_fact_count": 5,
+            "raw_unknown_argument_count": 4,
+            "nary_fact_count": 0,
+            "total_fact_arguments": 2,
+            "latency_ms": 4979.739625006914,
+            "prompt_tokens": 408,
+            "completion_tokens": 758,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 24
+          },
+          "covered_entities": [
+            "Radio City",
+            "PlanetRadiocity.com"
+          ],
+          "covered_facts": [],
+          "entities": [
+            {
+              "entity_id": "ent_32f7e605f7a6",
+              "canonical_name": "Radio City",
+              "aliases": [],
+              "entity_type": "fm_radio_station",
+              "description": "India's first private FM radio station",
+              "source_mentions": [
+                "chunk_encyclopedia:0:Radio City"
+              ]
+            },
+            {
+              "entity_id": "ent_1345b4b13552",
+              "canonical_name": "PlanetRadiocity.com",
+              "aliases": [],
+              "entity_type": "website",
+              "description": "Website launched by Radio City in May 2008",
+              "source_mentions": [
+                "chunk_encyclopedia:93:PlanetRadiocity.com"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_b420773d8628",
+              "predicate": "launched_website",
+              "arguments": [
+                {
+                  "role": "subject",
+                  "entity_id": "ent_32f7e605f7a6"
+                },
+                {
+                  "role": "website",
+                  "entity_id": "ent_1345b4b13552"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_encyclopedia"
+              ],
+              "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+              "confidence": 0.95
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Radio City",
+                "aliases": [],
+                "entity_type": "fm_radio_station",
+                "description": "India's first private FM radio station",
+                "mention": "Radio City"
+              },
+              {
+                "canonical_name": "PlanetRadiocity.com",
+                "aliases": [],
+                "entity_type": "website",
+                "description": "Website launched by Radio City in May 2008",
+                "mention": "PlanetRadiocity.com"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "is_first_private_fm_radio_station_in_country",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "country",
+                    "entity_id": "ent_unknown_india"
+                  }
+                ],
+                "qualifiers": [],
+                "evidence_sentence": "Radio City is India's first private FM radio station and started on 3 July 2001.",
+                "confidence": 0.95
+              },
+              {
+                "predicate": "started_on_date",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "date",
+                    "entity_id": "ent_unknown_3_july_2001"
+                  }
+                ],
+                "qualifiers": [],
+                "evidence_sentence": "Radio City is India's first private FM radio station and started on 3 July 2001.",
+                "confidence": 0.95
+              },
+              {
+                "predicate": "launched_website",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "website",
+                    "entity_id": "ent_1345b4b13552"
+                  }
+                ],
+                "qualifiers": [
+                  {
+                    "role": "launch_date",
+                    "entity_id": "ent_unknown_may_2008"
+                  }
+                ],
+                "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+                "confidence": 0.95
+              },
+              {
+                "predicate": "offers_language",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "language",
+                    "entity_id": "ent_unknown_hindi"
+                  }
+                ],
+                "qualifiers": [],
+                "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+                "confidence": 0.9
+              },
+              {
+                "predicate": "offers_language",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "language",
+                    "entity_id": "ent_unknown_english"
+                  }
+                ],
+                "qualifiers": [],
+                "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+                "confidence": 0.9
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "technical_evaluation",
+            "domain": "computer_science",
+            "text": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions. It reported an 8% recall gain under a zero-shot setting.",
+            "expected_entities": [
+              "2024",
+              "Atlas team",
+              "S2RAG",
+              "HotpotQA",
+              "500 questions",
+              "8%",
+              "recall",
+              "zero-shot setting"
+            ],
+            "expected_facts": [
+              [
+                "Atlas team",
+                "S2RAG",
+                "HotpotQA",
+                "500 questions",
+                "2024"
+              ],
+              [
+                "S2RAG",
+                "8%",
+                "recall",
+                "zero-shot setting"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 3,
+            "expected_entity_count": 8,
+            "covered_entity_count": 3,
+            "raw_entity_count": 3,
+            "fact_count": 2,
+            "expected_fact_count": 2,
+            "covered_fact_count": 0,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 1,
+            "total_fact_arguments": 5,
+            "latency_ms": 3273.8445410504937,
+            "prompt_tokens": 441,
+            "completion_tokens": 465,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 57
+          },
+          "covered_entities": [
+            "Atlas team",
+            "S2RAG",
+            "HotpotQA"
+          ],
+          "covered_facts": [],
+          "entities": [
+            {
+              "entity_id": "ent_ba094a15d940",
+              "canonical_name": "Atlas team",
+              "aliases": [],
+              "entity_type": "team",
+              "description": "The team that evaluated S2RAG on HotpotQA.",
+              "source_mentions": [
+                "chunk_technical_evaluation:13:Atlas team"
+              ]
+            },
+            {
+              "entity_id": "ent_11b1d577650c",
+              "canonical_name": "S2RAG",
+              "aliases": [],
+              "entity_type": "system",
+              "description": "A system evaluated on HotpotQA.",
+              "source_mentions": [
+                "chunk_technical_evaluation:34:S2RAG"
+              ]
+            },
+            {
+              "entity_id": "ent_0eb87e53bf28",
+              "canonical_name": "HotpotQA",
+              "aliases": [],
+              "entity_type": "dataset",
+              "description": "A dataset used for evaluation.",
+              "source_mentions": [
+                "chunk_technical_evaluation:43:HotpotQA"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_4f9849353daa",
+              "predicate": "evaluate",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_ba094a15d940"
+                },
+                {
+                  "role": "object",
+                  "entity_id": "ent_11b1d577650c"
+                },
+                {
+                  "role": "dataset",
+                  "entity_id": "ent_0eb87e53bf28"
+                }
+              ],
+              "qualifiers": {
+                "year": "2024",
+                "num_questions": 500.0
+              },
+              "evidence_chunk_ids": [
+                "chunk_technical_evaluation"
+              ],
+              "evidence_sentence": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions.",
+              "confidence": 1.0
+            },
+            {
+              "hyperedge_id": "fact_1185cc92318b",
+              "predicate": "report",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_ba094a15d940"
+                },
+                {
+                  "role": "object",
+                  "entity_id": "ent_11b1d577650c"
+                }
+              ],
+              "qualifiers": {
+                "metric": "recall gain",
+                "value": "8%",
+                "setting": "zero-shot"
+              },
+              "evidence_chunk_ids": [
+                "chunk_technical_evaluation"
+              ],
+              "evidence_sentence": "It reported an 8% recall gain under a zero-shot setting.",
+              "confidence": 1.0
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Atlas team",
+                "aliases": [
+                  "Atlas team"
+                ],
+                "entity_type": "team",
+                "description": "The team that evaluated S2RAG on HotpotQA.",
+                "mention": "Atlas team"
+              },
+              {
+                "canonical_name": "S2RAG",
+                "aliases": [
+                  "S2RAG"
+                ],
+                "entity_type": "system",
+                "description": "A system evaluated on HotpotQA.",
+                "mention": "S2RAG"
+              },
+              {
+                "canonical_name": "HotpotQA",
+                "aliases": [
+                  "HotpotQA"
+                ],
+                "entity_type": "dataset",
+                "description": "A dataset used for evaluation.",
+                "mention": "HotpotQA"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "evaluate",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_ba094a15d940"
+                  },
+                  {
+                    "role": "object",
+                    "entity_id": "ent_11b1d577650c"
+                  },
+                  {
+                    "role": "dataset",
+                    "entity_id": "ent_0eb87e53bf28"
+                  }
+                ],
+                "qualifiers": {
+                  "year": "2024",
+                  "num_questions": 500
+                },
+                "evidence_sentence": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions.",
+                "confidence": 1.0
+              },
+              {
+                "predicate": "report",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_ba094a15d940"
+                  },
+                  {
+                    "role": "object",
+                    "entity_id": "ent_11b1d577650c"
+                  }
+                ],
+                "qualifiers": {
+                  "metric": "recall gain",
+                  "value": "8%",
+                  "setting": "zero-shot"
+                },
+                "evidence_sentence": "It reported an 8% recall gain under a zero-shot setting.",
+                "confidence": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "clinical_trial",
+            "domain": "medicine",
+            "text": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+            "expected_entities": [
+              "12-week trial",
+              "metformin",
+              "HbA1c",
+              "1.2 percentage points",
+              "240 adults",
+              "type 2 diabetes",
+              "placebo"
+            ],
+            "expected_facts": [
+              [
+                "metformin",
+                "HbA1c",
+                "1.2 percentage points",
+                "240 adults",
+                "type 2 diabetes",
+                "placebo"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 4,
+            "expected_entity_count": 7,
+            "covered_entity_count": 4,
+            "raw_entity_count": 4,
+            "fact_count": 1,
+            "expected_fact_count": 1,
+            "covered_fact_count": 0,
+            "raw_fact_count": 1,
+            "grounded_raw_fact_count": 1,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 0,
+            "total_fact_arguments": 2,
+            "latency_ms": 3513.8021259917878,
+            "prompt_tokens": 487,
+            "completion_tokens": 463,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 103
+          },
+          "covered_entities": [
+            "metformin",
+            "HbA1c",
+            "type 2 diabetes",
+            "placebo"
+          ],
+          "covered_facts": [],
+          "entities": [
+            {
+              "entity_id": "ent_c85e9a204898",
+              "canonical_name": "metformin",
+              "aliases": [],
+              "entity_type": "drug",
+              "description": "A medication used to treat type 2 diabetes.",
+              "source_mentions": [
+                "chunk_clinical_trial:24:metformin"
+              ]
+            },
+            {
+              "entity_id": "ent_591482cbe3aa",
+              "canonical_name": "HbA1c",
+              "aliases": [],
+              "entity_type": "biomarker",
+              "description": "Glycated hemoglobin, a measure of average blood glucose levels over the past 2-3 months.",
+              "source_mentions": [
+                "chunk_clinical_trial:42:HbA1c"
+              ]
+            },
+            {
+              "entity_id": "ent_5e60a92be031",
+              "canonical_name": "type 2 diabetes",
+              "aliases": [],
+              "entity_type": "disease",
+              "description": "A chronic condition characterized by insulin resistance and high blood sugar.",
+              "source_mentions": [
+                "chunk_clinical_trial:92:type 2 diabetes"
+              ]
+            },
+            {
+              "entity_id": "ent_595a9c126ae6",
+              "canonical_name": "placebo",
+              "aliases": [],
+              "entity_type": "treatment",
+              "description": "An inactive substance used as a control in clinical trials.",
+              "source_mentions": [
+                "chunk_clinical_trial:123:placebo"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_45e2b4e22bc5",
+              "predicate": "reduces",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_c85e9a204898"
+                },
+                {
+                  "role": "patient",
+                  "entity_id": "ent_591482cbe3aa"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_clinical_trial"
+              ],
+              "evidence_sentence": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+              "confidence": 0.95
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "metformin",
+                "aliases": [
+                  "metformin"
+                ],
+                "entity_type": "drug",
+                "description": "A medication used to treat type 2 diabetes.",
+                "mention": "metformin"
+              },
+              {
+                "canonical_name": "HbA1c",
+                "aliases": [
+                  "HbA1c"
+                ],
+                "entity_type": "biomarker",
+                "description": "Glycated hemoglobin, a measure of average blood glucose levels over the past 2-3 months.",
+                "mention": "HbA1c"
+              },
+              {
+                "canonical_name": "type 2 diabetes",
+                "aliases": [
+                  "type 2 diabetes"
+                ],
+                "entity_type": "disease",
+                "description": "A chronic condition characterized by insulin resistance and high blood sugar.",
+                "mention": "type 2 diabetes"
+              },
+              {
+                "canonical_name": "placebo",
+                "aliases": [
+                  "placebo"
+                ],
+                "entity_type": "treatment",
+                "description": "An inactive substance used as a control in clinical trials.",
+                "mention": "placebo"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "reduces",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_c85e9a204898"
+                  },
+                  {
+                    "role": "patient",
+                    "entity_id": "ent_591482cbe3aa"
+                  }
+                ],
+                "qualifiers": [
+                  {
+                    "role": "by",
+                    "value": "1.2 percentage points"
+                  },
+                  {
+                    "role": "in",
+                    "value": "240 adults with type 2 diabetes"
+                  },
+                  {
+                    "role": "compared_with",
+                    "entity_id": "ent_595a9c126ae6"
+                  },
+                  {
+                    "role": "duration",
+                    "value": "12-week trial"
+                  }
+                ],
+                "evidence_sentence": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+                "confidence": 0.95
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "acquisition",
+            "domain": "business",
+            "text": "On 5 March 2025, Orion Labs acquired Nova Analytics for $42 million in Shanghai. Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+            "expected_entities": [
+              "5 March 2025",
+              "Orion Labs",
+              "Nova Analytics",
+              "$42 million",
+              "Shanghai",
+              "Mei Chen",
+              "Luis Park"
+            ],
+            "expected_facts": [
+              [
+                "Orion Labs",
+                "Nova Analytics",
+                "$42 million",
+                "Shanghai",
+                "5 March 2025"
+              ],
+              [
+                "Mei Chen",
+                "Orion Labs"
+              ],
+              [
+                "Luis Park",
+                "Nova Analytics"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 5,
+            "expected_entity_count": 7,
+            "covered_entity_count": 5,
+            "raw_entity_count": 5,
+            "fact_count": 3,
+            "expected_fact_count": 3,
+            "covered_fact_count": 2,
+            "raw_fact_count": 3,
+            "grounded_raw_fact_count": 3,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 0,
+            "total_fact_arguments": 6,
+            "latency_ms": 4412.2039579669945,
+            "prompt_tokens": 519,
+            "completion_tokens": 626,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 135
+          },
+          "covered_entities": [
+            "Orion Labs",
+            "Nova Analytics",
+            "Shanghai",
+            "Mei Chen",
+            "Luis Park"
+          ],
+          "covered_facts": [
+            [
+              "Mei Chen",
+              "Orion Labs"
+            ],
+            [
+              "Luis Park",
+              "Nova Analytics"
+            ]
+          ],
+          "entities": [
+            {
+              "entity_id": "ent_c616143db09b",
+              "canonical_name": "Orion Labs",
+              "aliases": [],
+              "entity_type": "company",
+              "description": "Acquiring company in the acquisition",
+              "source_mentions": [
+                "chunk_acquisition:17:Orion Labs",
+                "chunk_acquisition:98:Orion Labs"
+              ]
+            },
+            {
+              "entity_id": "ent_95a8830ac040",
+              "canonical_name": "Nova Analytics",
+              "aliases": [],
+              "entity_type": "company",
+              "description": "Acquired company in the acquisition",
+              "source_mentions": [
+                "chunk_acquisition:138:Nova Analytics",
+                "chunk_acquisition:37:Nova Analytics"
+              ]
+            },
+            {
+              "entity_id": "ent_d78477abd97c",
+              "canonical_name": "Mei Chen",
+              "aliases": [],
+              "entity_type": "person",
+              "description": "Advisor for Orion Labs",
+              "source_mentions": [
+                "chunk_acquisition:81:Mei Chen"
+              ]
+            },
+            {
+              "entity_id": "ent_537eacf7fee9",
+              "canonical_name": "Luis Park",
+              "aliases": [],
+              "entity_type": "person",
+              "description": "Representative for Nova Analytics",
+              "source_mentions": [
+                "chunk_acquisition:116:Luis Park"
+              ]
+            },
+            {
+              "entity_id": "ent_25dcdf17d0bb",
+              "canonical_name": "Shanghai",
+              "aliases": [],
+              "entity_type": "location",
+              "description": "City where the acquisition took place",
+              "source_mentions": [
+                "chunk_acquisition:71:Shanghai"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_f8f04615527d",
+              "predicate": "acquisition",
+              "arguments": [
+                {
+                  "role": "acquirer",
+                  "entity_id": "ent_c616143db09b"
+                },
+                {
+                  "role": "acquiree",
+                  "entity_id": "ent_95a8830ac040"
+                }
+              ],
+              "qualifiers": {
+                "date": "5 March 2025",
+                "price": "$42 million",
+                "location": "ent_25dcdf17d0bb"
+              },
+              "evidence_chunk_ids": [
+                "chunk_acquisition"
+              ],
+              "evidence_sentence": "On 5 March 2025, Orion Labs acquired Nova Analytics for $42 million in Shanghai.",
+              "confidence": 1.0
+            },
+            {
+              "hyperedge_id": "fact_89de31ba9e3f",
+              "predicate": "advised",
+              "arguments": [
+                {
+                  "role": "advisor",
+                  "entity_id": "ent_d78477abd97c"
+                },
+                {
+                  "role": "client",
+                  "entity_id": "ent_c616143db09b"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_acquisition"
+              ],
+              "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+              "confidence": 1.0
+            },
+            {
+              "hyperedge_id": "fact_d82040d0e058",
+              "predicate": "represented",
+              "arguments": [
+                {
+                  "role": "representative",
+                  "entity_id": "ent_537eacf7fee9"
+                },
+                {
+                  "role": "client",
+                  "entity_id": "ent_95a8830ac040"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_acquisition"
+              ],
+              "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+              "confidence": 1.0
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Orion Labs",
+                "aliases": [
+                  "Orion Labs"
+                ],
+                "entity_type": "company",
+                "description": "Acquiring company in the acquisition",
+                "mention": "Orion Labs"
+              },
+              {
+                "canonical_name": "Nova Analytics",
+                "aliases": [
+                  "Nova Analytics"
+                ],
+                "entity_type": "company",
+                "description": "Acquired company in the acquisition",
+                "mention": "Nova Analytics"
+              },
+              {
+                "canonical_name": "Mei Chen",
+                "aliases": [
+                  "Mei Chen"
+                ],
+                "entity_type": "person",
+                "description": "Advisor for Orion Labs",
+                "mention": "Mei Chen"
+              },
+              {
+                "canonical_name": "Luis Park",
+                "aliases": [
+                  "Luis Park"
+                ],
+                "entity_type": "person",
+                "description": "Representative for Nova Analytics",
+                "mention": "Luis Park"
+              },
+              {
+                "canonical_name": "Shanghai",
+                "aliases": [
+                  "Shanghai"
+                ],
+                "entity_type": "location",
+                "description": "City where the acquisition took place",
+                "mention": "Shanghai"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "acquisition",
+                "arguments": [
+                  {
+                    "role": "acquirer",
+                    "entity_id": "ent_c616143db09b"
+                  },
+                  {
+                    "role": "acquiree",
+                    "entity_id": "ent_95a8830ac040"
+                  }
+                ],
+                "qualifiers": {
+                  "date": "5 March 2025",
+                  "price": "$42 million",
+                  "location": "ent_25dcdf17d0bb"
+                },
+                "evidence_sentence": "On 5 March 2025, Orion Labs acquired Nova Analytics for $42 million in Shanghai.",
+                "confidence": 1.0
+              },
+              {
+                "predicate": "advised",
+                "arguments": [
+                  {
+                    "role": "advisor",
+                    "entity_id": "ent_d78477abd97c"
+                  },
+                  {
+                    "role": "client",
+                    "entity_id": "ent_c616143db09b"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+                "confidence": 1.0
+              },
+              {
+                "predicate": "represented",
+                "arguments": [
+                  {
+                    "role": "representative",
+                    "entity_id": "ent_537eacf7fee9"
+                  },
+                  {
+                    "role": "client",
+                    "entity_id": "ent_95a8830ac040"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+                "confidence": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "no_proper_noun",
+            "domain": "general_science",
+            "text": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+            "expected_entities": [
+              "Water",
+              "100 degrees Celsius",
+              "standard atmospheric pressure",
+              "0 degrees Celsius"
+            ],
+            "expected_facts": [
+              [
+                "Water",
+                "100 degrees Celsius",
+                "standard atmospheric pressure"
+              ],
+              [
+                "Water",
+                "0 degrees Celsius"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 0,
+            "expected_entity_count": 4,
+            "covered_entity_count": 0,
+            "raw_entity_count": 0,
+            "fact_count": 0,
+            "expected_fact_count": 2,
+            "covered_fact_count": 0,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 4,
+            "nary_fact_count": 0,
+            "total_fact_arguments": 0,
+            "latency_ms": 2395.4492079792544,
+            "prompt_tokens": 266,
+            "completion_tokens": 228,
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 10
+          },
+          "covered_entities": [],
+          "covered_facts": [],
+          "entities": [],
+          "facts": [],
+          "raw_entity_payload": {
+            "entities": []
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "boils_at",
+                "arguments": [
+                  {
+                    "role": "substance",
+                    "entity_id": "water"
+                  },
+                  {
+                    "role": "temperature",
+                    "entity_id": "100_degrees_celsius"
+                  }
+                ],
+                "qualifiers": [
+                  {
+                    "role": "condition",
+                    "entity_id": "standard_atmospheric_pressure"
+                  }
+                ],
+                "evidence_sentence": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+                "confidence": 1.0
+              },
+              {
+                "predicate": "freezes_at",
+                "arguments": [
+                  {
+                    "role": "substance",
+                    "entity_id": "water"
+                  },
+                  {
+                    "role": "temperature",
+                    "entity_id": "0_degrees_celsius"
+                  }
+                ],
+                "qualifiers": [],
+                "evidence_sentence": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+                "confidence": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "correlation",
+            "domain": "observational_research",
+            "text": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+            "expected_entities": [
+              "Feature A",
+              "15%",
+              "latency",
+              "Feature B",
+              "observational study",
+              "causation"
+            ],
+            "expected_facts": [
+              [
+                "Feature A",
+                "15%",
+                "latency",
+                "Feature B"
+              ],
+              [
+                "observational study",
+                "causation"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 2,
+            "expected_entity_count": 6,
+            "covered_entity_count": 2,
+            "raw_entity_count": 2,
+            "fact_count": 2,
+            "expected_fact_count": 2,
+            "covered_fact_count": 0,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 0,
+            "total_fact_arguments": 4,
+            "latency_ms": 3515.558623999823,
+            "prompt_tokens": 363,
+            "completion_tokens": 420,
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 107
+          },
+          "covered_entities": [
+            "Feature A",
+            "Feature B"
+          ],
+          "covered_facts": [],
+          "entities": [
+            {
+              "entity_id": "ent_eb2b518fa7ad",
+              "canonical_name": "Feature A",
+              "aliases": [],
+              "entity_type": "feature",
+              "description": "A feature that users showed 15% lower latency compared to Feature B.",
+              "source_mentions": [
+                "chunk_correlation:9:Feature A"
+              ]
+            },
+            {
+              "entity_id": "ent_317d0f7b33bd",
+              "canonical_name": "Feature B",
+              "aliases": [],
+              "entity_type": "feature",
+              "description": "A feature that users showed 15% higher latency compared to Feature A.",
+              "source_mentions": [
+                "chunk_correlation:58:Feature B"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_6e9c395c145d",
+              "predicate": "has_lower_latency",
+              "arguments": [
+                {
+                  "role": "subject",
+                  "entity_id": "ent_eb2b518fa7ad"
+                },
+                {
+                  "role": "object",
+                  "entity_id": "ent_317d0f7b33bd"
+                }
+              ],
+              "qualifiers": {
+                "percentage": 15.0,
+                "metric": "latency"
+              },
+              "evidence_chunk_ids": [
+                "chunk_correlation"
+              ],
+              "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+              "confidence": 0.9
+            },
+            {
+              "hyperedge_id": "fact_7ac36f09b97f",
+              "predicate": "is_observational_study",
+              "arguments": [
+                {
+                  "role": "subject",
+                  "entity_id": "ent_eb2b518fa7ad"
+                },
+                {
+                  "role": "subject",
+                  "entity_id": "ent_317d0f7b33bd"
+                }
+              ],
+              "qualifiers": {
+                "causation_not_established": "true"
+              },
+              "evidence_chunk_ids": [
+                "chunk_correlation"
+              ],
+              "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+              "confidence": 0.95
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Feature A",
+                "aliases": [
+                  "Feature A"
+                ],
+                "entity_type": "feature",
+                "description": "A feature that users showed 15% lower latency compared to Feature B.",
+                "mention": "Feature A"
+              },
+              {
+                "canonical_name": "Feature B",
+                "aliases": [
+                  "Feature B"
+                ],
+                "entity_type": "feature",
+                "description": "A feature that users showed 15% higher latency compared to Feature A.",
+                "mention": "Feature B"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "has_lower_latency",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_eb2b518fa7ad"
+                  },
+                  {
+                    "role": "object",
+                    "entity_id": "ent_317d0f7b33bd"
+                  }
+                ],
+                "qualifiers": {
+                  "percentage": 15,
+                  "metric": "latency"
+                },
+                "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+                "confidence": 0.9
+              },
+              {
+                "predicate": "is_observational_study",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_eb2b518fa7ad"
+                  },
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_317d0f7b33bd"
+                  }
+                ],
+                "qualifiers": {
+                  "causation_not_established": true
+                },
+                "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+                "confidence": 0.95
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "shared_deepseek_openie_nary_v2": {
+      "protocol": "shared_deepseek_openie_nary_v2",
+      "entity_prompt_sha256": "d81b2b7af1ef0c6f7ccccc29d2300d9afa989ac0a892e133999aff901e4b333e",
+      "fact_prompt_sha256": "7c3f573ed9274b6567addd190f631ba7ed6b376b8665b43dd9d9d165771795e1",
+      "summary": {
+        "entity_count": 36,
+        "expected_entity_count": 40,
+        "covered_entity_count": 37,
+        "raw_entity_count": 37,
+        "fact_count": 14,
+        "expected_fact_count": 16,
+        "covered_fact_count": 12,
+        "raw_fact_count": 15,
+        "grounded_raw_fact_count": 15,
+        "raw_unknown_argument_count": 0,
+        "nary_fact_count": 7,
+        "total_fact_arguments": 44,
+        "latency_ms": 27554.158665880095,
+        "prompt_tokens": 12808,
+        "completion_tokens": 4043,
+        "prompt_cache_hit_tokens": 6400,
+        "prompt_cache_miss_tokens": 6408,
+        "entity_coverage": 0.925,
+        "fact_coverage": 0.75,
+        "entity_retention": 0.972972972972973,
+        "fact_retention": 0.9333333333333333,
+        "raw_evidence_grounding": 1.0,
+        "nary_fact_rate": 0.5,
+        "mean_fact_arity": 3.142857142857143
+      },
+      "cases": [
+        {
+          "case": {
+            "case_id": "encyclopedia",
+            "domain": "encyclopedia",
+            "text": "Radio City is India's first private FM radio station and started on 3 July 2001. It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+            "expected_entities": [
+              "Radio City",
+              "India",
+              "private FM radio station",
+              "3 July 2001",
+              "PlanetRadiocity.com",
+              "May 2008",
+              "Hindi",
+              "English"
+            ],
+            "expected_facts": [
+              [
+                "Radio City",
+                "India"
+              ],
+              [
+                "Radio City",
+                "private FM radio station"
+              ],
+              [
+                "Radio City",
+                "3 July 2001"
+              ],
+              [
+                "Radio City",
+                "PlanetRadiocity.com",
+                "May 2008"
+              ],
+              [
+                "Radio City",
+                "Hindi"
+              ],
+              [
+                "Radio City",
+                "English"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 6,
+            "expected_entity_count": 8,
+            "covered_entity_count": 6,
+            "raw_entity_count": 7,
+            "fact_count": 4,
+            "expected_fact_count": 6,
+            "covered_fact_count": 4,
+            "raw_fact_count": 4,
+            "grounded_raw_fact_count": 4,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 1,
+            "total_fact_arguments": 9,
+            "latency_ms": 5407.642999954987,
+            "prompt_tokens": 2153,
+            "completion_tokens": 854,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 2153
+          },
+          "covered_entities": [
+            "Radio City",
+            "India",
+            "3 July 2001",
+            "PlanetRadiocity.com",
+            "May 2008",
+            "English"
+          ],
+          "covered_facts": [
+            [
+              "Radio City",
+              "India"
+            ],
+            [
+              "Radio City",
+              "3 July 2001"
+            ],
+            [
+              "Radio City",
+              "PlanetRadiocity.com",
+              "May 2008"
+            ],
+            [
+              "Radio City",
+              "English"
+            ]
+          ],
+          "entities": [
+            {
+              "entity_id": "ent_32f7e605f7a6",
+              "canonical_name": "Radio City",
+              "aliases": [],
+              "entity_type": "fm_radio_station",
+              "description": "India's first private FM radio station.",
+              "source_mentions": [
+                "chunk_encyclopedia:0:Radio City"
+              ]
+            },
+            {
+              "entity_id": "ent_55659eed45d8",
+              "canonical_name": "India",
+              "aliases": [],
+              "entity_type": "country",
+              "description": "Country where Radio City operates.",
+              "source_mentions": [
+                "chunk_encyclopedia:14:India"
+              ]
+            },
+            {
+              "entity_id": "ent_0788942ed3a0",
+              "canonical_name": "3 July 2001",
+              "aliases": [],
+              "entity_type": "date",
+              "description": "Launch date of Radio City.",
+              "source_mentions": [
+                "chunk_encyclopedia:68:3 July 2001"
+              ]
+            },
+            {
+              "entity_id": "ent_1345b4b13552",
+              "canonical_name": "PlanetRadiocity.com",
+              "aliases": [],
+              "entity_type": "website",
+              "description": "Website launched by Radio City in May 2008.",
+              "source_mentions": [
+                "chunk_encyclopedia:93:PlanetRadiocity.com"
+              ]
+            },
+            {
+              "entity_id": "ent_89e5b642f548",
+              "canonical_name": "May 2008",
+              "aliases": [],
+              "entity_type": "date",
+              "description": "Launch month and year of PlanetRadiocity.com.",
+              "source_mentions": [
+                "chunk_encyclopedia:116:May 2008"
+              ]
+            },
+            {
+              "entity_id": "ent_a4e951e90506",
+              "canonical_name": "English songs",
+              "aliases": [],
+              "entity_type": "music_genre",
+              "description": "One of the song languages offered by Radio City.",
+              "source_mentions": [
+                "chunk_encyclopedia:146:English songs"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_8ef428fc8c60",
+              "predicate": "is first private FM radio station of",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_32f7e605f7a6"
+                },
+                {
+                  "role": "location",
+                  "entity_id": "ent_55659eed45d8"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_encyclopedia"
+              ],
+              "evidence_sentence": "Radio City is India's first private FM radio station and started on 3 July 2001.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_913de3f4b86a",
+              "predicate": "started on",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_32f7e605f7a6"
+                },
+                {
+                  "role": "time",
+                  "entity_id": "ent_0788942ed3a0"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_encyclopedia"
+              ],
+              "evidence_sentence": "Radio City is India's first private FM radio station and started on 3 July 2001.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_ab75e2b9e4cf",
+              "predicate": "launched",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_32f7e605f7a6"
+                },
+                {
+                  "role": "website",
+                  "entity_id": "ent_1345b4b13552"
+                },
+                {
+                  "role": "time",
+                  "entity_id": "ent_89e5b642f548"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_encyclopedia"
+              ],
+              "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_a221c335b2f5",
+              "predicate": "offers",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_32f7e605f7a6"
+                },
+                {
+                  "role": "content",
+                  "entity_id": "ent_a4e951e90506"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_encyclopedia"
+              ],
+              "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+              "confidence": 0.95
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Radio City",
+                "aliases": [],
+                "entity_type": "fm_radio_station",
+                "description": "India's first private FM radio station.",
+                "mention": "Radio City"
+              },
+              {
+                "canonical_name": "India",
+                "aliases": [],
+                "entity_type": "country",
+                "description": "Country where Radio City operates.",
+                "mention": "India"
+              },
+              {
+                "canonical_name": "3 July 2001",
+                "aliases": [],
+                "entity_type": "date",
+                "description": "Launch date of Radio City.",
+                "mention": "3 July 2001"
+              },
+              {
+                "canonical_name": "PlanetRadiocity.com",
+                "aliases": [],
+                "entity_type": "website",
+                "description": "Website launched by Radio City in May 2008.",
+                "mention": "PlanetRadiocity.com"
+              },
+              {
+                "canonical_name": "May 2008",
+                "aliases": [],
+                "entity_type": "date",
+                "description": "Launch month and year of PlanetRadiocity.com.",
+                "mention": "May 2008"
+              },
+              {
+                "canonical_name": "Hindi songs",
+                "aliases": [],
+                "entity_type": "music_genre",
+                "description": "One of the song languages offered by Radio City.",
+                "mention": "Hindi songs"
+              },
+              {
+                "canonical_name": "English songs",
+                "aliases": [],
+                "entity_type": "music_genre",
+                "description": "One of the song languages offered by Radio City.",
+                "mention": "English songs"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "is first private FM radio station of",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "location",
+                    "entity_id": "ent_55659eed45d8"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Radio City is India's first private FM radio station and started on 3 July 2001.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "started on",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "time",
+                    "entity_id": "ent_0788942ed3a0"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Radio City is India's first private FM radio station and started on 3 July 2001.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "launched",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "website",
+                    "entity_id": "ent_1345b4b13552"
+                  },
+                  {
+                    "role": "time",
+                    "entity_id": "ent_89e5b642f548"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "offers",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_32f7e605f7a6"
+                  },
+                  {
+                    "role": "content",
+                    "entity_id": "ent_a4e951e90506"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "It launched PlanetRadiocity.com in May 2008 and offers Hindi and English songs.",
+                "confidence": 0.95
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "technical_evaluation",
+            "domain": "computer_science",
+            "text": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions. It reported an 8% recall gain under a zero-shot setting.",
+            "expected_entities": [
+              "2024",
+              "Atlas team",
+              "S2RAG",
+              "HotpotQA",
+              "500 questions",
+              "8%",
+              "recall",
+              "zero-shot setting"
+            ],
+            "expected_facts": [
+              [
+                "Atlas team",
+                "S2RAG",
+                "HotpotQA",
+                "500 questions",
+                "2024"
+              ],
+              [
+                "S2RAG",
+                "8%",
+                "recall",
+                "zero-shot setting"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 8,
+            "expected_entity_count": 8,
+            "covered_entity_count": 8,
+            "raw_entity_count": 8,
+            "fact_count": 2,
+            "expected_fact_count": 2,
+            "covered_fact_count": 2,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 2,
+            "total_fact_arguments": 10,
+            "latency_ms": 5525.422249978874,
+            "prompt_tokens": 2253,
+            "completion_tokens": 797,
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 1997
+          },
+          "covered_entities": [
+            "2024",
+            "Atlas team",
+            "S2RAG",
+            "HotpotQA",
+            "500 questions",
+            "8%",
+            "recall",
+            "zero-shot setting"
+          ],
+          "covered_facts": [
+            [
+              "Atlas team",
+              "S2RAG",
+              "HotpotQA",
+              "500 questions",
+              "2024"
+            ],
+            [
+              "S2RAG",
+              "8%",
+              "recall",
+              "zero-shot setting"
+            ]
+          ],
+          "entities": [
+            {
+              "entity_id": "ent_65699d2b7a5e",
+              "canonical_name": "2024",
+              "aliases": [],
+              "entity_type": "date",
+              "description": "The evaluation year.",
+              "source_mentions": [
+                "chunk_technical_evaluation:3:2024"
+              ]
+            },
+            {
+              "entity_id": "ent_1c0f2810b062",
+              "canonical_name": "Atlas team",
+              "aliases": [],
+              "entity_type": "research_team",
+              "description": "The team that performed the evaluation.",
+              "source_mentions": [
+                "chunk_technical_evaluation:13:Atlas team"
+              ]
+            },
+            {
+              "entity_id": "ent_11b1d577650c",
+              "canonical_name": "S2RAG",
+              "aliases": [],
+              "entity_type": "system",
+              "description": "The system that was evaluated.",
+              "source_mentions": [
+                "chunk_technical_evaluation:34:S2RAG"
+              ]
+            },
+            {
+              "entity_id": "ent_9ded4fd5a78b",
+              "canonical_name": "HotpotQA",
+              "aliases": [],
+              "entity_type": "benchmark",
+              "description": "The benchmark used for evaluation.",
+              "source_mentions": [
+                "chunk_technical_evaluation:43:HotpotQA"
+              ]
+            },
+            {
+              "entity_id": "ent_3cbffd1ff85f",
+              "canonical_name": "500 questions",
+              "aliases": [],
+              "entity_type": "sample_size",
+              "description": "The evaluation sample size.",
+              "source_mentions": [
+                "chunk_technical_evaluation:58:500 questions"
+              ]
+            },
+            {
+              "entity_id": "ent_072c579cebb0",
+              "canonical_name": "recall",
+              "aliases": [],
+              "entity_type": "evaluation_metric",
+              "description": "The metric reported as improved.",
+              "source_mentions": [
+                "chunk_technical_evaluation:91:recall"
+              ]
+            },
+            {
+              "entity_id": "ent_66a89ab53183",
+              "canonical_name": "8% recall gain",
+              "aliases": [
+                "8%"
+              ],
+              "entity_type": "relative_change",
+              "description": "The reported recall improvement.",
+              "source_mentions": [
+                "chunk_technical_evaluation:88:8%",
+                "chunk_technical_evaluation:88:8% recall gain"
+              ]
+            },
+            {
+              "entity_id": "ent_f4f22e3272b7",
+              "canonical_name": "zero-shot setting",
+              "aliases": [],
+              "entity_type": "evaluation_setting",
+              "description": "The setting in which recall improved.",
+              "source_mentions": [
+                "chunk_technical_evaluation:111:zero-shot setting"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_f577c2d62743",
+              "predicate": "evaluated",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_1c0f2810b062"
+                },
+                {
+                  "role": "system",
+                  "entity_id": "ent_11b1d577650c"
+                },
+                {
+                  "role": "dataset",
+                  "entity_id": "ent_9ded4fd5a78b"
+                },
+                {
+                  "role": "sample_size",
+                  "entity_id": "ent_3cbffd1ff85f"
+                },
+                {
+                  "role": "time",
+                  "entity_id": "ent_65699d2b7a5e"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_technical_evaluation"
+              ],
+              "evidence_sentence": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_25b8fecdf586",
+              "predicate": "reported",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_1c0f2810b062"
+                },
+                {
+                  "role": "system",
+                  "entity_id": "ent_11b1d577650c"
+                },
+                {
+                  "role": "metric",
+                  "entity_id": "ent_072c579cebb0"
+                },
+                {
+                  "role": "amount",
+                  "entity_id": "ent_66a89ab53183"
+                },
+                {
+                  "role": "condition",
+                  "entity_id": "ent_f4f22e3272b7"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_technical_evaluation"
+              ],
+              "evidence_sentence": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions. It reported an 8% recall gain under a zero-shot setting.",
+              "confidence": 0.97
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "2024",
+                "aliases": [],
+                "entity_type": "date",
+                "description": "The evaluation year.",
+                "mention": "2024"
+              },
+              {
+                "canonical_name": "Atlas team",
+                "aliases": [],
+                "entity_type": "research_team",
+                "description": "The team that performed the evaluation.",
+                "mention": "Atlas team"
+              },
+              {
+                "canonical_name": "S2RAG",
+                "aliases": [],
+                "entity_type": "system",
+                "description": "The system that was evaluated.",
+                "mention": "S2RAG"
+              },
+              {
+                "canonical_name": "HotpotQA",
+                "aliases": [],
+                "entity_type": "benchmark",
+                "description": "The benchmark used for evaluation.",
+                "mention": "HotpotQA"
+              },
+              {
+                "canonical_name": "500 questions",
+                "aliases": [],
+                "entity_type": "sample_size",
+                "description": "The evaluation sample size.",
+                "mention": "500 questions"
+              },
+              {
+                "canonical_name": "recall",
+                "aliases": [],
+                "entity_type": "evaluation_metric",
+                "description": "The metric reported as improved.",
+                "mention": "recall"
+              },
+              {
+                "canonical_name": "8% recall gain",
+                "aliases": [
+                  "8%"
+                ],
+                "entity_type": "relative_change",
+                "description": "The reported recall improvement.",
+                "mention": "8% recall gain"
+              },
+              {
+                "canonical_name": "zero-shot setting",
+                "aliases": [],
+                "entity_type": "evaluation_setting",
+                "description": "The setting in which recall improved.",
+                "mention": "zero-shot setting"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "evaluated",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_1c0f2810b062"
+                  },
+                  {
+                    "role": "system",
+                    "entity_id": "ent_11b1d577650c"
+                  },
+                  {
+                    "role": "dataset",
+                    "entity_id": "ent_9ded4fd5a78b"
+                  },
+                  {
+                    "role": "sample_size",
+                    "entity_id": "ent_3cbffd1ff85f"
+                  },
+                  {
+                    "role": "time",
+                    "entity_id": "ent_65699d2b7a5e"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "reported",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_1c0f2810b062"
+                  },
+                  {
+                    "role": "system",
+                    "entity_id": "ent_11b1d577650c"
+                  },
+                  {
+                    "role": "metric",
+                    "entity_id": "ent_072c579cebb0"
+                  },
+                  {
+                    "role": "amount",
+                    "entity_id": "ent_66a89ab53183"
+                  },
+                  {
+                    "role": "condition",
+                    "entity_id": "ent_f4f22e3272b7"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "In 2024, the Atlas team evaluated S2RAG on HotpotQA using 500 questions. It reported an 8% recall gain under a zero-shot setting.",
+                "confidence": 0.97
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "clinical_trial",
+            "domain": "medicine",
+            "text": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+            "expected_entities": [
+              "12-week trial",
+              "metformin",
+              "HbA1c",
+              "1.2 percentage points",
+              "240 adults",
+              "type 2 diabetes",
+              "placebo"
+            ],
+            "expected_facts": [
+              [
+                "metformin",
+                "HbA1c",
+                "1.2 percentage points",
+                "240 adults",
+                "type 2 diabetes",
+                "placebo"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 7,
+            "expected_entity_count": 7,
+            "covered_entity_count": 7,
+            "raw_entity_count": 7,
+            "fact_count": 2,
+            "expected_fact_count": 1,
+            "covered_fact_count": 0,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 1,
+            "total_fact_arguments": 8,
+            "latency_ms": 4811.91658298485,
+            "prompt_tokens": 2194,
+            "completion_tokens": 718,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 658
+          },
+          "covered_entities": [
+            "12-week trial",
+            "metformin",
+            "HbA1c",
+            "1.2 percentage points",
+            "240 adults",
+            "type 2 diabetes",
+            "placebo"
+          ],
+          "covered_facts": [],
+          "entities": [
+            {
+              "entity_id": "ent_c01972380ee5",
+              "canonical_name": "12-week trial",
+              "aliases": [],
+              "entity_type": "clinical_trial_duration",
+              "description": "The duration of the clinical trial.",
+              "source_mentions": [
+                "chunk_clinical_trial:9:12-week trial"
+              ]
+            },
+            {
+              "entity_id": "ent_c85e9a204898",
+              "canonical_name": "metformin",
+              "aliases": [],
+              "entity_type": "drug",
+              "description": "The medication being tested.",
+              "source_mentions": [
+                "chunk_clinical_trial:24:metformin"
+              ]
+            },
+            {
+              "entity_id": "ent_591482cbe3aa",
+              "canonical_name": "HbA1c",
+              "aliases": [],
+              "entity_type": "biomarker",
+              "description": "A measure of blood sugar control.",
+              "source_mentions": [
+                "chunk_clinical_trial:42:HbA1c"
+              ]
+            },
+            {
+              "entity_id": "ent_054a03501b9a",
+              "canonical_name": "1.2 percentage points",
+              "aliases": [],
+              "entity_type": "reduction_amount",
+              "description": "The amount of HbA1c reduction.",
+              "source_mentions": [
+                "chunk_clinical_trial:51:1.2 percentage points"
+              ]
+            },
+            {
+              "entity_id": "ent_7fa6cb10d350",
+              "canonical_name": "240 adults",
+              "aliases": [],
+              "entity_type": "sample_size",
+              "description": "The number of participants in the trial.",
+              "source_mentions": [
+                "chunk_clinical_trial:76:240 adults"
+              ]
+            },
+            {
+              "entity_id": "ent_5e60a92be031",
+              "canonical_name": "type 2 diabetes",
+              "aliases": [],
+              "entity_type": "disease",
+              "description": "The condition of the trial participants.",
+              "source_mentions": [
+                "chunk_clinical_trial:92:type 2 diabetes"
+              ]
+            },
+            {
+              "entity_id": "ent_1ae283f6b04f",
+              "canonical_name": "placebo",
+              "aliases": [],
+              "entity_type": "control_treatment",
+              "description": "The inactive comparator in the trial.",
+              "source_mentions": [
+                "chunk_clinical_trial:123:placebo"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_19190761db05",
+              "predicate": "reduced",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_c85e9a204898"
+                },
+                {
+                  "role": "metric",
+                  "entity_id": "ent_591482cbe3aa"
+                },
+                {
+                  "role": "amount",
+                  "entity_id": "ent_054a03501b9a"
+                },
+                {
+                  "role": "sample_size",
+                  "entity_id": "ent_7fa6cb10d350"
+                },
+                {
+                  "role": "condition",
+                  "entity_id": "ent_5e60a92be031"
+                },
+                {
+                  "role": "time",
+                  "entity_id": "ent_c01972380ee5"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_clinical_trial"
+              ],
+              "evidence_sentence": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_1cd11fbeb6ee",
+              "predicate": "compared with",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_c85e9a204898"
+                },
+                {
+                  "role": "comparator",
+                  "entity_id": "ent_1ae283f6b04f"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_clinical_trial"
+              ],
+              "evidence_sentence": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+              "confidence": 0.95
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "12-week trial",
+                "aliases": [],
+                "entity_type": "clinical_trial_duration",
+                "description": "The duration of the clinical trial.",
+                "mention": "12-week trial"
+              },
+              {
+                "canonical_name": "metformin",
+                "aliases": [],
+                "entity_type": "drug",
+                "description": "The medication being tested.",
+                "mention": "metformin"
+              },
+              {
+                "canonical_name": "HbA1c",
+                "aliases": [],
+                "entity_type": "biomarker",
+                "description": "A measure of blood sugar control.",
+                "mention": "HbA1c"
+              },
+              {
+                "canonical_name": "1.2 percentage points",
+                "aliases": [],
+                "entity_type": "reduction_amount",
+                "description": "The amount of HbA1c reduction.",
+                "mention": "1.2 percentage points"
+              },
+              {
+                "canonical_name": "240 adults",
+                "aliases": [],
+                "entity_type": "sample_size",
+                "description": "The number of participants in the trial.",
+                "mention": "240 adults"
+              },
+              {
+                "canonical_name": "type 2 diabetes",
+                "aliases": [],
+                "entity_type": "disease",
+                "description": "The condition of the trial participants.",
+                "mention": "type 2 diabetes"
+              },
+              {
+                "canonical_name": "placebo",
+                "aliases": [],
+                "entity_type": "control_treatment",
+                "description": "The inactive comparator in the trial.",
+                "mention": "placebo"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "reduced",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_c85e9a204898"
+                  },
+                  {
+                    "role": "metric",
+                    "entity_id": "ent_591482cbe3aa"
+                  },
+                  {
+                    "role": "amount",
+                    "entity_id": "ent_054a03501b9a"
+                  },
+                  {
+                    "role": "sample_size",
+                    "entity_id": "ent_7fa6cb10d350"
+                  },
+                  {
+                    "role": "condition",
+                    "entity_id": "ent_5e60a92be031"
+                  },
+                  {
+                    "role": "time",
+                    "entity_id": "ent_c01972380ee5"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "compared with",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_c85e9a204898"
+                  },
+                  {
+                    "role": "comparator",
+                    "entity_id": "ent_1ae283f6b04f"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "During a 12-week trial, metformin reduced HbA1c by 1.2 percentage points in 240 adults with type 2 diabetes, compared with placebo.",
+                "confidence": 0.95
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "acquisition",
+            "domain": "business",
+            "text": "On 5 March 2025, Orion Labs acquired Nova Analytics for $42 million in Shanghai. Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+            "expected_entities": [
+              "5 March 2025",
+              "Orion Labs",
+              "Nova Analytics",
+              "$42 million",
+              "Shanghai",
+              "Mei Chen",
+              "Luis Park"
+            ],
+            "expected_facts": [
+              [
+                "Orion Labs",
+                "Nova Analytics",
+                "$42 million",
+                "Shanghai",
+                "5 March 2025"
+              ],
+              [
+                "Mei Chen",
+                "Orion Labs"
+              ],
+              [
+                "Luis Park",
+                "Nova Analytics"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 7,
+            "expected_entity_count": 7,
+            "covered_entity_count": 7,
+            "raw_entity_count": 7,
+            "fact_count": 3,
+            "expected_fact_count": 3,
+            "covered_fact_count": 3,
+            "raw_fact_count": 3,
+            "grounded_raw_fact_count": 3,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 1,
+            "total_fact_arguments": 9,
+            "latency_ms": 4719.825166044757,
+            "prompt_tokens": 2173,
+            "completion_tokens": 730,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 637
+          },
+          "covered_entities": [
+            "5 March 2025",
+            "Orion Labs",
+            "Nova Analytics",
+            "$42 million",
+            "Shanghai",
+            "Mei Chen",
+            "Luis Park"
+          ],
+          "covered_facts": [
+            [
+              "Orion Labs",
+              "Nova Analytics",
+              "$42 million",
+              "Shanghai",
+              "5 March 2025"
+            ],
+            [
+              "Mei Chen",
+              "Orion Labs"
+            ],
+            [
+              "Luis Park",
+              "Nova Analytics"
+            ]
+          ],
+          "entities": [
+            {
+              "entity_id": "ent_cfbb6aa2edb4",
+              "canonical_name": "5 March 2025",
+              "aliases": [],
+              "entity_type": "date",
+              "description": "The date of the acquisition.",
+              "source_mentions": [
+                "chunk_acquisition:3:5 March 2025"
+              ]
+            },
+            {
+              "entity_id": "ent_c616143db09b",
+              "canonical_name": "Orion Labs",
+              "aliases": [],
+              "entity_type": "company",
+              "description": "The acquiring company.",
+              "source_mentions": [
+                "chunk_acquisition:17:Orion Labs",
+                "chunk_acquisition:98:Orion Labs"
+              ]
+            },
+            {
+              "entity_id": "ent_95a8830ac040",
+              "canonical_name": "Nova Analytics",
+              "aliases": [],
+              "entity_type": "company",
+              "description": "The acquired company.",
+              "source_mentions": [
+                "chunk_acquisition:138:Nova Analytics",
+                "chunk_acquisition:37:Nova Analytics"
+              ]
+            },
+            {
+              "entity_id": "ent_99ed676fc482",
+              "canonical_name": "$42 million",
+              "aliases": [],
+              "entity_type": "monetary_amount",
+              "description": "The acquisition price.",
+              "source_mentions": [
+                "chunk_acquisition:56:$42 million"
+              ]
+            },
+            {
+              "entity_id": "ent_8ab89d9f086d",
+              "canonical_name": "Shanghai",
+              "aliases": [],
+              "entity_type": "city",
+              "description": "The location of the acquisition.",
+              "source_mentions": [
+                "chunk_acquisition:71:Shanghai"
+              ]
+            },
+            {
+              "entity_id": "ent_d78477abd97c",
+              "canonical_name": "Mei Chen",
+              "aliases": [],
+              "entity_type": "person",
+              "description": "Advisor for Orion Labs.",
+              "source_mentions": [
+                "chunk_acquisition:81:Mei Chen"
+              ]
+            },
+            {
+              "entity_id": "ent_537eacf7fee9",
+              "canonical_name": "Luis Park",
+              "aliases": [],
+              "entity_type": "person",
+              "description": "Representative for Nova Analytics.",
+              "source_mentions": [
+                "chunk_acquisition:116:Luis Park"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_a93419f45ed1",
+              "predicate": "acquired",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_c616143db09b"
+                },
+                {
+                  "role": "recipient",
+                  "entity_id": "ent_95a8830ac040"
+                },
+                {
+                  "role": "amount",
+                  "entity_id": "ent_99ed676fc482"
+                },
+                {
+                  "role": "location",
+                  "entity_id": "ent_8ab89d9f086d"
+                },
+                {
+                  "role": "time",
+                  "entity_id": "ent_cfbb6aa2edb4"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_acquisition"
+              ],
+              "evidence_sentence": "On 5 March 2025, Orion Labs acquired Nova Analytics for $42 million in Shanghai.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_3046d835c813",
+              "predicate": "advised",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_d78477abd97c"
+                },
+                {
+                  "role": "recipient",
+                  "entity_id": "ent_c616143db09b"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_acquisition"
+              ],
+              "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_2ed3b21f8911",
+              "predicate": "represented",
+              "arguments": [
+                {
+                  "role": "agent",
+                  "entity_id": "ent_537eacf7fee9"
+                },
+                {
+                  "role": "recipient",
+                  "entity_id": "ent_95a8830ac040"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_acquisition"
+              ],
+              "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+              "confidence": 0.99
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "5 March 2025",
+                "aliases": [],
+                "entity_type": "date",
+                "description": "The date of the acquisition.",
+                "mention": "5 March 2025"
+              },
+              {
+                "canonical_name": "Orion Labs",
+                "aliases": [],
+                "entity_type": "company",
+                "description": "The acquiring company.",
+                "mention": "Orion Labs"
+              },
+              {
+                "canonical_name": "Nova Analytics",
+                "aliases": [],
+                "entity_type": "company",
+                "description": "The acquired company.",
+                "mention": "Nova Analytics"
+              },
+              {
+                "canonical_name": "$42 million",
+                "aliases": [],
+                "entity_type": "monetary_amount",
+                "description": "The acquisition price.",
+                "mention": "$42 million"
+              },
+              {
+                "canonical_name": "Shanghai",
+                "aliases": [],
+                "entity_type": "city",
+                "description": "The location of the acquisition.",
+                "mention": "Shanghai"
+              },
+              {
+                "canonical_name": "Mei Chen",
+                "aliases": [],
+                "entity_type": "person",
+                "description": "Advisor for Orion Labs.",
+                "mention": "Mei Chen"
+              },
+              {
+                "canonical_name": "Luis Park",
+                "aliases": [],
+                "entity_type": "person",
+                "description": "Representative for Nova Analytics.",
+                "mention": "Luis Park"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "acquired",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_c616143db09b"
+                  },
+                  {
+                    "role": "recipient",
+                    "entity_id": "ent_95a8830ac040"
+                  },
+                  {
+                    "role": "amount",
+                    "entity_id": "ent_99ed676fc482"
+                  },
+                  {
+                    "role": "location",
+                    "entity_id": "ent_8ab89d9f086d"
+                  },
+                  {
+                    "role": "time",
+                    "entity_id": "ent_cfbb6aa2edb4"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "On 5 March 2025, Orion Labs acquired Nova Analytics for $42 million in Shanghai.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "advised",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_d78477abd97c"
+                  },
+                  {
+                    "role": "recipient",
+                    "entity_id": "ent_c616143db09b"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "represented",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_537eacf7fee9"
+                  },
+                  {
+                    "role": "recipient",
+                    "entity_id": "ent_95a8830ac040"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Mei Chen advised Orion Labs, while Luis Park represented Nova Analytics.",
+                "confidence": 0.99
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "no_proper_noun",
+            "domain": "general_science",
+            "text": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+            "expected_entities": [
+              "Water",
+              "100 degrees Celsius",
+              "standard atmospheric pressure",
+              "0 degrees Celsius"
+            ],
+            "expected_facts": [
+              [
+                "Water",
+                "100 degrees Celsius",
+                "standard atmospheric pressure"
+              ],
+              [
+                "Water",
+                "0 degrees Celsius"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 4,
+            "expected_entity_count": 4,
+            "covered_entity_count": 4,
+            "raw_entity_count": 4,
+            "fact_count": 2,
+            "expected_fact_count": 2,
+            "covered_fact_count": 2,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 1,
+            "total_fact_arguments": 5,
+            "latency_ms": 3396.1138329468668,
+            "prompt_tokens": 2012,
+            "completion_tokens": 473,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 476
+          },
+          "covered_entities": [
+            "Water",
+            "100 degrees Celsius",
+            "standard atmospheric pressure",
+            "0 degrees Celsius"
+          ],
+          "covered_facts": [
+            [
+              "Water",
+              "100 degrees Celsius",
+              "standard atmospheric pressure"
+            ],
+            [
+              "Water",
+              "0 degrees Celsius"
+            ]
+          ],
+          "entities": [
+            {
+              "entity_id": "ent_e743dbe5c64f",
+              "canonical_name": "Water",
+              "aliases": [],
+              "entity_type": "substance",
+              "description": "The substance that boils and freezes at given temperatures.",
+              "source_mentions": [
+                "chunk_no_proper_noun:0:Water"
+              ]
+            },
+            {
+              "entity_id": "ent_6d65347c2cca",
+              "canonical_name": "100 degrees Celsius",
+              "aliases": [],
+              "entity_type": "temperature",
+              "description": "The boiling point of water under standard atmospheric pressure.",
+              "source_mentions": [
+                "chunk_no_proper_noun:15:100 degrees Celsius"
+              ]
+            },
+            {
+              "entity_id": "ent_926bc054d48b",
+              "canonical_name": "standard atmospheric pressure",
+              "aliases": [],
+              "entity_type": "pressure_condition",
+              "description": "The pressure condition under which water boils at 100 degrees Celsius.",
+              "source_mentions": [
+                "chunk_no_proper_noun:41:standard atmospheric pressure"
+              ]
+            },
+            {
+              "entity_id": "ent_1cf4c6f0ba3e",
+              "canonical_name": "0 degrees Celsius",
+              "aliases": [],
+              "entity_type": "temperature",
+              "description": "The freezing point of water.",
+              "source_mentions": [
+                "chunk_no_proper_noun:17:0 degrees Celsius",
+                "chunk_no_proper_noun:86:0 degrees Celsius"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_06bc29db22ae",
+              "predicate": "boils at",
+              "arguments": [
+                {
+                  "role": "substance",
+                  "entity_id": "ent_e743dbe5c64f"
+                },
+                {
+                  "role": "temperature",
+                  "entity_id": "ent_6d65347c2cca"
+                },
+                {
+                  "role": "condition",
+                  "entity_id": "ent_926bc054d48b"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_no_proper_noun"
+              ],
+              "evidence_sentence": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+              "confidence": 0.99
+            },
+            {
+              "hyperedge_id": "fact_9ef63d2b55e6",
+              "predicate": "freezes at",
+              "arguments": [
+                {
+                  "role": "substance",
+                  "entity_id": "ent_e743dbe5c64f"
+                },
+                {
+                  "role": "temperature",
+                  "entity_id": "ent_1cf4c6f0ba3e"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_no_proper_noun"
+              ],
+              "evidence_sentence": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+              "confidence": 0.99
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Water",
+                "aliases": [],
+                "entity_type": "substance",
+                "description": "The substance that boils and freezes at given temperatures.",
+                "mention": "Water"
+              },
+              {
+                "canonical_name": "100 degrees Celsius",
+                "aliases": [],
+                "entity_type": "temperature",
+                "description": "The boiling point of water under standard atmospheric pressure.",
+                "mention": "100 degrees Celsius"
+              },
+              {
+                "canonical_name": "standard atmospheric pressure",
+                "aliases": [],
+                "entity_type": "pressure_condition",
+                "description": "The pressure condition under which water boils at 100 degrees Celsius.",
+                "mention": "standard atmospheric pressure"
+              },
+              {
+                "canonical_name": "0 degrees Celsius",
+                "aliases": [],
+                "entity_type": "temperature",
+                "description": "The freezing point of water.",
+                "mention": "0 degrees Celsius"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "boils at",
+                "arguments": [
+                  {
+                    "role": "substance",
+                    "entity_id": "ent_e743dbe5c64f"
+                  },
+                  {
+                    "role": "temperature",
+                    "entity_id": "ent_6d65347c2cca"
+                  },
+                  {
+                    "role": "condition",
+                    "entity_id": "ent_926bc054d48b"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+                "confidence": 0.99
+              },
+              {
+                "predicate": "freezes at",
+                "arguments": [
+                  {
+                    "role": "substance",
+                    "entity_id": "ent_e743dbe5c64f"
+                  },
+                  {
+                    "role": "temperature",
+                    "entity_id": "ent_1cf4c6f0ba3e"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Water boils at 100 degrees Celsius under standard atmospheric pressure and freezes at 0 degrees Celsius.",
+                "confidence": 0.99
+              }
+            ]
+          }
+        },
+        {
+          "case": {
+            "case_id": "correlation",
+            "domain": "observational_research",
+            "text": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+            "expected_entities": [
+              "Feature A",
+              "15%",
+              "latency",
+              "Feature B",
+              "observational study",
+              "causation"
+            ],
+            "expected_facts": [
+              [
+                "Feature A",
+                "15%",
+                "latency",
+                "Feature B"
+              ],
+              [
+                "observational study",
+                "causation"
+              ]
+            ]
+          },
+          "metrics": {
+            "entity_count": 4,
+            "expected_entity_count": 6,
+            "covered_entity_count": 5,
+            "raw_entity_count": 4,
+            "fact_count": 1,
+            "expected_fact_count": 2,
+            "covered_fact_count": 1,
+            "raw_fact_count": 2,
+            "grounded_raw_fact_count": 2,
+            "raw_unknown_argument_count": 0,
+            "nary_fact_count": 1,
+            "total_fact_arguments": 3,
+            "latency_ms": 3693.2378339697607,
+            "prompt_tokens": 2023,
+            "completion_tokens": 471,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 487
+          },
+          "covered_entities": [
+            "Feature A",
+            "15%",
+            "latency",
+            "Feature B",
+            "observational study"
+          ],
+          "covered_facts": [
+            [
+              "Feature A",
+              "15%",
+              "latency",
+              "Feature B"
+            ]
+          ],
+          "entities": [
+            {
+              "entity_id": "ent_6c7fa77e6b45",
+              "canonical_name": "Feature A",
+              "aliases": [],
+              "entity_type": "software_feature",
+              "description": "A feature whose users showed lower latency.",
+              "source_mentions": [
+                "chunk_correlation:9:Feature A"
+              ]
+            },
+            {
+              "entity_id": "ent_3cc62d3911ee",
+              "canonical_name": "15% lower latency",
+              "aliases": [],
+              "entity_type": "relative_performance_metric",
+              "description": "The observed latency reduction for users of Feature A compared to Feature B.",
+              "source_mentions": [
+                "chunk_correlation:26:15% lower latency"
+              ]
+            },
+            {
+              "entity_id": "ent_cd5c301811e7",
+              "canonical_name": "Feature B",
+              "aliases": [],
+              "entity_type": "software_feature",
+              "description": "A feature used as a comparison baseline.",
+              "source_mentions": [
+                "chunk_correlation:58:Feature B"
+              ]
+            },
+            {
+              "entity_id": "ent_ae97ef097edf",
+              "canonical_name": "observational study",
+              "aliases": [],
+              "entity_type": "study_type",
+              "description": "The type of study that did not establish causation.",
+              "source_mentions": [
+                "chunk_correlation:77:observational study"
+              ]
+            }
+          ],
+          "facts": [
+            {
+              "hyperedge_id": "fact_76296eb0cbaa",
+              "predicate": "showed lower latency than",
+              "arguments": [
+                {
+                  "role": "subject",
+                  "entity_id": "ent_6c7fa77e6b45"
+                },
+                {
+                  "role": "metric",
+                  "entity_id": "ent_3cc62d3911ee"
+                },
+                {
+                  "role": "comparison_object",
+                  "entity_id": "ent_cd5c301811e7"
+                }
+              ],
+              "qualifiers": {},
+              "evidence_chunk_ids": [
+                "chunk_correlation"
+              ],
+              "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+              "confidence": 0.95
+            }
+          ],
+          "raw_entity_payload": {
+            "entities": [
+              {
+                "canonical_name": "Feature A",
+                "aliases": [],
+                "entity_type": "software_feature",
+                "description": "A feature whose users showed lower latency.",
+                "mention": "Feature A"
+              },
+              {
+                "canonical_name": "15% lower latency",
+                "aliases": [],
+                "entity_type": "relative_performance_metric",
+                "description": "The observed latency reduction for users of Feature A compared to Feature B.",
+                "mention": "15% lower latency"
+              },
+              {
+                "canonical_name": "Feature B",
+                "aliases": [],
+                "entity_type": "software_feature",
+                "description": "A feature used as a comparison baseline.",
+                "mention": "Feature B"
+              },
+              {
+                "canonical_name": "observational study",
+                "aliases": [],
+                "entity_type": "study_type",
+                "description": "The type of study that did not establish causation.",
+                "mention": "observational study"
+              }
+            ]
+          },
+          "raw_fact_payload": {
+            "facts": [
+              {
+                "predicate": "showed lower latency than",
+                "arguments": [
+                  {
+                    "role": "subject",
+                    "entity_id": "ent_6c7fa77e6b45"
+                  },
+                  {
+                    "role": "metric",
+                    "entity_id": "ent_3cc62d3911ee"
+                  },
+                  {
+                    "role": "comparison_object",
+                    "entity_id": "ent_cd5c301811e7"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+                "confidence": 0.95
+              },
+              {
+                "predicate": "did not establish causation",
+                "arguments": [
+                  {
+                    "role": "agent",
+                    "entity_id": "ent_ae97ef097edf"
+                  }
+                ],
+                "qualifiers": {},
+                "evidence_sentence": "Users of Feature A showed 15% lower latency than users of Feature B, but the observational study did not establish causation.",
+                "confidence": 0.99
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
