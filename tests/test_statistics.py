@@ -28,8 +28,11 @@ def test_unavailable_metrics_render_as_na_instead_of_zero():
     )
 
     assert summary["external:graphrag"]["fact_recall_at_5"]["mean"] is None
+    retrieval_section = report.split("## Retrieval", 1)[1]
     retrieval_row = next(
-        line for line in report.splitlines() if line.startswith("| external:graphrag |")
+        line
+        for line in retrieval_section.splitlines()
+        if line.startswith("| external:graphrag |")
     )
     assert "1.0000" in retrieval_row
     assert "N/A" in retrieval_row

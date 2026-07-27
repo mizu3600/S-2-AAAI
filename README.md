@@ -121,12 +121,39 @@ uv run python scripts/prepare_four_benchmarks.py \
   --hotpot-source /path/to/hotpot_dev_distractor_v1.json \
   --musique-source /path/to/musique_ans_v1.0_dev.jsonl \
   --two-wiki-source /path/to/2wikimultihopqa/dev.json \
+  --two-wiki-alias-source /path/to/2wikimultihopqa/id_aliases.json \
   --ultradomain-source-dir /path/to/ultradomain
 ```
 
 这里的 HotpotQA 使用 `distractor` 协议，每道题只检索该题自带的候选 passages。
 只有 `fullwiki` 协议才应使用数据集级全局语料；两种协议的结果不能混在同一张榜中。
 `mix` adapter 仅用于兼容组合输入，不属于上述四个正式评测集。
+
+### 数据集官方评测口径
+
+最终报告把 `Official Dataset Metrics` 和 `Unified Diagnostics` 分开，不能用后者替代
+数据集 leaderboard 口径：
+
+| 数据集 | 官方 evaluator | 正式显示指标 | 数据/语料协议 |
+|---|---|---|---|
+| HotpotQA | `hotpot_evaluate_v1.py` | Answer、Supporting Fact、Joint EM/F1 | validation `distractor`；每题自己的 10 个候选 passages |
+| MuSiQue | `evaluate_v1.0.py` | alias-aware Answer EM/F1、paragraph Support F1 | answerable dev；每题自己的候选 paragraphs |
+| 2WikiMultiHopQA | `2wikimultihop_evaluate_v1.1.py` | alias-aware Answer、sentence Support EM/F1 | April-7 IDs dev；每题自己的候选 passages |
+| UltraDomain | 无维护中的官方 scorer | 只显示明确标注为 unified 的 Answer EM/token F1 | 每条样本自己的长文档；无 gold evidence |
+
+2Wiki v1.1 的完整官方分数还包含 relation-triple Evidence 和基于
+Answer × Support × Evidence 的 Joint。当前 S²-RAG/外部 baseline 没有统一、可审计的
+官方三元组输出，因此这两项显示 `N/A`，不会用内部 reified fact 指标代替。
+外部 baseline 如果只能返回 passage ranking，HotpotQA/2Wiki 的 sentence Support
+指标同样显示 `N/A`；MuSiQue 的 paragraph Support 可以正常计算。
+
+三个上游 evaluator 按 commit 锁定在
+`third_party/official_evaluators.lock.json`。安装并核对项目公式与上游脚本：
+
+```bash
+uv run python scripts/install_official_evaluators.py --evaluator all
+uv run python scripts/verify_official_evaluator_parity.py
+```
 
 单个数据集：
 

@@ -24,6 +24,7 @@ def main() -> None:
     parser.add_argument("--hotpot-source", type=Path, required=True)
     parser.add_argument("--musique-source", type=Path, required=True)
     parser.add_argument("--two-wiki-source", type=Path, required=True)
+    parser.add_argument("--two-wiki-alias-source", type=Path)
     parser.add_argument("--ultradomain-source-dir", type=Path, required=True)
     parser.add_argument(
         "--output-dir",
@@ -40,8 +41,8 @@ def main() -> None:
     specifications = {
         "hotpotqa": (
             args.hotpot_source,
-            _explicit_multihop,
-            "at_least_two_supporting_passages",
+            _hotpot_distractor_multihop,
+            "distractor_context_and_at_least_two_supporting_passages",
         ),
         "musique": (
             args.musique_source,
@@ -55,7 +56,7 @@ def main() -> None:
         ),
     }
     manifest = {
-        "protocol": "s2rag_four_benchmarks_1000_v1",
+        "protocol": "s2rag_four_benchmarks_1000_v2",
         "sample_size": args.sample_size,
         "sample_seed": args.sample_seed,
         "datasets": {},
@@ -68,14 +69,58 @@ def main() -> None:
             args.sample_seed,
             dataset,
         )
+        if dataset == "hotpotqa":
+            selected = [
+                {
+                    **row,
+                    "_s2rag_benchmark_config": "distractor",
+                    "_s2rag_corpus_scope": "per_question_candidate_passages",
+                }
+                for row in selected
+            ]
+        elif dataset == "2wikimultihopqa":
+            alias_source = args.two_wiki_alias_source or source.parent / "id_aliases.json"
+            if not alias_source.is_file():
+                raise FileNotFoundError(
+                    "2WikiMultiHopQA official v1.1 scoring requires id_aliases.json; "
+                    "pass --two-wiki-alias-source"
+                )
+            selected = _add_2wiki_answer_aliases(selected, alias_source)
         target = args.output_dir / f"{dataset}_1000.jsonl"
         _write_jsonl(target, selected)
-        manifest["datasets"][dataset] = _manifest_entry(
+        entry = _manifest_entry(
             target,
             source,
             len(records),
             hop_filter,
         )
+        if dataset == "hotpotqa":
+            entry.update(
+                {
+                    "benchmark_config": "distractor",
+                    "corpus_scope": "per_question_candidate_passages",
+                    "official_evaluator": "hotpot_evaluate_v1.py",
+                }
+            )
+        elif dataset == "musique":
+            entry.update(
+                {
+                    "benchmark_config": "answerable_dev",
+                    "corpus_scope": "per_question_candidate_paragraphs",
+                    "official_evaluator": "evaluate_v1.0.py",
+                }
+            )
+        else:
+            entry.update(
+                {
+                    "benchmark_config": "dev_ids_april7",
+                    "corpus_scope": "per_question_candidate_passages",
+                    "official_evaluator": "2wikimultihop_evaluate_v1.1.py",
+                    "answer_alias_source": str(alias_source),
+                    "answer_alias_source_sha256": _sha256(alias_source),
+                }
+            )
+        manifest["datasets"][dataset] = entry
 
     ultra_rows, ultra_sources = _stratified_ultradomain_sample(
         args.ultradomain_source_dir,
@@ -92,6 +137,9 @@ def main() -> None:
             "not_available",
         ),
         "sampling": "equal_domain_stratified",
+        "benchmark_config": "official_19_domain_files",
+        "corpus_scope": "per_example_long_document",
+        "official_evaluator": None,
         "source_files": [str(path) for path in ultra_sources],
     }
     manifest["official_sources"] = OFFICIAL_SOURCES
@@ -116,11 +164,38 @@ def _explicit_multihop(row: dict) -> bool:
     return len({str(title) for title in titles}) >= 2
 
 
+def _hotpot_distractor_multihop(row: dict) -> bool:
+    context = row.get("context", [])
+    if isinstance(context, dict):
+        context_count = len(context.get("title", []))
+    else:
+        context_count = len(context)
+    return context_count == 10 and _explicit_multihop(row)
+
+
 def _musique_multihop(row: dict) -> bool:
     if row.get("answerable") is False:
         return False
     decomposition = row.get("question_decomposition", row.get("decomposition", []))
     return isinstance(decomposition, list) and len(decomposition) >= 2
+
+
+def _add_2wiki_answer_aliases(rows: list[dict], alias_source: Path) -> list[dict]:
+    with alias_source.open(encoding="utf-8") as handle:
+        alias_rows = [json.loads(line) for line in handle if line.strip()]
+    aliases = {
+        str(row["Q_id"]): [
+            *row.get("aliases", []),
+            *row.get("demonyms", []),
+        ]
+        for row in alias_rows
+    }
+    selected = []
+    for row in rows:
+        item = dict(row)
+        item["answer_aliases"] = aliases.get(str(row.get("answer_id")), [])
+        selected.append(item)
+    return selected
 
 
 def _fixed_sample(

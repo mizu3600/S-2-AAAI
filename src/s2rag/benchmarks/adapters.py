@@ -78,6 +78,18 @@ class HotpotAdapter(BenchmarkAdapter):
         support_titles = [title for title, pid in title_to_id.items() if any(x.passage_id == pid for x in support)]
         support_passage_ids = [title_to_id[title] for title in support_titles]
         bridges = support_titles[:-1] if row.get("type") == "bridge" else support_titles[1:-1]
+        benchmark_config = row.get(
+            "_s2rag_benchmark_config",
+            "distractor" if len(passages) == 10 else "unspecified",
+        )
+        corpus_scope = row.get(
+            "_s2rag_corpus_scope",
+            (
+                "per_question_candidate_passages"
+                if benchmark_config == "distractor"
+                else "unspecified"
+            ),
+        )
         return BenchmarkExample(
             example_id=example_id, question=row["question"], answer=row.get("answer", ""),
             passages=passages, supporting_facts=support, bridge_entities=bridges,
@@ -88,6 +100,9 @@ class HotpotAdapter(BenchmarkAdapter):
                 "metric_profile": "hotpotqa_official",
                 "evidence_level": "sentence",
                 "answer_language": "en",
+                "benchmark_config": benchmark_config,
+                "corpus_scope": corpus_scope,
+                "official_evaluator": "hotpot_evaluate_v1.py",
             },
         )
 
@@ -99,6 +114,15 @@ class TwoWikiAdapter(HotpotAdapter):
         example = super().convert(row, split)
         example.dataset = self.name
         example.query_type = row.get("type", row.get("question_type", "unknown"))
+        example.answer = _answers_with_aliases(row)
+        example.metadata.update(
+            {
+                "metric_profile": "2wikimultihopqa_official",
+                "benchmark_config": "dev",
+                "corpus_scope": "per_question_candidate_passages",
+                "official_evaluator": "2wikimultihop_evaluate_v1.1.py",
+            }
+        )
         evidence = row.get("evidences", row.get("evidence", []))
         if evidence:
             example.metadata["evidences"] = evidence
@@ -121,12 +145,21 @@ class MusiqueAdapter(BenchmarkAdapter):
                 support.extend(SupportingFact(passage_id=passage_id, sentence_index=i) for i in range(len(sentences)))
         decomposition = row.get("question_decomposition", row.get("decomposition", []))
         return BenchmarkExample(
-            example_id=example_id, question=row["question"], answer=row.get("answer", ""),
+            example_id=example_id,
+            question=row["question"],
+            answer=_answers_with_aliases(row),
             passages=passages, supporting_facts=support,
             bridge_entities=[str(item.get("answer", "")) for item in decomposition[:-1] if item.get("answer")],
             gold_path=[str(item.get("question", item)) for item in decomposition],
             hop_count=max(1, len(decomposition)), query_type=f"{max(1, len(decomposition))}-hop",
-            dataset=self.name, split=split,
+            dataset=self.name,
+            split=split,
+            metadata={
+                "metric_profile": "musique_official",
+                "evidence_level": "paragraph",
+                "corpus_scope": "per_question_candidate_paragraphs",
+                "official_evaluator": "evaluate_v1.0.py",
+            },
         )
 
 
@@ -173,6 +206,9 @@ class UltraDomainAdapter(BenchmarkAdapter):
                 "context_length": sum(len(" ".join(p.sentences)) for p in passages),
                 "evidence_level": "unavailable",
                 "multi_hop_annotation": "unavailable",
+                "metric_profile": "unified_squad_style",
+                "corpus_scope": "per_example_long_document",
+                "official_evaluator": "none",
             },
         )
 
@@ -203,3 +239,11 @@ def load_benchmark(name: str, path: str | Path, split: str = "validation", limit
     except KeyError as exc:
         raise ValueError(f"unsupported benchmark: {name}") from exc
     return adapter.load(path, split, limit)
+
+
+def _answers_with_aliases(row: dict) -> str | list[str]:
+    answer = row.get("answer", "")
+    aliases = row.get("answer_aliases", row.get("_answer_aliases", []))
+    values = [str(answer), *(str(item) for item in aliases)]
+    unique = list(dict.fromkeys(item for item in values if item))
+    return unique if len(unique) > 1 else (unique[0] if unique else "")

@@ -1,0 +1,17 @@
+{
+  "hotpotqa": {
+    "repository": "https://github.com/hotpotqa/hotpot.git",
+    "commit": "3635853403a8735609ee997664e1528f4480762a",
+    "script": "hotpot_evaluate_v1.py"
+  },
+  "musique": {
+    "repository": "https://github.com/StonyBrookNLP/musique.git",
+    "commit": "922ac98f19a201998dbdae6d7f2887a5258dbdeb",
+    "script": "evaluate_v1.0.py"
+  },
+  "2wikimultihopqa": {
+    "repository": "https://github.com/Alab-NII/2wikimultihop.git",
+    "commit": "13800e5be57df1b4040b9b1588c6c811779e69e9",
+    "script": "2wikimultihop_evaluate_v1.1.py"
+  }
+}

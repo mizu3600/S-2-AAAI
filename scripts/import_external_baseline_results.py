@@ -15,6 +15,7 @@ from s2rag.evaluation.experiment import (
     score_external_result,
 )
 from s2rag.evaluation.external_adapters import BASELINE_SPECS, load_external_results
+from s2rag.evaluation.official_metrics import official_metric_spec
 from s2rag.evaluation.report import write_report
 
 
@@ -69,6 +70,7 @@ def main(
     end_to_end_mapping_coverage = (
         sum(item.mapping_coverage for item in normalized) / len(normalized) if normalized else 0.0
     )
+    official_spec = official_metric_spec(dataset)
     write_report(
         records,
         target,
@@ -95,7 +97,7 @@ def main(
             "baseline": baseline,
             "protocol": UNIFIED_RETRIEVAL_PROTOCOL,
             "evaluation_view": "native_external_passage",
-            "corpus_protocol": "canonical_source_passages_v1",
+            "corpus_protocol": official_spec["corpus_protocol"],
             "fact_extraction": "not_applicable",
             "output_k": config.output_k,
             "rerank_input_k": "native",
@@ -110,6 +112,7 @@ def main(
             "capability": asdict(BASELINE_SPECS[baseline].capability),
             "repository": BASELINE_SPECS[baseline].repository,
             "ranking_contract": BASELINE_SPECS[baseline].ranking_contract,
+            "official_metrics": official_spec,
         },
     )
     typer.echo(

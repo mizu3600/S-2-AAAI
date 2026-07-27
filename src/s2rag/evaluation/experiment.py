@@ -29,6 +29,10 @@ from s2rag.evaluation.metrics import (
     ranking_scores,
     set_scores,
 )
+from s2rag.evaluation.official_metrics import (
+    official_metric_spec,
+    score_official_metrics,
+)
 from s2rag.evaluation.report import write_report
 from s2rag.generation.generator import (
     SHARED_DEEPSEEK_GENERATION_PROTOCOL,
@@ -365,6 +369,10 @@ class BenchmarkExperimentRunner:
             context_fact_ids,
             pipeline.corpus,
         )
+        context_passage_ids = _passages_from_facts(
+            context_fact_ids,
+            built.fact_to_passage,
+        )
         context, _ = build_context(
             pipeline.corpus,
             context_fact_ids,
@@ -416,6 +424,17 @@ class BenchmarkExperimentRunner:
             else None
         )
         joint = _joint_scores(answer_metric, citation_metric)
+        official_metrics = score_official_metrics(
+            dataset=example.dataset,
+            answer_metric=answer_metric,
+            predicted_sentence_ids=context_fact_evidence,
+            gold_sentence_ids=built.gold_chunk_ids,
+            predicted_passage_ids=context_passage_ids,
+            gold_passage_ids=gold_passages,
+            answer_available=should_generate,
+            sentence_support_available=True,
+            passage_support_available=True,
+        )
         generator_manifest = self.generator.manifest()
 
         record = {
@@ -449,6 +468,7 @@ class BenchmarkExperimentRunner:
             "answer": answer,
             "retrieval_evidence_fact_ids": context_fact_ids,
             "retrieval_evidence_sentence_ids": context_fact_evidence,
+            "retrieval_evidence_passage_ids": context_passage_ids,
             "generated_fact_citations": generated_fact_citations,
             "generated_fact_citation_sentence_ids": generated_fact_citation_evidence,
             "generated_passage_citations": _passages_from_facts(
@@ -507,6 +527,7 @@ class BenchmarkExperimentRunner:
                 "context_budget": self.config.context_k,
             },
             **joint,
+            **official_metrics,
         }
         record.update(
             _prefixed_ranking_scores(
@@ -525,11 +546,11 @@ class BenchmarkExperimentRunner:
             )
         )
         record.update(
-            _prefixed_set_scores(
-                "retrieval_evidence_passage",
-                _passages_from_facts(context_fact_ids, built.fact_to_passage),
-                gold_passages,
-            )
+                _prefixed_set_scores(
+                    "retrieval_evidence_passage",
+                    context_passage_ids,
+                    gold_passages,
+                )
         )
         record.update(
             (
@@ -551,6 +572,7 @@ class BenchmarkExperimentRunner:
     def _metadata(self, suite: BenchmarkSuite, seed: int) -> dict:
         generator_manifest = self.generator.manifest()
         example_ids = sorted(example.example_id for example in suite.examples)
+        official_spec = official_metric_spec(suite.name)
         return {
             "dataset": suite.name,
             "split": suite.split,
@@ -590,9 +612,12 @@ class BenchmarkExperimentRunner:
                 "mrr_at_20": "reciprocal rank of the first relevant item within top 20",
                 "mrr": "deprecated alias of mrr_at_20",
                 "empty_gold_evidence": "N/A and excluded from metric aggregation",
-                "answer": "HotpotQA official normalization and yes/no/noanswer rule",
-                "joint": ("HotpotQA answer P/R multiplied by canonical supporting-sentence P/R"),
+                "answer": official_spec["answer"],
+                "support": official_spec["support"],
+                "evidence": official_spec["evidence"],
+                "joint": official_spec["joint"],
             },
+            "official_metrics": official_spec,
             **generator_manifest,
         }
 
@@ -630,6 +655,17 @@ class BenchmarkExperimentRunner:
             )
             citation_metric = set_scores([], gold_fact_ids)
             joint = _joint_scores(answer_metric, citation_metric)
+            official_metrics = score_official_metrics(
+                dataset=example.dataset,
+                answer_metric=answer_metric,
+                predicted_sentence_ids=[],
+                gold_sentence_ids=gold_fact_ids,
+                predicted_passage_ids=[],
+                gold_passage_ids=gold_passage_ids,
+                answer_available=True,
+                sentence_support_available=True,
+                passage_support_available=True,
+            )
             record = {
                 "dataset": example.dataset,
                 "split": example.split,
@@ -663,9 +699,12 @@ class BenchmarkExperimentRunner:
                 "generated_passage_citation_available": bool(gold_passage_ids),
                 "answer": "",
                 "retrieval_evidence_fact_ids": [],
+                "retrieval_evidence_sentence_ids": [],
+                "retrieval_evidence_passage_ids": [],
                 "generated_fact_citations": [],
                 "generated_passage_citations": [],
                 **joint,
+                **official_metrics,
             }
             record.update(_prefixed_ranking_scores("fact", [], gold_fact_ids))
             record.update(_prefixed_ranking_scores("passage", [], gold_passage_ids))
@@ -790,6 +829,17 @@ def score_external_result(
         if answer_available and fact_citation_metric is not None
         else _unavailable_joint_scores()
     )
+    official_metrics = score_official_metrics(
+        dataset=example.dataset,
+        answer_metric=answer_metric,
+        predicted_sentence_ids=fact_ranking[: config.context_k],
+        gold_sentence_ids=built.gold_chunk_ids,
+        predicted_passage_ids=passage_ranking[: config.context_k],
+        gold_passage_ids=gold_passages,
+        answer_available=answer_available,
+        sentence_support_available=fact_available,
+        passage_support_available=passage_available,
+    )
     record = {
         "dataset": example.dataset,
         "split": example.split,
@@ -817,6 +867,8 @@ def score_external_result(
         "mapping_coverage": result.mapping_coverage,
         "unmapped_ranking_ids": result.unmapped_ranking_ids,
         "answer": "" if failed else result.answer,
+        "retrieval_evidence_sentence_ids": fact_ranking[: config.context_k],
+        "retrieval_evidence_passage_ids": passage_ranking[: config.context_k],
         "generated_fact_citations": generated_fact_citations,
         "generated_fact_citation_sentence_ids": generated_fact_citation_evidence,
         "generated_passage_citations": generated_passage_citations,
@@ -861,6 +913,7 @@ def score_external_result(
         "generation_protocol": result.generation_protocol,
         "generation_trace": result.generation_trace,
         **joint,
+        **official_metrics,
     }
     record.update(
         _prefixed_ranking_scores(

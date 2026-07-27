@@ -36,9 +36,13 @@ NON_METRIC_FIELDS = {
     "unmapped_ranking_ids",
     "retrieval_evidence_fact_ids",
     "retrieval_evidence_sentence_ids",
+    "retrieval_evidence_passage_ids",
     "generated_fact_citations",
     "generated_fact_citation_sentence_ids",
     "generated_passage_citations",
+    "official_metric_status",
+    "official_evaluator",
+    "official_corpus_protocol",
 }
 
 
@@ -87,12 +91,41 @@ def render_markdown(summary: dict, metadata: dict) -> str:
         f"{metadata.get('context_k', 'N/A')}`",
         f"- generation protocol: `{metadata.get('generation_protocol', 'N/A')}`",
         "",
+        "## Official Dataset Metrics",
+        "",
+        f"- evaluator: `{metadata.get('official_metrics', {}).get('evaluator', 'none')}`",
+        f"- status: `{metadata.get('official_metrics', {}).get('status', 'unavailable')}`",
+        f"- corpus protocol: "
+        f"`{metadata.get('official_metrics', {}).get('corpus_protocol', 'unspecified')}`",
+        "",
+        "| System | Answer EM | Answer F1 | Support EM | Support F1 | "
+        "Evidence EM | Evidence F1 | Joint EM | Joint F1 |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for system, metrics in summary.items():
+        lines.append(
+            f"| {system} | "
+            f"{_value(metrics, 'official_answer_em')} | "
+            f"{_value(metrics, 'official_answer_f1')} | "
+            f"{_value(metrics, 'official_support_em')} | "
+            f"{_value(metrics, 'official_support_f1')} | "
+            f"{_value(metrics, 'official_evidence_em')} | "
+            f"{_value(metrics, 'official_evidence_f1')} | "
+            f"{_value(metrics, 'official_joint_em')} | "
+            f"{_value(metrics, 'official_joint_f1')} |"
+        )
+    lines.extend(
+        [
+        "",
+        "## Unified Diagnostics",
+        "",
         "## Retrieval",
         "",
         "| System | Passage R@5 | Passage strict P@5 | Fact R@5 | "
         "Fact strict P@5 | Fact returned P@5 | Fact MRR@20 | Fact nDCG@5 |",
         "|---|---:|---:|---:|---:|---:|---:|---:|",
-    ]
+        ]
+    )
     for system, metrics in summary.items():
         lines.append(
             f"| {system} | {_value(metrics, 'passage_recall_at_5')} | "

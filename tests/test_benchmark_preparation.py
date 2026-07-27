@@ -3,8 +3,10 @@ import json
 import pytest
 
 from scripts.prepare_four_benchmarks import (
+    _add_2wiki_answer_aliases,
     _explicit_multihop,
     _fixed_sample,
+    _hotpot_distractor_multihop,
     _musique_multihop,
     _stratified_ultradomain_sample,
 )
@@ -38,6 +40,8 @@ def test_hotpot_and_2wiki_adapters_preserve_explicit_multihop_evidence():
         assert example.hop_count == 2
         assert len({fact.passage_id for fact in example.supporting_facts}) == 2
         assert len(example.gold_path) == 2
+        if type(adapter) is HotpotAdapter:
+            assert example.metadata["benchmark_config"] == "unspecified"
 
 
 def test_musique_adapter_preserves_decomposition_hops():
@@ -112,6 +116,34 @@ def test_multihop_filters_require_explicit_two_hop_structure():
     assert not _musique_multihop(
         {"answerable": False, "question_decomposition": [{}, {}]}
     )
+    distractor = _hotpot_row()
+    distractor["context"].extend(
+        [[f"Distractor {index}", ["Not supporting."]] for index in range(8)]
+    )
+    assert _hotpot_distractor_multihop(distractor)
+    assert not _hotpot_distractor_multihop(_hotpot_row())
+
+
+def test_2wiki_aliases_are_embedded_for_official_v11_scoring(tmp_path):
+    alias_path = tmp_path / "id_aliases.json"
+    alias_path.write_text(
+        json.dumps(
+            {
+                "Q_id": "Q1",
+                "aliases": ["New York City"],
+                "demonyms": ["New Yorker"],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    rows = _add_2wiki_answer_aliases(
+        [{"answer": "NYC", "answer_id": "Q1"}],
+        alias_path,
+    )
+
+    assert rows[0]["answer_aliases"] == ["New York City", "New Yorker"]
 
 
 def test_fixed_sample_is_deterministic_and_requires_enough_rows():

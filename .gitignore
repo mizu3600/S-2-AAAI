@@ -16,3 +16,4 @@ data/benchmarks/
 data/experiments/
 data/cache/
 third_party/official_baselines/
+third_party/official_evaluators/

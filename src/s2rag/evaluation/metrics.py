@@ -9,6 +9,7 @@ from collections import Counter
 _BRACKET_RE = re.compile(r"\[([^\[\]]+)\]")
 _FACT_CITATION_RE = re.compile(r"\[(fact_[A-Za-z0-9_-]+)\]")
 _HOTPOT_SPECIAL_ANSWERS = {"yes", "no", "noanswer"}
+_SPECIAL_ANSWER_PROFILES = {"hotpotqa_official", "2wikimultihopqa_official"}
 
 
 def strip_citations(text: str) -> str:
@@ -134,7 +135,7 @@ def _answer_pair(
     predicted, expected = normalize_answer(prediction), normalize_answer(gold)
     em = float(predicted == expected)
     if (
-        profile == "hotpotqa_official"
+        profile in _SPECIAL_ANSWER_PROFILES
         and predicted != expected
         and (predicted in _HOTPOT_SPECIAL_ANSWERS or expected in _HOTPOT_SPECIAL_ANSWERS)
     ):

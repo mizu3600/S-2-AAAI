@@ -11,6 +11,7 @@ from s2rag.evaluation.experiment import (
     UNIFIED_RETRIEVAL_PROTOCOL,
     expected_shared_model_trace,
 )
+from s2rag.evaluation.official_metrics import official_metric_spec
 
 
 def main(
@@ -32,6 +33,7 @@ def main(
         limit=None if limit == 0 else limit,
     )
     examples = suite.examples
+    official_spec = official_metric_spec(dataset)
     output_path = output_dir / f"{dataset}_official_baselines_1000.json"
     payload = []
     for example in examples:
@@ -73,7 +75,8 @@ def main(
         "requested_limit": limit,
         "partition": "prepared_suite_all_examples",
         "ranking_unit": "canonical_passage_id",
-        "corpus_protocol": "canonical_source_passages_v1",
+        "corpus_protocol": official_spec["corpus_protocol"],
+        "official_metrics": official_spec,
         "fact_extraction": "not_applicable",
         "required_shared_model_trace": expected_shared_model_trace(),
     }
