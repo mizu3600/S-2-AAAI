@@ -146,6 +146,67 @@ def test_2wiki_aliases_are_embedded_for_official_v11_scoring(tmp_path):
     assert rows[0]["answer_aliases"] == ["New York City", "New Yorker"]
 
 
+def test_2wiki_repairs_out_of_range_official_support_with_evidence():
+    row = {
+        "_id": "official-bad-index",
+        "question": "Who is the paternal grandfather?",
+        "answer": "Gerard III",
+        "type": "inference",
+        "context": [
+            [
+                "Otto II",
+                [
+                    "Otto II was a nobleman.",
+                    "He was the son of Gerard III.",
+                ],
+            ],
+            ["Reginald I", ["He was the son of Otto II."]],
+        ],
+        "supporting_facts": [["Otto II", 3], ["Reginald I", 0]],
+        "evidences": [
+            ["Reginald I", "father", "Otto II"],
+            ["Otto II", "father", "Gerard III"],
+        ],
+    }
+
+    example = TwoWikiAdapter().convert(row, "validation")
+
+    assert example.supporting_facts[0].sentence_index == 1
+    assert example.metadata["supporting_fact_repairs"] == [
+        {
+            "title": "Otto II",
+            "original_sentence_index": 3,
+            "repaired_sentence_index": 1,
+            "reason": "official_index_out_of_range_evidence_grounded",
+        }
+    ]
+
+
+def test_2wiki_repair_tolerates_official_entity_name_variants():
+    row = {
+        "_id": "official-title-variant",
+        "question": "Who was his father?",
+        "answer": "Duke Maximilian",
+        "context": [
+            [
+                "Duke Siegfried August in Bavaria",
+                [
+                    "Duke Siegfried was born in Bavaria.",
+                    "Siegfried was the son of Duke Maximilian.",
+                ],
+            ]
+        ],
+        "supporting_facts": [["Duke Siegfried August in Bavaria", 3]],
+        "evidences": [
+            ["Duke Siegfried in Bavaria", "father", "Duke Maximilian"]
+        ],
+    }
+
+    example = TwoWikiAdapter().convert(row, "validation")
+
+    assert example.supporting_facts[0].sentence_index == 1
+
+
 def test_fixed_sample_is_deterministic_and_requires_enough_rows():
     rows = [{"id": index} for index in range(20)]
 

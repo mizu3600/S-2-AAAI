@@ -1,5 +1,6 @@
 import json
 import re
+from copy import deepcopy
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -111,7 +112,8 @@ class TwoWikiAdapter(HotpotAdapter):
     name = "2wikimultihopqa"
 
     def convert(self, row: dict, split: str) -> BenchmarkExample:
-        example = super().convert(row, split)
+        repaired_row, repairs = _repair_2wiki_supporting_facts(row)
+        example = super().convert(repaired_row, split)
         example.dataset = self.name
         example.query_type = row.get("type", row.get("question_type", "unknown"))
         example.answer = _answers_with_aliases(row)
@@ -126,7 +128,104 @@ class TwoWikiAdapter(HotpotAdapter):
         evidence = row.get("evidences", row.get("evidence", []))
         if evidence:
             example.metadata["evidences"] = evidence
+        if repairs:
+            example.metadata["supporting_fact_repairs"] = repairs
         return example
+
+
+def _repair_2wiki_supporting_facts(row: dict) -> tuple[dict, list[dict]]:
+    contexts = row.get("context", [])
+    if isinstance(contexts, dict):
+        context_items = list(
+            zip(
+                contexts.get("title", []),
+                contexts.get("sentences", []),
+                strict=False,
+            )
+        )
+    else:
+        context_items = list(contexts)
+    sentences_by_title = {
+        str(title): list(sentences) for title, sentences in context_items
+    }
+    raw_support = row.get("supporting_facts", [])
+    if isinstance(raw_support, dict):
+        support_items = list(
+            zip(
+                raw_support.get("title", []),
+                raw_support.get("sent_id", []),
+                strict=False,
+            )
+        )
+    else:
+        support_items = list(raw_support)
+
+    repaired_support = []
+    repairs = []
+    evidences = row.get("evidences", row.get("evidence", []))
+    for title, raw_index in support_items:
+        title = str(title)
+        sentence_index = int(raw_index)
+        sentences = sentences_by_title.get(title, [])
+        if 0 <= sentence_index < len(sentences):
+            repaired_support.append([title, sentence_index])
+            continue
+        replacement = _find_2wiki_evidence_sentence(title, sentences, evidences)
+        if replacement is None:
+            raise ValueError(
+                f"2Wiki example {row.get('_id', row.get('id', 'unknown'))} "
+                f"has an out-of-range supporting fact without an evidence-grounded "
+                f"repair: {(title, sentence_index)}"
+            )
+        repaired_support.append([title, replacement])
+        repairs.append(
+            {
+                "title": title,
+                "original_sentence_index": sentence_index,
+                "repaired_sentence_index": replacement,
+                "reason": "official_index_out_of_range_evidence_grounded",
+            }
+        )
+
+    if not repairs:
+        return row, []
+    repaired_row = deepcopy(row)
+    repaired_row["supporting_facts"] = repaired_support
+    return repaired_row, repairs
+
+
+def _find_2wiki_evidence_sentence(
+    title: str,
+    sentences: list[str],
+    evidences,
+) -> int | None:
+    related_entities = []
+    for evidence in evidences:
+        if not isinstance(evidence, (list, tuple)) or len(evidence) < 3:
+            continue
+        subject, _, obj = (str(item).strip() for item in evidence[:3])
+        if _same_2wiki_entity(subject, title) and obj:
+            related_entities.append(obj)
+        elif _same_2wiki_entity(obj, title) and subject:
+            related_entities.append(subject)
+    scored = [
+        (
+            sum(entity.casefold() in sentence.casefold() for entity in related_entities),
+            index,
+        )
+        for index, sentence in enumerate(sentences)
+    ]
+    best_score, best_index = max(scored, default=(0, -1))
+    return best_index if best_score > 0 else None
+
+
+def _same_2wiki_entity(left: str, right: str) -> bool:
+    left_tokens = set(re.findall(r"\w+", left.casefold()))
+    right_tokens = set(re.findall(r"\w+", right.casefold()))
+    if not left_tokens or not right_tokens:
+        return False
+    overlap = len(left_tokens & right_tokens)
+    return overlap / min(len(left_tokens), len(right_tokens)) >= 0.75
 
 
 class MusiqueAdapter(BenchmarkAdapter):

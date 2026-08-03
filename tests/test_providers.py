@@ -42,6 +42,78 @@ def test_deepseek_stops_after_bounded_exponential_backoff(tmp_path):
     assert delays == [0.25, 0.5, 0.5]
 
 
+def test_invalid_json_is_evicted_before_short_retry(tmp_path):
+    delays = []
+    responses = iter(('{"facts":[', '{"facts":[]}'))
+    client = DeepSeekClient(
+        Settings(
+            deepseek_api_key="test",
+            deepseek_json_retry_initial_seconds=0.25,
+            deepseek_json_retry_max_seconds=0.5,
+            deepseek_json_max_attempts=2,
+            deepseek_response_cache_dir=tmp_path,
+        ),
+        sleep=delays.append,
+    )
+    client._complete_once = lambda *args, **kwargs: next(responses)
+
+    assert client.complete_json("system", "prompt") == {"facts": []}
+    assert delays == [0.25]
+
+
+def test_json_response_is_repaired_before_retry(tmp_path):
+    client = DeepSeekClient(
+        Settings(
+            deepseek_api_key="test",
+            deepseek_json_max_attempts=1,
+            deepseek_response_cache_dir=tmp_path,
+        )
+    )
+    client._complete_once = (
+        lambda *args, **kwargs: '```json\n{"facts": []}\n```\nextra text'
+    )
+
+    assert client.complete_json("system", "prompt") == {"facts": []}
+
+
+def test_truncated_completion_is_reported_without_caching(tmp_path):
+    requests = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "finish_reason": "length",
+                        "message": {"content": '{"facts": ['},
+                    }
+                ]
+            },
+        )
+
+    client = DeepSeekClient(
+        Settings(
+            deepseek_api_key="test",
+            deepseek_max_attempts=1,
+            deepseek_response_cache_dir=tmp_path,
+        ),
+        http_client=httpx.Client(
+            base_url="https://example.test",
+            transport=httpx.MockTransport(respond),
+        ),
+    )
+
+    with pytest.raises(ProviderError, match="truncated at max_tokens"):
+        client.complete("system", "prompt")
+
+    with pytest.raises(ProviderError, match="truncated at max_tokens"):
+        client.complete("system", "prompt")
+
+    assert len(requests) == 2
+
+
 def test_generator_never_falls_back_when_client_raises():
     class FailingClient:
         def complete(self, system, prompt):

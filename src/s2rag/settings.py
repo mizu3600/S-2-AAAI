@@ -12,8 +12,11 @@ class Settings(BaseSettings):
     bge_device: str = "auto"
     bge_embedding_device: str | None = None
     bge_reranker_device: str | None = None
-    bge_embedding_batch_size: int = 32
-    bge_reranker_batch_size: int = 16
+    bge_embedding_batch_size: int = 64
+    bge_reranker_batch_size: int = 64
+    bge_dynamic_batch_wait_ms: float = 5.0
+    bge_embedding_micro_batch_max_texts: int = 512
+    bge_reranker_micro_batch_max_pairs: int = 320
     bge_reranker_max_length: int = 512
     bge_dtype: str = "float16"
     embedding_cache_dir: Path = Path("data/cache/embeddings")
@@ -26,16 +29,19 @@ class Settings(BaseSettings):
     deepseek_retry_initial_seconds: float = 1.0
     deepseek_retry_max_seconds: float = 60.0
     deepseek_max_attempts: int = 8
-    deepseek_max_concurrency: int = 32
-    deepseek_pool_max_connections: int = 48
-    deepseek_pool_keepalive_connections: int = 32
+    deepseek_json_retry_initial_seconds: float = 0.25
+    deepseek_json_retry_max_seconds: float = 1.0
+    deepseek_json_max_attempts: int = 3
+    deepseek_max_concurrency: int = 64
+    deepseek_pool_max_connections: int = 96
+    deepseek_pool_keepalive_connections: int = 64
     deepseek_response_cache_dir: Path = Path("data/cache/deepseek")
     extraction_batch_max_chars: int = 24000
     extraction_workers: int = 8
     benchmark_example_workers: int = 8
     generation_workers: int = 8
     checkpoint_every: int = 25
-    request_timeout: float = 60.0
+    request_timeout: float = 240.0
 
 
 @lru_cache

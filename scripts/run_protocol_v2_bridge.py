@@ -19,6 +19,7 @@ from s2rag.embedding.text_encoder import LocalBGEEncoder, reject_peft_adapter_di
 from s2rag.evaluation.experiment import BenchmarkExperimentRunner
 from s2rag.retrieval.candidates import aggregate_passages
 from s2rag.retrieval.local_reranker import LocalBGEReranker
+from s2rag.settings import Settings
 
 
 SYSTEM = "s2rag:reified_fact_hybrid"
@@ -52,6 +53,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--embedding-model", type=Path, required=True)
     parser.add_argument("--reranker-model", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
+    parser.add_argument("--embedding-batch-size", type=int, default=64)
+    parser.add_argument("--reranker-batch-size", type=int, default=64)
+    parser.add_argument("--dynamic-batch-wait-ms", type=float, default=5.0)
+    parser.add_argument("--embedding-micro-batch-max-texts", type=int, default=512)
+    parser.add_argument("--reranker-micro-batch-max-pairs", type=int, default=320)
     parser.add_argument(
         "--resume",
         action="store_true",
@@ -86,17 +92,32 @@ def main() -> None:
         seed=args.seed,
         expected_count=args.expected_count,
     )
+    model_settings = Settings(
+        bge_embedding_batch_size=args.embedding_batch_size,
+        bge_reranker_batch_size=args.reranker_batch_size,
+        bge_dynamic_batch_wait_ms=args.dynamic_batch_wait_ms,
+        bge_embedding_micro_batch_max_texts=args.embedding_micro_batch_max_texts,
+        bge_reranker_micro_batch_max_pairs=args.reranker_micro_batch_max_pairs,
+    )
+    encoder = LocalBGEEncoder(
+        model_path=args.embedding_model,
+        device=args.device,
+        settings=model_settings,
+    )
+    reranker = LocalBGEReranker(
+        model_path=args.reranker_model,
+        device=args.device,
+        settings=model_settings,
+    )
+    # Load transformers sequentially before example workers start. Concurrent
+    # first-use imports can observe a partially initialized lazy module.
+    encoder._model_instance()
+    reranker._model_instances()
     runner = ProtocolV2Runner(
         methods=("reified_fact_hybrid",),
         generate_for_methods=(),
-        encoder=LocalBGEEncoder(
-            model_path=args.embedding_model,
-            device=args.device,
-        ),
-        reranker=LocalBGEReranker(
-            model_path=args.reranker_model,
-            device=args.device,
-        ),
+        encoder=encoder,
+        reranker=reranker,
     )
     records = runner.run(suite, args.work_dir, seed=args.seed)
     bridged = [
@@ -107,6 +128,9 @@ def main() -> None:
             suite_sha256=suite_sha256,
             embedding_model=args.embedding_model,
             reranker_model=args.reranker_model,
+            embedding_batch_size=args.embedding_batch_size,
+            reranker_batch_size=args.reranker_batch_size,
+            dynamic_batch_wait_ms=args.dynamic_batch_wait_ms,
         )
         for record in records
     ]
@@ -263,6 +287,9 @@ def bridge_record(
     suite_sha256: str,
     embedding_model: Path,
     reranker_model: Path,
+    embedding_batch_size: int = 64,
+    reranker_batch_size: int = 64,
+    dynamic_batch_wait_ms: float = 5.0,
 ) -> dict[str, Any]:
     ranking = list(dict.fromkeys(record.get("passage_ranking") or []))
     return {
@@ -283,6 +310,12 @@ def bridge_record(
         "model_protocol": MODEL_PROTOCOL,
         "embedding_model": str(embedding_model),
         "reranker_model": str(reranker_model),
+        "inference_batching": {
+            "strategy": "per_gpu_dynamic_micro_batching",
+            "embedding_batch_size": embedding_batch_size,
+            "reranker_batch_size": reranker_batch_size,
+            "dynamic_batch_wait_ms": dynamic_batch_wait_ms,
+        },
         "graph_model_type": "training_free",
         "graph_model_id": record.get("graph_model_id"),
         "extraction_coverage": record.get("extraction_coverage"),

@@ -49,6 +49,11 @@ class JsonFileCache:
             )
             os.replace(temporary, path)
 
+    def delete(self, namespace: str, payload: Any) -> None:
+        path = self._path(namespace, self.digest(namespace, payload), ".json")
+        with self._lock:
+            path.unlink(missing_ok=True)
+
     def _path(self, namespace: str, digest: str, suffix: str) -> Path:
         safe_namespace = "".join(
             character if character.isalnum() or character in "-_." else "_"

@@ -1,4 +1,5 @@
 import hashlib
+import json
 import threading
 import time
 from dataclasses import replace
@@ -101,6 +102,20 @@ class ConcurrencyTrackingGenerator(FakeGenerator):
         finally:
             with self.lock:
                 self.active -= 1
+
+
+class OutOfOrderGenerator(FakeGenerator):
+    def __init__(self):
+        self.fast_done = threading.Event()
+        self.release_slow = threading.Event()
+
+    def generate(self, question, context):
+        if question == "Slow question":
+            if not self.release_slow.wait(timeout=5):
+                raise TimeoutError("test did not release slow example")
+        else:
+            self.fast_done.set()
+        return super().generate(question, context)
 
 
 class DifferentModelExtractionClient:
@@ -268,6 +283,78 @@ def test_benchmark_examples_run_concurrently(tmp_path):
 
     assert len(records) == 2
     assert generator.max_active == 2
+
+
+def test_benchmark_checkpoints_completed_examples_then_restores_suite_order(tmp_path):
+    examples = [
+        BenchmarkExample(
+            example_id=example_id,
+            question=question,
+            answer="Ada",
+            passages=[
+                Passage(
+                    passage_id=f"p-{example_id}",
+                    title="Result",
+                    sentences=["Ada won."],
+                )
+            ],
+            supporting_facts=[
+                SupportingFact(
+                    passage_id=f"p-{example_id}",
+                    sentence_index=0,
+                )
+            ],
+            dataset="toy",
+            split="test",
+        )
+        for example_id, question in (
+            ("slow", "Slow question"),
+            ("fast", "Fast question"),
+        )
+    ]
+    suite = BenchmarkSuite(
+        name="toy",
+        split="test",
+        examples=examples,
+        source="memory://toy",
+    )
+    generator = OutOfOrderGenerator()
+    result = {}
+
+    def run_benchmark():
+        result["records"] = BenchmarkExperimentRunner(
+            methods=("bm25",),
+            encoder=LocalEncoder(),
+            use_local_reranker=False,
+            generator=generator,
+            use_llm_extraction=False,
+        ).run(suite, tmp_path, seed=42)
+
+    thread = threading.Thread(target=run_benchmark)
+    thread.start()
+    try:
+        assert generator.fast_done.wait(timeout=2)
+        deadline = time.monotonic() + 2
+        partial_text = ""
+        while time.monotonic() < deadline:
+            partial = tmp_path / "records.partial.jsonl"
+            partial_text = partial.read_text(encoding="utf-8") if partial.exists() else ""
+            if '"example_id": "fast"' in partial_text:
+                break
+            time.sleep(0.01)
+        assert '"example_id": "fast"' in partial_text
+        assert '"example_id": "slow"' not in partial_text
+    finally:
+        generator.release_slow.set()
+        thread.join(timeout=5)
+
+    assert not thread.is_alive()
+    assert [record["example_id"] for record in result["records"]] == [
+        "slow",
+        "fast",
+    ]
+    stored = json.loads((tmp_path / "records.json").read_text(encoding="utf-8"))
+    assert [record["example_id"] for record in stored] == ["slow", "fast"]
 
 
 def test_generation_failure_scores_zero_instead_of_dropping_the_question(tmp_path):

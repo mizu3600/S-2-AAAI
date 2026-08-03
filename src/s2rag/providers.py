@@ -3,6 +3,7 @@ import logging
 import threading
 import time
 from collections.abc import Callable
+from typing import Any
 
 import httpx
 
@@ -19,6 +20,69 @@ class PermanentProviderError(ProviderError):
 
 
 logger = logging.getLogger(__name__)
+
+
+def _parse_json_object(text: str) -> dict[str, Any]:
+    candidates = [
+        text,
+        _strip_markdown_json_fence(text),
+        _extract_balanced_json_object(text),
+    ]
+    last_error: Exception | None = None
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError as exc:
+            last_error = exc
+            continue
+        if not isinstance(payload, dict):
+            raise ValueError("DeepSeek JSON response is not an object")
+        return payload
+    if last_error is not None:
+        raise last_error
+    raise ValueError("DeepSeek JSON response does not contain an object")
+
+
+def _strip_markdown_json_fence(text: str) -> str:
+    stripped = text.strip()
+    if not stripped.startswith("```"):
+        return stripped
+    lines = stripped.splitlines()
+    if len(lines) >= 2 and lines[0].startswith("```"):
+        if lines[-1].strip() == "```":
+            return "\n".join(lines[1:-1]).strip()
+        return "\n".join(lines[1:]).strip()
+    return stripped
+
+
+def _extract_balanced_json_object(text: str) -> str | None:
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1].strip()
+    return None
 
 
 class DeepSeekClient:
@@ -79,19 +143,18 @@ class DeepSeekClient:
             and isinstance(cached.get("value"), dict)
         ):
             return cached["value"]
-        delay = self.settings.deepseek_retry_initial_seconds
-        for attempt in range(1, self.settings.deepseek_max_attempts + 1):
+        raw_namespace = f"{namespace}.raw"
+        delay = self.settings.deepseek_json_retry_initial_seconds
+        for attempt in range(1, self.settings.deepseek_json_max_attempts + 1):
             text = self.complete(
                 system,
                 prompt,
                 response_format={"type": "json_object"},
-                cache_namespace=f"{namespace}.raw",
+                cache_namespace=raw_namespace,
                 max_tokens=max_tokens,
             )
             try:
-                payload = json.loads(text)
-                if not isinstance(payload, dict):
-                    raise ValueError("DeepSeek JSON response is not an object")
+                payload = _parse_json_object(text)
                 self._cache.put(
                     namespace,
                     request_key,
@@ -99,10 +162,11 @@ class DeepSeekClient:
                 )
                 return payload
             except (json.JSONDecodeError, ValueError) as exc:
-                if attempt >= self.settings.deepseek_max_attempts:
+                self._cache.delete(raw_namespace, request_key)
+                if attempt >= self.settings.deepseek_json_max_attempts:
                     raise ProviderError(
                         "DeepSeek returned invalid JSON after "
-                        f"{self.settings.deepseek_max_attempts} attempts"
+                        f"{self.settings.deepseek_json_max_attempts} attempts"
                     ) from exc
                 logger.warning(
                     "DeepSeek returned invalid JSON; retrying in %.1fs: %s",
@@ -110,7 +174,10 @@ class DeepSeekClient:
                     exc,
                 )
                 self._sleep(delay)
-                delay = min(delay * 2, self.settings.deepseek_retry_max_seconds)
+                delay = min(
+                    delay * 2,
+                    self.settings.deepseek_json_retry_max_seconds,
+                )
         raise AssertionError("unreachable")
 
     def complete(
@@ -227,7 +294,14 @@ class DeepSeekClient:
             raise error_type(
                 f"DeepSeek request failed ({response.status_code}): {response.text[:300]}"
             )
-        content = response.json()["choices"][0]["message"]["content"]
+        response_payload = response.json()
+        choice = response_payload["choices"][0]
+        if choice.get("finish_reason") == "length":
+            raise ProviderError(
+                "DeepSeek completion was truncated at max_tokens="
+                f"{max_tokens or self.settings.deepseek_max_tokens}"
+            )
+        content = choice["message"]["content"]
         if not isinstance(content, str) or not content.strip():
             raise ProviderError("DeepSeek returned an empty completion")
         return content

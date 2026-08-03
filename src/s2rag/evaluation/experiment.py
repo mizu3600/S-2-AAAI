@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
@@ -70,6 +70,26 @@ RANKING_METRIC_NAMES = tuple(
 )
 ANSWER_METRIC_NAMES = ("answer_em", "answer_precision", "answer_recall", "answer_f1")
 SET_METRIC_NAMES = ("em", "precision", "recall", "f1")
+
+
+def _canonical_record_order(
+    records: list[dict],
+    suite: BenchmarkSuite,
+    methods: tuple[str, ...],
+) -> list[dict]:
+    example_order = {
+        example.example_id: index for index, example in enumerate(suite.examples)
+    }
+    method_order = {method: index for index, method in enumerate(methods)}
+    fallback_example = len(example_order)
+    fallback_method = len(method_order)
+    return sorted(
+        records,
+        key=lambda record: (
+            example_order.get(record.get("example_id"), fallback_example),
+            method_order.get(record.get("system"), fallback_method),
+        ),
+    )
 
 
 @dataclass(frozen=True)
@@ -166,10 +186,12 @@ class BenchmarkExperimentRunner:
                     max(len(pending_examples), 1),
                 )
             ) as example_pool:
-                for example_records in example_pool.map(
-                    lambda example: self._run_example(example, seed),
-                    pending_examples,
-                ):
+                futures = [
+                    example_pool.submit(self._run_example, example, seed)
+                    for example in pending_examples
+                ]
+                for future in as_completed(futures):
+                    example_records = future.result()
                     records.extend(example_records)
                     for record in example_records:
                         checkpoint.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -180,6 +202,8 @@ class BenchmarkExperimentRunner:
                         committed_since_sync = 0
             checkpoint.flush()
             os.fsync(checkpoint.fileno())
+        records = _canonical_record_order(records, suite, self.methods)
+        _atomic_write_jsonl(partial, records)
         metadata = self._metadata(suite, seed)
         write_report(records, output_dir, metadata)
         partial.unlink(missing_ok=True)
